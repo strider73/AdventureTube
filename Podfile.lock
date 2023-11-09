@@ -1,0 +1,34 @@
+PODS:
+  - GoogleMaps (5.1.0):
+    - GoogleMaps/Maps (= 5.1.0)
+  - GoogleMaps/Base (5.1.0)
+  - GoogleMaps/Maps (5.1.0):
+    - GoogleMaps/Base
+  - GoogleMapsPlatformCombine (0.3.1):
+    - GoogleMapsPlatformCombine/Maps (= 0.3.1)
+    - GoogleMapsPlatformCombine/Places (= 0.3.1)
+  - GoogleMapsPlatformCombine/Maps (0.3.1):
+    - GoogleMaps (= 5.1.0)
+  - GoogleMapsPlatformCombine/Places (0.3.1):
+    - GooglePlaces (= 5.0.0)
+  - GooglePlaces (5.0.0)
+
+DEPENDENCIES:
+  - GoogleMaps (= 5.1.0)
+  - GoogleMapsPlatformCombine (= 0.3.1)
+  - GooglePlaces (= 5.0.0)
+
+SPEC REPOS:
+  trunk:
+    - GoogleMaps
+    - GoogleMapsPlatformCombine
+    - GooglePlaces
+
+SPEC CHECKSUMS:
+  GoogleMaps: 086ae1dab659eaa7339bdb30fc88e2f44e7c597c
+  GoogleMapsPlatformCombine: 61083eb467d3b8eafec84159ce687897d2c0365c
+  GooglePlaces: 5d87ca13ed98b7a937e0d8bc7026f718c7263271
+
+PODFILE CHECKSUM: 1f14f394bd0535aafdd089847a46f51aebe19822
+
+COCOAPODS: 1.11.3

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="21G115" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ChapterEntity" representedClassName="ChapterEntity" syncable="YES">
+        <attribute name="category" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="thumbnail" optional="YES" attributeType="Binary"/>
+        <attribute name="youtubeId" attributeType="String"/>
+        <attribute name="youtubeTime" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PlaceEntity" inverseName="chapter" inverseEntity="PlaceEntity"/>
+        <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoryEntity" inverseName="chapters" inverseEntity="StoryEntity"/>
+    </entity>
+    <entity name="PlaceEntity" representedClassName="PlaceEntity" syncable="YES">
+        <attribute name="id" attributeType="String"/>
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" customClassName=" CLLocationCoordinate2D"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="photo" optional="YES" attributeType="Binary"/>
+        <attribute name="placeCategory" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="placeID" optional="YES" attributeType="String"/>
+        <attribute name="pluscode" optional="YES" attributeType="String" customClassName="GMSPlusCode"/>
+        <attribute name="rating" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="types" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="website" optional="YES" attributeType="URI"/>
+        <attribute name="youtubeId" attributeType="String"/>
+        <attribute name="youtubeTime" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="chapter" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ChapterEntity" inverseName="place" inverseEntity="ChapterEntity"/>
+        <relationship name="story" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="StoryEntity" inverseName="places" inverseEntity="StoryEntity"/>
+    </entity>
+    <entity name="StoryEntity" representedClassName="StoryEntity" syncable="YES">
+        <attribute name="gpsData" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="isPublished" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="userContentType" attributeType="String"/>
+        <attribute name="userTripDuration" attributeType="String"/>
+        <attribute name="youtubeDefaultThumbnailURL" optional="YES" attributeType="String"/>
+        <attribute name="youtubeDescription" optional="YES" attributeType="String"/>
+        <attribute name="youtubehighThumbnailURL" optional="YES" attributeType="String"/>
+        <attribute name="youtubeId" attributeType="String"/>
+        <attribute name="youtubeMaxresThumbnailURL" optional="YES" attributeType="String"/>
+        <attribute name="youtubeMediumThumbnailURL" optional="YES" attributeType="String"/>
+        <attribute name="youtubePublishedAt" optional="YES" attributeType="String"/>
+        <attribute name="youtubeStandardThumbnailURL" optional="YES" attributeType="String"/>
+        <attribute name="youtubeTitle" attributeType="String"/>
+        <relationship name="chapters" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ChapterEntity" inverseName="story" inverseEntity="ChapterEntity"/>
+        <relationship name="places" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PlaceEntity" inverseName="story" inverseEntity="PlaceEntity"/>
+    </entity>
+</model>
