@@ -14,7 +14,6 @@ class LocalImageFileManager {
     let folderName = FolderConstant.image.name
     private init() {
         // create folder
-        //TODO
         createFolderIfNeeded()
     }
     
