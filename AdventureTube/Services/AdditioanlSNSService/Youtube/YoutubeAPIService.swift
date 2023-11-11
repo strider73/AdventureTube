@@ -103,36 +103,51 @@ class YoutubeAPIService  {
     
     
     
-    
-    
+    //it comes from GoogleSignIn V7  library Samples/Swift/DaysUntilBirthday/Shared/Services/BirthdayLoader
+    // TODO: check the function test
     private func sessionWithFreshToken(completion: @escaping (Result<URLSession, Error>) -> Void) {
-        //set the user's authentication which is already updated birthday read permission
-        let authentication = GIDSignIn.sharedInstance.currentUser?.authentication
-        authentication?.do { auth, error in
-            //get the token
-            guard let token = auth?.accessToken else {
-                /// so when completion get called
-                /// MARK NO3
-                completion(.failure(.couldNotCreateURLSession(error)))
-                return
-            }
-//            print("==============================TOKEN==============================")
-//            print(token)
-            //set the token in header
-            let configuration = URLSessionConfiguration.default
-            configuration.httpAdditionalHeaders = [
-                "Authorization": "Bearer \(token)"
-            ]
-            
-            // create session
-            let session = URLSession(configuration: configuration)
-            
-            
-            /// MARK NO3
-            /// once all session has been set  , call the completion  by apssing a Enum Result<URLSession,Error> value
-            /// that is storing sucess value
-            completion(.success(session))
+        GIDSignIn.sharedInstance.currentUser?.refreshTokensIfNeeded { user, error in
+          guard let token = user?.accessToken.tokenString else {
+            completion(.failure(.couldNotCreateURLSession(error)))
+            return
+          }
+          let configuration = URLSessionConfiguration.default
+          configuration.httpAdditionalHeaders = [
+            "Authorization": "Bearer \(token)"
+          ]
+          let session = URLSession(configuration: configuration)
+          completion(.success(session))
         }
+        
+        
+        
+        //set the user's authentication which is already updated birthday read permission
+//        let authentication = GIDSignIn.sharedInstance.currentUser?.authentication
+//        authentication?.do { auth, error in
+//            //get the token
+//            guard let token = auth?.accessToken else {
+//                /// so when completion get called
+//                /// MARK NO3
+//                completion(.failure(.couldNotCreateURLSession(error)))
+//                return
+//            }
+////            print("==============================TOKEN==============================")
+////            print(token)
+//            //set the token in header
+//            let configuration = URLSessionConfiguration.default
+//            configuration.httpAdditionalHeaders = [
+//                "Authorization": "Bearer \(token)"
+//            ]
+//
+//            // create session
+//            let session = URLSession(configuration: configuration)
+//
+//
+//            /// MARK NO3
+//            /// once all session has been set  , call the completion  by apssing a Enum Result<URLSession,Error> value
+//            /// that is storing sucess value
+//            completion(.success(session))
+//        }
     }
     
     // make function call much shorter

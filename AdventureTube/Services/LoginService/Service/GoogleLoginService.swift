@@ -21,19 +21,34 @@ import GoogleSignIn
 /// An observable class for authenticating via Google.
 final class GoogleLoginService: LoginServiceProtocol {
  
-
-    // TODO: Replace this with your own ID.
-    //  private let clientID = "687389107077-8qr6dh8fr4uaja89sdr5ieqb7mep04qv.apps.googleusercontent.com"
-    private let clientID = "657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com"
-    private let serverClientID = "657433323337-t5e70nbjmink2ldmt3e34pci55v3sv6k.apps.googleusercontent.com"
+    /*    OAuth Client ID  from  https://developers.google.com/identity/sign-in/ios/start-integrating
+    ClientId  is App's OAuth client ID to identify itself to Google's authentication backend.
+    for iOS and mac OS the "OAuth clientID application type" must be configured as iOS.
+     
+    here is my clintID section .
+    https://console.cloud.google.com/projectselector2/apis/credentials?project=_&supportedpurview=project
+     
+    => clientID has been moved to info.plist
+     */
+    // private let clientID = "657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com"
+    
+    /*   OAuth Server Client ID  from  https://developers.google.com/identity/sign-in/ios/start-integrating
+     App will need to pass the identity of signed-in users to backend service.
+     To securely pass the identity of users who signed in with Google to backend , use the ID token.
+     
+     Retrieving a user's ID token requires server client ID which represents backend server 
+     
+     => serverClientID  has been moved to info.plist
+     */
+     // private let serverClientID = "657433323337-t5e70nbjmink2ldmt3e34pci55v3sv6k.apps.googleusercontent.com"
     
 //    private let service = GTLRYouTubeService()
 
     
-    private lazy var configuration: GIDConfiguration = {
-        return GIDConfiguration(clientID: clientID,serverClientID: serverClientID)
-    }()
-    
+//    private lazy var configuration: GIDConfiguration = {
+//        return GIDConfiguration(clientID: clientID,serverClientID: serverClientID)
+//    }()
+//
     private var loginManager: LoginManager
     
     /// Creates an instance of this authenticator.
@@ -50,20 +65,22 @@ final class GoogleLoginService: LoginServiceProtocol {
             print("There is no root view controller!")
             return
         }
-        GIDSignIn.sharedInstance.signIn(with: configuration,
-                                        presenting: rootViewController) { user, error in
-            guard let googleUser = user else {
+        GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { signInResult, error in
+  
+            guard error == nil else {
                 print("Error! \(String(describing: error))")
                 return
             }
+            guard let signInResult = signInResult else { return }
+            let user = signInResult.user
             print("Initial Google Signed in Success")
             
             
-            let emailAddress = googleUser.profile?.email ?? "NoEamil"
-            let fullName = googleUser.profile?.name ?? "No Name"
-            let givenName = googleUser.profile?.givenName ?? "No Given Name"
-            let familyName = googleUser.profile?.familyName ?? "No Family Name"
-            let profilePicUrl = googleUser.profile?.imageURL(withDimension: 320) ?? URL(string: "No image URL")
+            let emailAddress = user.profile?.email ?? "NoEamil"
+            let fullName = user.profile?.name ?? "No Name"
+            let givenName = user.profile?.givenName ?? "No Given Name"
+            let familyName = user.profile?.familyName ?? "No Family Name"
+            let profilePicUrl = user.profile?.imageURL(withDimension: 320) ?? URL(string: "No image URL")
             
             
             var adventureUser  = UserModel(signed_in: true,
@@ -74,8 +91,36 @@ final class GoogleLoginService: LoginServiceProtocol {
                                   profilePicUrl: profilePicUrl?.absoluteString)
             
             
+            
+            signInResult.user.refreshTokensIfNeeded { user, error in
+                guard error == nil else {return}
+                guard let user = user else {return}
+                
+                if let idToken = user.idToken {
+                    //not quite sure to cast to String type
+                    adventureUser.idToken = idToken.tokenString
+                }else{
+                    print("idToken for Backend Server retrieve failed!!!!");
+                }
+                
+                // Store Data in UserDefault
+                let userDefaults = UserDefaults.standard
+                do {
+                    try userDefaults.setObject(adventureUser, forKey: "user")
+                    print("user data has been setting in user default ")
+                } catch {
+                    print(error.localizedDescription)
+                }
+                self.loginManager.loginState = .signedIn(user)
+
+                // return the data to call back method
+                completion(adventureUser)
+                
+            }
+            
             //get the UserID token
-            googleUser.authentication.do { authentication, error in
+            /* GoogleSignIn V6.0 pattern need to remmove
+            user.authentication.do { authentication, error in
                 guard error == nil else { return }
                 guard let authentication = authentication else { return }
                 
@@ -90,11 +135,12 @@ final class GoogleLoginService: LoginServiceProtocol {
                 } catch {
                     print(error.localizedDescription)
                 }
-                self.loginManager.loginState = .signedIn(googleUser)
+                self.loginManager.loginState = .signedIn(user)
 
                 // return the data to call back method
                 completion(adventureUser)
             }
+             */
             
 //            self.loginManager.loginState = .signedIn(googleUser)
         }
@@ -160,7 +206,35 @@ final class GoogleLoginService: LoginServiceProtocol {
         guard let rootViewController = UIApplication.shared.windows.first?.rootViewController else {
             fatalError("No root view controller!")
         }
+        /*
+         migration to Google Sign-In SDK v7.0.0  https://developers.google.com/identity/sign-in/ios/quick-migration-guide
+         
+         The addScopes: https://developers.google.com/identity/sign-in/ios/api-access#2_request_additional_scopes
+         method has been moved to GIDGoogleUser.
+         Instead of requesting additional authorization scopes from GIDSignIn,
+         you should now request them from GIDGoogleUser after authentication has completed
+         
+         */
         
+        guard let currentUser = GIDSignIn.sharedInstance.currentUser else {
+            return /* not signed in .*/
+        }
+        
+        currentUser.addScopes([YoutubeAPIService.youtubeContentReadScope], presenting: rootViewController){ signInResult,error in
+            guard error == nil else {
+                print("Found error while Youtube read scope: \(error).")
+                return
+            }
+            guard let signInResult = signInResult else { return }
+            self.loginManager.loginState = .signedIn(currentUser)
+            //TODO:  Check if the user granted access to the scopes you requested.
+            
+            completion()
+        }
+
+        
+        /* GoogleSignIn V6 pattern need to removed
+         
         GIDSignIn.sharedInstance.addScopes([YoutubeAPIService.youtubeContentReadScope],
                                            presenting: rootViewController) { user, error in
             if let error = error {
@@ -174,9 +248,14 @@ final class GoogleLoginService: LoginServiceProtocol {
             //            self.service.authorizer = currentUser.authentication.fetcherAuthorizer()
             //            self.fetchChannelResource()
         }
+         
+         */
     }
+    
+    
+    
+    
     /*
-     
      'https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics%2CcontentDetails&mine=true&key=[YOUR_API_KEY]' \
      --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
      --header 'Accept: application/json' \
