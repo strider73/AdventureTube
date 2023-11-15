@@ -61,8 +61,7 @@ class YoutubeViewVM : ObservableObject{
         //initiate youtube player base on parameter
         self.youTubePlayer = YouTubePlayer(
             source: .video(id:"\(self.videoId)" ),
-            configuration: .init(isUserInteractionEnabled: true ,
-                                 autoPlay: startTime > 0 ? true : false,
+            configuration: .init(autoPlay: startTime > 0 ? true : false,
                                  showControls: true,
                                  startTime:  startTime)
         )
@@ -98,7 +97,7 @@ class YoutubeViewVM : ObservableObject{
     
     
     func setCurrentTimeByYoutubeTimePublisher(){
-        youTubePlayer.currentTimeAVTPublisher(updateInterval: 0.5).sink {[weak self] currentTime in
+            youTubePlayer.currentTimeAVTPublisher(updateInterval: 0.5).sink {[weak self] currentTime in
             if let self = self{
                 //set the current time
                 self.currentTime = Int(currentTime)
@@ -145,7 +144,9 @@ class YoutubeViewVM : ObservableObject{
 /// The filter of self.playbackStatePublisher was main reason that
 /// currentTime was not publlished when the player is after being pasued
 /// since filter has been comment out the current time will emit the value all  the time !!!!!!!
-public extension YouTubePlayerPlaybackAPI where Self: YouTubePlayerEventAPI {
+///
+///
+public extension YouTubePlayer {
     
     /// A Publisher that emits the current elapsed time in seconds since the video started playing
     /// - Parameter updateInterval: The update TimeInterval in seconds to retrieve the current elapsed time. Default value `0.5`
