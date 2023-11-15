@@ -16,6 +16,8 @@ import GoogleSignIn
 class YoutubeAPIService  {
     
     static let API_KEY = "AIzaSyCKIoWPbIG4H-D-E2YOFmc5WC5zy-BvNGo"
+   
+
     static let youtubeContentReadScope = "https://www.googleapis.com/auth/youtube.readonly"
     
     private let youtubeChannelBaseURLString = "https://youtube.googleapis.com/youtube/v3/channels"

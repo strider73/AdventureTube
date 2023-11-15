@@ -131,6 +131,7 @@
 		B469E488288F693C003EB360 /* UserDefaultPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E487288F693B003EB360 /* UserDefaultPublisher.swift */; };
 		B469E48A288F7500003EB360 /* MockedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E489288F7500003EB360 /* MockedStorage.swift */; };
 		B469E48C288F776F003EB360 /* PublishedAppStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */; };
+		B46A2C0D2B04541800C54E5D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B46A2C0C2B04541800C54E5D /* README.md */; };
 		B486DDD228BF0713003F59BC /* StoryEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */; };
 		B486DDD328BF0713003F59BC /* StoryEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */; };
 		B486DDD428BF0713003F59BC /* ChapterEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCE28BF0713003F59BC /* ChapterEntity+CoreDataClass.swift */; };
@@ -140,7 +141,6 @@
 		B486DDD928BF0AB2003F59BC /* PublishWatermark.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDD828BF0AB2003F59BC /* PublishWatermark.swift */; };
 		B486DDDD28BF2087003F59BC /* StoryMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDDC28BF2087003F59BC /* StoryMapViewController.swift */; };
 		B486DDDF28BF2106003F59BC /* StoryMapViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDDE28BF2106003F59BC /* StoryMapViewControllerBridge.swift */; };
-		B48C346028851BB7005AA142 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48C345F28851BB7005AA142 /* ContentView.swift */; };
 		B48C346228851BB8005AA142 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B48C346128851BB8005AA142 /* Assets.xcassets */; };
 		B48C346528851BB8005AA142 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B48C346428851BB8005AA142 /* Preview Assets.xcassets */; };
 		B48C347928851BB8005AA142 /* AdventureTubeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48C347828851BB8005AA142 /* AdventureTubeUITests.swift */; };
@@ -291,6 +291,7 @@
 		B469E487288F693B003EB360 /* UserDefaultPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultPublisher.swift; sourceTree = "<group>"; };
 		B469E489288F7500003EB360 /* MockedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedStorage.swift; sourceTree = "<group>"; };
 		B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishedAppStorageTests.swift; sourceTree = "<group>"; };
+		B46A2C0C2B04541800C54E5D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoryEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoryEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDCE28BF0713003F59BC /* ChapterEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
@@ -301,7 +302,6 @@
 		B486DDDC28BF2087003F59BC /* StoryMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryMapViewController.swift; sourceTree = "<group>"; };
 		B486DDDE28BF2106003F59BC /* StoryMapViewControllerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryMapViewControllerBridge.swift; sourceTree = "<group>"; };
 		B48C345A28851BB7005AA142 /* AdventureTube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdventureTube.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B48C345F28851BB7005AA142 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B48C346128851BB8005AA142 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B48C346428851BB8005AA142 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B48C346A28851BB8005AA142 /* AdventureTubeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AdventureTubeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -700,18 +700,18 @@
 		B4003B4F288525E5002926F1 /* AdditioanlSNSService */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B50288525E5002926F1 /* Youtube */,
+				B4003B50288525E5002926F1 /* Google */,
 			);
 			path = AdditioanlSNSService;
 			sourceTree = "<group>";
 		};
-		B4003B50288525E5002926F1 /* Youtube */ = {
+		B4003B50288525E5002926F1 /* Google */ = {
 			isa = PBXGroup;
 			children = (
 				B4003B51288525E5002926F1 /* GoogleMapAPIService.swift */,
 				B4003B52288525E5002926F1 /* YoutubeAPIService.swift */,
 			);
-			path = Youtube;
+			path = Google;
 			sourceTree = "<group>";
 		};
 		B4003B53288525E5002926F1 /* NetworkService */ = {
@@ -850,6 +850,7 @@
 		B48C345128851BB7005AA142 = {
 			isa = PBXGroup;
 			children = (
+				B46A2C0C2B04541800C54E5D /* README.md */,
 				B4003ABC288523CB002926F1 /* Resources */,
 				B48C345C28851BB7005AA142 /* AdventureTube */,
 				B48C346D28851BB8005AA142 /* AdventureTubeTests */,
@@ -884,7 +885,6 @@
 				B4003ACB28852496002926F1 /* Info.plist */,
 				B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */,
 				B4003ACD288525B0002926F1 /* HomeView.swift */,
-				B48C345F28851BB7005AA142 /* ContentView.swift */,
 				B4003AD2288525D4002926F1 /* Launch Screen.storyboard */,
 				B4003AD0288525C3002926F1 /* PersistenceController.swift */,
 				B48C346128851BB8005AA142 /* Assets.xcassets */,
@@ -1048,6 +1048,7 @@
 				B48C346528851BB8005AA142 /* Preview Assets.xcassets in Resources */,
 				B4003AC3288523CB002926F1 /* YoutubeContentResource.json in Resources */,
 				B48C346228851BB8005AA142 /* Assets.xcassets in Resources */,
+				B46A2C0D2B04541800C54E5D /* README.md in Resources */,
 				B4003AD3288525D4002926F1 /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1214,7 +1215,6 @@
 				B4003BBD288525E5002926F1 /* LoadingView.swift in Sources */,
 				B4003BD5288525E5002926F1 /* TextWithAttributedString.swift in Sources */,
 				B4003B74288525E5002926F1 /* CLLocationCoordinate2D.swift in Sources */,
-				B48C346028851BB7005AA142 /* ContentView.swift in Sources */,
 				B4003B9C288525E5002926F1 /* CustomTabBarViewVM.swift in Sources */,
 				B4003BBE288525E5002926F1 /* SystemErrorView.swift in Sources */,
 				B4003BBC288525E5002926F1 /* PageView.swift in Sources */,

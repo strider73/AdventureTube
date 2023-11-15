@@ -1,23 +1,31 @@
-echo "# AdventureTube" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M master
-git remote add origin https://github.com/strider731010/AdventureTube.git
-git push -u origin master
+External SNS Service 
 
+1 Google(Google API and service Credential (https://console.cloud.google.com/apis/credentials?project=adventuretube-1639805164044)
 
-1)
-   git init 
-2) 
-   git add . 
-3) 
-   git commit -m "this is my commit message" 
-     
-4) 
-   git remote add origin https://<token>@github.com/strider731010/AdventureTube.git
-5) 
-    git push 
-    git push -u origin master
+   1)GoogleSignIn 7.0 (https://developers.google.com/identity/sign-in/ios/start)
+   
+      * OAuth clinet : (https://developers.google.com/identity/sign-in/ios/start-integrating)
+                       Google Sign-In requires your iOS project to be configured with your OAuth client ID and a custom URL scheme,
+                       and with this application only able to access google API when user is activley using app
+                       
+      
+      * Web clined   : (https://developers.google.com/identity/sign-in/ios/offline-access)
+                       Servers to be able to make Google API calls on behalf of users or while they are offline.
+                       ex)For example, a photo app could enhance a photo in a user's Google Photos album by processing it on
+                          a backend server and uploading the result to another album.
+                          To do this, your server requires an access token and a refresh token.
+        
+   2)GooglePlaceAPI
+      * API keys for Places SDK for iOS (https://developers.google.com/maps/documentation/places/ios-sdk/get-api-key)
+          
+          In order to use  Places information from google for example search name autocompletion on google search screen
+          at GoogleMapViewController , it does require API key and Google recommend that restict API for the usage .
+          currently it is restricted by application iOS and bundle identifier.
+          
+          check the Credentials for GooglePlace API and Youtube Dataq
+      
+      * Add a map to your iOS app with SwiftUI(https://developers.google.com/codelabs/maps-platform/maps-platform-ios-swiftui#5)
+         
+ 
 
 

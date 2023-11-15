@@ -60,7 +60,8 @@ final class GoogleLoginService: LoginServiceProtocol {
     /// Signs in the user based upon the selected account.'
     /// - note: Successful calls to this will set the `authViewModel`'s `state` property.
     
-    func signIn(completion: @escaping (UserModel) -> ()) {
+    func signIn(completion: @escaping (UserModel) -> Void) {
+        
         guard let rootViewController =  UIApplication.shared.windows.first?.rootViewController else {
             print("There is no root view controller!")
             return
@@ -217,7 +218,7 @@ final class GoogleLoginService: LoginServiceProtocol {
          */
         
         guard let currentUser = GIDSignIn.sharedInstance.currentUser else {
-            return /* not signed in .*/
+            fatalError("No user signed in!")
         }
         
         currentUser.addScopes([YoutubeAPIService.youtubeContentReadScope], presenting: rootViewController){ signInResult,error in
@@ -231,25 +232,6 @@ final class GoogleLoginService: LoginServiceProtocol {
             
             completion()
         }
-
-        
-        /* GoogleSignIn V6 pattern need to removed
-         
-        GIDSignIn.sharedInstance.addScopes([YoutubeAPIService.youtubeContentReadScope],
-                                           presenting: rootViewController) { user, error in
-            if let error = error {
-                print("Found error while Youtube read scope: \(error).")
-                return
-            }
-            
-            guard let currentUser = user else { return }
-            self.loginManager.loginState = .signedIn(currentUser)
-            completion()
-            //            self.service.authorizer = currentUser.authentication.fetcherAuthorizer()
-            //            self.fetchChannelResource()
-        }
-         
-         */
     }
     
     

@@ -25,7 +25,11 @@ class LoginManager : ObservableObject {
         }
     }
     
-//    var loginService : LoginServiceProtocol = GoogleSignInAuthenticator(loginManager: self) => This is not working 
+//    var loginService : LoginServiceProtocol = GoogleSignInAuthenticator(loginManager: self) => This is not working
+    //This is computed value and will not evalueated and
+    //it will initailized when it called first time
+    //
+    //only stored property require evaluated in the intialization process
     private var loginService : LoginServiceProtocol {
         return GoogleLoginService(loginManager: self)
     }
@@ -78,7 +82,7 @@ class LoginManager : ObservableObject {
         
         loginService.signIn { [weak self] adventureUser in
             //check the user data
-             print("loginService.login completionHandlder =======>")
+            print("loginService.login completionHandlder =======>")
             print(adventureUser.signed_in)
             print("user fullName \(adventureUser.fullName ?? "No FallName")")
             print("user email \(adventureUser.emailAddress ?? "No Email")")

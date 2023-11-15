@@ -65,6 +65,7 @@ struct LoginView: View {
                         .loginButton()
                     Button(action: {
                         loginManager.signIn{
+                            //This closure will called after login finished
                             print("need to be redirect ")
                         }
                         

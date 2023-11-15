@@ -4,7 +4,16 @@
 //
 //  Created by chris Lee on 8/7/2022.
 //
-
+/*
+ Google Map Service
+ 
+ 1) need to use API key for Place SDK
+ https://developers.google.com/maps/documentation/places/ios-sdk/get-api-key
+ 
+ 
+ 
+ 
+ */
 
 import GoogleMaps
 import SwiftUI
