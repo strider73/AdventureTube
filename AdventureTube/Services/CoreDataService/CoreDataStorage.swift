@@ -12,17 +12,24 @@ import Combine
 
 class CoreDataStorage {
     
-    //This will retrieve the managed object from persistent store and associate it with the target context
+    
+    
+    //in order to make it as easy as possible to be notified of changes to specific managed objects that are
+    //shown in the UI.
+    //By doing write a function tha return a publisher that emits values a certainer managed object changes
+    //
+    //This one can only listen for changes to exiting managed object BUT NOT able to listen insert or delete .
     func publisher<T: NSManagedObject>(for managedObject: T,
                                        in context: NSManagedObjectContext) -> AnyPublisher<T, Never> {
         
-        //create notification from NSManagedObjectContext
+        //to be notified when a specific context merged changes for specific objectIDs into its own context.
         let notification = NSManagedObjectContext.didMergeChangesObjectIDsNotification
         
         return NotificationCenter.default.publisher(for: notification, //notification
-                                                       object: context) //target context
+                                                       object: context) //this is viewContext not an object that make a change
+                                                                         //it will merge in changes from background and triger a UI update
         //grab the notification and check weather it has a list of updated managed objectID
-            .compactMap({ notification in
+            .compactMap({ notification in //transform the received notifications
                 //NSManagedObjectID   uniquely identifies the same managed object
                 //get list of updated managed object ID
                 if let updated = notification.userInfo?[NSUpdatedObjectIDsKey] as? Set<NSManagedObjectID>,
@@ -42,6 +49,10 @@ class CoreDataStorage {
             .eraseToAnyPublisher()
     }
     
+    
+    /*
+     This allos pass the
+     */
     func publisher<T: NSManagedObject>(for managedObject: T,
                                        in context: NSManagedObjectContext,
                                        //possible to listen for one or more kinds of changes
@@ -53,14 +64,14 @@ class CoreDataStorage {
         let notification = NSManagedObjectContext.didMergeChangesObjectIDsNotification
         return NotificationCenter.default.publisher(for: notification, object: context)
             .compactMap({ notification in
-                for type in changeTypes {
-                    if let object = self.managedObject(with: managedObject.objectID, changeType: type,
-                                                       from: notification, in: context) as? T {
+                for type in changeTypes {//loop over all received change types and check whether there's manage object with the correct objectID
+                    if let object = self.managedObject(with: managedObject.objectID, changeType: type,//in the notification's userInfo dictionary
+                                                       from: notification, in: context) as? T {//for the key that matches the change type we're currently evaluating.
                         return (object, type)
                     }
                 }
                 
-                return nil
+                return nil//if no match found return nil
             })
             .eraseToAnyPublisher()
     }
@@ -89,9 +100,8 @@ class CoreDataStorage {
                                        in context: NSManagedObjectContext,
                                        changeTypes: [ChangeType]) -> AnyPublisher<[([T], ChangeType)], Never> {
       
-        //       let notification = NSManagedObjectContext.didMergeChangesObjectIDsNotification
-        
-//        let notification = NSManagedObjectContext.didSaveObjectsNotification
+      //let notification = NSManagedObjectContext.didMergeChangesObjectIDsNotification
+      //let notification = NSManagedObjectContext.didSaveObjectsNotification
         let notification = NSManagedObjectContext.didSaveObjectIDsNotification
 
 
