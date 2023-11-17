@@ -15,11 +15,11 @@ import GoogleSignIn
 
 class YoutubeAPIService  {
     
-    static let API_KEY = "AIzaSyCKIoWPbIG4H-D-E2YOFmc5WC5zy-BvNGo"
+    //This is API_KYE for 3 APIs which is Maps SDK , Place API , Youtube Data API v3
+    static let API_KEY = "AIzaSyAH7YanpO16LRNnSwLtrHejWDjbP3xlFq8" 
    
-
+    //https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps
     static let youtubeContentReadScope = "https://www.googleapis.com/auth/youtube.readonly"
-    
     private let youtubeChannelBaseURLString = "https://youtube.googleapis.com/youtube/v3/channels"
     private let channelInfoPartFieldQuery = URLQueryItem(name: "part", value: "snippet,statistics,contentDetails")
     private let mineFieldQuery = URLQueryItem(name: "mine", value: "true")
@@ -43,7 +43,7 @@ class YoutubeAPIService  {
     }
     
     
-    /// https://youtube.googleapis.com/youtube/v3/channels?
+    /// https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics%2CcontentDetails&mine=true
     /// part=snippet%2Cstatistics%2CcontentDetails
     /// &mine=true
     /// The property is used to build the URL for making a request to the Youtube Data API

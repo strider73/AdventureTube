@@ -178,7 +178,7 @@ final class MyStoryListViewVM:ObservableObject{
                         //ATM StoryEntity will be initialized at AddStoryViewVM and shared with CreateStoryViewVM
                         //at that point there is no data for chapter or place at all
                         //so this logic is no use currentlty
-                        //leave this now forany chance to create Story,Chapter,Place all together in the future 
+                        //leave this now for any chance to create Story,Chapter,Place all together in the future
                     case .inserted :
                         if let updatedStoryEntity = stories.first {
                             

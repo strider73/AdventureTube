@@ -25,7 +25,11 @@ External SNS Service
           check the Credentials for GooglePlace API and Youtube Dataq
       
       * Add a map to your iOS app with SwiftUI(https://developers.google.com/codelabs/maps-platform/maps-platform-ios-swiftui#5)
-         
+      
+  3)Google Data API (https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps)
+         YouTube Data API supports the service account flow only for YouTube content owners that own and manage multiple YouTube channels.
  
 
+Observing changes to managed objects across contexts with Combine(https://www.donnywals.com/observing-changes-to-managed-objects-across-contexts-with-combine/)
 
+     This allows to observe specific managed objects across different contexts so app UI can easily update  when that managed object was changed on a background queue.
