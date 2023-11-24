@@ -1,4 +1,9 @@
 PODS:
+  - GoogleAPIClientForREST/Core (3.2.0):
+    - GTMSessionFetcher/Full (< 4.0, >= 1.6.1)
+  - GoogleAPIClientForREST/YouTube (3.2.0):
+    - GoogleAPIClientForREST/Core
+    - GTMSessionFetcher/Full (< 4.0, >= 1.6.1)
   - GoogleMaps (5.1.0):
     - GoogleMaps/Maps (= 5.1.0)
   - GoogleMaps/Base (5.1.0)
@@ -12,23 +17,31 @@ PODS:
   - GoogleMapsPlatformCombine/Places (0.3.1):
     - GooglePlaces (= 5.0.0)
   - GooglePlaces (5.0.0)
+  - GTMSessionFetcher/Core (3.1.1)
+  - GTMSessionFetcher/Full (3.1.1):
+    - GTMSessionFetcher/Core
 
 DEPENDENCIES:
+  - GoogleAPIClientForREST/YouTube
   - GoogleMaps (= 5.1.0)
   - GoogleMapsPlatformCombine (= 0.3.1)
   - GooglePlaces (= 5.0.0)
 
 SPEC REPOS:
   trunk:
+    - GoogleAPIClientForREST
     - GoogleMaps
     - GoogleMapsPlatformCombine
     - GooglePlaces
+    - GTMSessionFetcher
 
 SPEC CHECKSUMS:
+  GoogleAPIClientForREST: ef343d9d72c86973f33232a85db5193a238da3e1
   GoogleMaps: 086ae1dab659eaa7339bdb30fc88e2f44e7c597c
   GoogleMapsPlatformCombine: 61083eb467d3b8eafec84159ce687897d2c0365c
   GooglePlaces: 5d87ca13ed98b7a937e0d8bc7026f718c7263271
+  GTMSessionFetcher: e8647203b65cee28c5f73d0f473d096653945e72
 
-PODFILE CHECKSUM: 1f14f394bd0535aafdd089847a46f51aebe19822
+PODFILE CHECKSUM: 1982ad9d6e9862dcf04e49f3366f248b4bbf9edc
 
 COCOAPODS: 1.11.3
