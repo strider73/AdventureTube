@@ -9,6 +9,7 @@ import CoreLocation
 // MARK: - YoutubeContentResource
 struct YoutubeContentResource: Codable {
     let nextPageToken : String?
+    let prevPageToken : String?
     let kind, etag: String
     let items: [YoutubeContentItem]
     let pageInfo: YoutubeContentPageInfo
@@ -16,10 +17,16 @@ struct YoutubeContentResource: Codable {
 }
 
 // MARK: - Item
-struct YoutubeContentItem: Codable ,Identifiable {
+struct YoutubeContentItem: Codable ,Identifiable, Equatable {
     let kind, etag, id: String
     var snippet: YoutubeContenSnippet
     let contentDetails: YoutubeContentDetails
+    
+    //Why this is for Equatable ???
+    static func == (lhs: YoutubeContentItem, rhs: YoutubeContentItem) -> Bool {
+        // Implement your equality check here based on the properties you want to compare
+        return lhs.id == rhs.id
+    }
 }
 
 // MARK: - ContentDetails

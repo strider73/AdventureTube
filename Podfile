@@ -12,7 +12,8 @@ target 'AdventureTube' do
    # pod 'GoogleMaps', '6.1.1'
 #   pod 'GoogleMaps', '7.0.0'
 #    pod 'GooglePlaces', '6.1.1'
-  
+     
+     pod 'GoogleAPIClientForREST/YouTube'
      pod 'GoogleMaps', '5.1.0'
      pod 'GooglePlaces', '5.0.0'
      pod 'GoogleMapsPlatformCombine', '0.3.1'

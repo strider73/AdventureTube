@@ -13,12 +13,10 @@ import CoreLocation
 
 final class MyStoryListViewVM:ObservableObject{
     @Published  var youtubeContentItems : [YoutubeContentItem] = []
-    
-    
     @Published  var isShowRefreshAlert = false
     //This property will  store any new data or update
     @Published  var adventureTubeData : AdventureTubeData?
-    
+    private let limitOfYoutubeContentItem = 100
     //This will be a stroy entity has been composed after user put additional information
     //    @Published  var story : StoryEntity?
     
@@ -56,40 +54,60 @@ final class MyStoryListViewVM:ObservableObject{
      */
     
     
+    
     //Step1) get the Youtube Data
     func downloadYotubeContentsAndMappedWithCoreData(){
         
         youtubeAPIService.youtubeContentResourcePublisher {[weak self] publisher  in
+            guard let self = self else {return}
             
-            self?.cancellable =  publisher.sink(receiveCompletion: {
+            self.cancellable =  publisher.sink(receiveCompletion: {
                 completion in
                 switch completion{
-                case .finished:
-                    break
-                case .failure(let error):
-                    print("Error retrieving for Data \(error)")
+                    case .finished:
+                        print("===========youtubeAPIService.youtubeContentResourcePublisher has been finished ===============")
+                        if self.youtubeAPIService.nextPageToken != nil && self.youtubeContentItems.count < self.limitOfYoutubeContentItem {
+                            self.downloadYotubeContentsAndMappedWithCoreData()
+                        }
+                        break
+                    case .failure(let error):
+                        print("Error retrieving for Data \(error)")
                 }
             }, receiveValue: {  youtubeContentResource in
-                /*print("===========YotubeContentResources ===============")
-                 //print(youtubeContentResource)
-                 //self?.youtubeContentTotalCount = youtubeContentResource.items.count
-                 ///self?.youtubeContentItems = youtubeContentResource.items
-                 
-                 //let decoder = JSONDecoder()
-                 //youtubeContentResources = try decoder.decode([YoutubeContentResource].self, from: data)
-                 */
+                print("===========Value has been received ===============")
+                print(youtubeContentResource)
+                //set the pageToken
+                
+                
+                //store pageToken
+                if let nextPageToken = youtubeContentResource.nextPageToken{
+                    print("set nextPageToken")
+                    self.youtubeAPIService.nextPageToken = nextPageToken
+                }else{
+                    self.youtubeAPIService.nextPageToken = nil
+                }
+                if let prevPageToken = youtubeContentResource.prevPageToken{
+                    print("set prevPageToken")
+                    self.youtubeAPIService.prevPageToken = prevPageToken
+                }else{
+                    self.youtubeAPIService.prevPageToken = nil
+                }
                 
                 
                 //Step2) Mapping with CoreData
                 let request = NSFetchRequest<StoryEntity>(entityName: "StoryEntity")
+                
+                //check the YoutubeContentResource.YoutubeContentItem.YoutubeContentDetails.videoId
+                //with StoryEntity from CoreData
+                //and create the AdventureTubeData if there is any  matches accordingly
                 do{
-                    let  coreDataStories = try self?.context.fetch(request)
-                    //check the contentDetails.videoId in the YoutubeContentItem for each StoryEntity from CoreData
-                    //and create the AdventureTubeData if there is any  matches accordingly
-                    self?.youtubeContentItems = youtubeContentResource.items.map { youtubeContentItem -> YoutubeContentItem  in
+                    let  coreDataStories = try self.context.fetch(request)
+                    
+                    //get the youtubeContentItem  !!!
+                    let tempYoutuebeContentItem = youtubeContentResource.items.map { youtubeContentItem -> YoutubeContentItem  in
                         
                         var tempYoutubeContentItem = youtubeContentItem
-                        coreDataStories?.forEach { storyEntity in
+                        coreDataStories.forEach { storyEntity in
                             if(storyEntity.youtubeId == tempYoutubeContentItem.contentDetails.videoId){
                                 
                                 var chapters : [AdventureTubeChapter] = []
@@ -110,15 +128,15 @@ final class MyStoryListViewVM:ObservableObject{
                                     //2) set a chapters
                                     let chapterCategories = chapterEntiry.category.compactMap{Category(rawValue: $0)}
                                     let chapter = AdventureTubeChapter(categories: chapterCategories,// category set for each chapter
-                                                          youtubeId: chapterEntiry.story.youtubeId,
-                                                          youtubeTime: Int(chapterEntiry.youtubeTime),
-                                                          place: adventureTubePlace)
+                                                                       youtubeId: chapterEntiry.story.youtubeId,
+                                                                       youtubeTime: Int(chapterEntiry.youtubeTime),
+                                                                       place: adventureTubePlace)
                                     chapters.append(chapter)
-
+                                    
                                     //3 set a places after remove duplicate
                                     places.append(adventureTubePlace)
                                     categroies.append(contentsOf: chapterCategories)
-
+                                    
                                 }
                                 
                                 //remove duplicate
@@ -140,10 +158,12 @@ final class MyStoryListViewVM:ObservableObject{
                                 tempYoutubeContentItem.snippet.adventureTubeData = newAdventureTubeData
                                 print("List  YoutubeContentItem.snippet.adventureTubeData \(tempYoutubeContentItem.snippet.adventureTubeData)")
                             }
-
+                            
                         }
                         return tempYoutubeContentItem
                     }
+                    
+                    self.youtubeContentItems.append(contentsOf: tempYoutuebeContentItem)
                 }catch let error {
                     print("Error fetching \(error.localizedDescription) ")
                 }
@@ -169,12 +189,12 @@ final class MyStoryListViewVM:ObservableObject{
     /// and Published that Story
     func listenCoreDataSaveAndUpdate(){
         coreDataStorage.didSavePublisher(for: StoryEntity.self,
-                                            in: CoreDataManager.instance.context,
-                                            changeTypes: [.inserted,.deleted, .updated])
-            .sink {[weak self] changes in
-                guard   let self = self else{return}
-                changes.forEach { (stories , changeType) in
-                    switch changeType {
+                                         in: CoreDataManager.instance.context,
+                                         changeTypes: [.inserted,.deleted, .updated])
+        .sink {[weak self] changes in
+            guard   let self = self else{return}
+            changes.forEach { (stories , changeType) in
+                switch changeType {
                         //ATM StoryEntity will be initialized at AddStoryViewVM and shared with CreateStoryViewVM
                         //at that point there is no data for chapter or place at all
                         //so this logic is no use currentlty
@@ -211,11 +231,11 @@ final class MyStoryListViewVM:ObservableObject{
                                         //2) set a chapters
                                         let chapterCategories = chapterEntiry.category.compactMap{Category(rawValue: $0)}
                                         let chapter = AdventureTubeChapter(categories: chapterCategories,// category set for each chapter
-                                                              youtubeId: chapterEntiry.story.youtubeId,
-                                                              youtubeTime: Int(chapterEntiry.youtubeTime),
-                                                              place: adventureTubePlace)
+                                                                           youtubeId: chapterEntiry.story.youtubeId,
+                                                                           youtubeTime: Int(chapterEntiry.youtubeTime),
+                                                                           place: adventureTubePlace)
                                         chapters.append(chapter)
-
+                                        
                                         //3 set a places and category
                                         places.append(adventureTubePlace)
                                         categroies.append(contentsOf: chapterCategories)
@@ -276,11 +296,11 @@ final class MyStoryListViewVM:ObservableObject{
                                         //2) set a chapters
                                         let chapterCategories = chapterEntiry.category.compactMap{Category(rawValue: $0)}
                                         let chapter = AdventureTubeChapter(categories: chapterCategories,// category set for each chapter
-                                                              youtubeId: chapterEntiry.story.youtubeId,
-                                                              youtubeTime: Int(chapterEntiry.youtubeTime),
-                                                              place: adventureTubePlace)
+                                                                           youtubeId: chapterEntiry.story.youtubeId,
+                                                                           youtubeTime: Int(chapterEntiry.youtubeTime),
+                                                                           place: adventureTubePlace)
                                         chapters.append(chapter)
-
+                                        
                                         //3 set a places and category
                                         places.append(adventureTubePlace)
                                         categroies.append(contentsOf: chapterCategories)
@@ -313,11 +333,11 @@ final class MyStoryListViewVM:ObservableObject{
                     case .deleted :
                         //                        self.story = stories.first
                         print("story has been delete")
-                    }
                 }
-                
             }
-            .store(in: &cancellables)
+            
+        }
+        .store(in: &cancellables)
     }
     
     

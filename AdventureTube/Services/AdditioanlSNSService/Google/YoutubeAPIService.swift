@@ -12,6 +12,7 @@
 import Foundation
 import Combine
 import GoogleSignIn
+import GoogleAPIClientForREST
 
 class YoutubeAPIService  {
     
@@ -19,7 +20,7 @@ class YoutubeAPIService  {
     static let API_KEY = "AIzaSyAH7YanpO16LRNnSwLtrHejWDjbP3xlFq8" 
    
     //https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps
-    static let youtubeContentReadScope = "https://www.googleapis.com/auth/youtube.readonly"
+    static let youtubeContentReadScope = kGTLRAuthScopeYouTubeReadonly
     private let youtubeChannelBaseURLString = "https://youtube.googleapis.com/youtube/v3/channels"
     private let channelInfoPartFieldQuery = URLQueryItem(name: "part", value: "snippet,statistics,contentDetails")
     private let mineFieldQuery = URLQueryItem(name: "mine", value: "true")
@@ -27,8 +28,8 @@ class YoutubeAPIService  {
     private let youtubeContentInfoBaseURLString = "https://youtube.googleapis.com/youtube/v3/playlistItems"
     private let youtubeContentInfoPartFieldQuery = URLQueryItem(name: "part", value: "snippet,contentDetails,id")
     //This 50 is max acceptable value and default is 5
-    private let youtubeContentInfoMaxFieldQuery  = URLQueryItem(name: "maxResults", value: "50")
-    
+    private let youtubeContentInfoMaxFieldQuery  = URLQueryItem(name: "maxResults", value: "20")
+    private let youtubeContentInfoPageToken = URLQueryItem(name: "pageToken", value:"")
     /// https://developers.google.com/youtube/registering_an_application
     /// API Key is requied for a request that does not provide an OAuth 2.0 token
     /// the key identifies your project and provides API access,quota and reports
@@ -37,6 +38,9 @@ class YoutubeAPIService  {
     private var playListIdPublisher = PassthroughSubject<String,Error>()
     var cancellable : AnyCancellable?
     var cancellables = Set<AnyCancellable>()
+    
+    var nextPageToken : String?
+    var prevPageToken : String?
     
     init(){
         print("init YoutubeService")
@@ -207,7 +211,12 @@ class YoutubeAPIService  {
                         guard var  youtubeContentInfoComponents: URLComponents = self.youtubeContentInfoComponents else {
                             return Fail(error: Error.couldNotCreateURLRequest).eraseToAnyPublisher()
                         }
+                        //need to add a pageToken here
                         youtubeContentInfoComponents.queryItems?.append( URLQueryItem(name: "playlistId", value: playListId))
+                        if let nextPageToken = self.nextPageToken{
+                            youtubeContentInfoComponents.queryItems?.append( URLQueryItem(name: "pageToken", value: nextPageToken))
+                        }
+                            
                         
                         let youtubeContentInfoRequest = self.youtubeContentInfoRequest(urlComponents: youtubeContentInfoComponents)
                         return   authSession.dataTaskPublisher(for: youtubeContentInfoRequest)
