@@ -20,7 +20,7 @@ import SwiftUI
 import UIKit
 import CoreLocation
 
-class GoogleMapViewController:UIViewController{
+class GoogleMapViewForCreateStoryController:UIViewController{
     
     var mapView : GMSMapView = GMSMapView(frame: .zero)
     var isAnimating: Bool = true
