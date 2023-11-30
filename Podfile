@@ -20,8 +20,7 @@ target 'AdventureTube' do
 #  end
 #
 #  target 'AdventureTubeTests' do
-#    inherit! :search_paths
-#    # Pods for testing
+#    inherit! :search_paths 
 #    shared_pods
 #  end
 #

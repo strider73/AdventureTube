@@ -14,20 +14,42 @@ import CoreLocation
 final class MyStoryListViewVM:ObservableObject{
     @Published  var youtubeContentItems : [YoutubeContentItem] = []
     @Published  var isShowRefreshAlert = false
-    //This property will  store any new data or update
+    
+    /*This property will  store any new data or update
+     
+     which meaning is this value is NOT set when downloadYotubeContentsAndMappedWithCoreData() called
+     it will be only set when listenCoreDataSaveAndUpdate() is called !!!!
+     which meaning that when it some of StoryEntity has been
+             insert,update,  NOT deleted !!!!!
+     
+     and every
+          MyStoryCellView (with condition of "if let adventureTubeData = myStoryCommonDetailVM.adventureTubeData" )
+          StoryLoadingView
+          StoryView
+          AddStoryView
+          PlayChapterView  => currently not used ß
+     
+     
+     except
+          CreateChapterView
+          ConfirmChapterView
+     
+          
+     */
     @Published  var adventureTubeData : AdventureTubeData?
     private let limitOfYoutubeContentItem = 100
     //This will be a stroy entity has been composed after user put additional information
     //    @Published  var story : StoryEntity?
     
     //These are the stories that has been dispatched from coredata
+    private var coreDataStorage  = CoreDataStorage()
+    private var context = CoreDataManager.instance.context
     var stories : [StoryEntity] = []
     private var cancellable : AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     let youtubeAPIService  = YoutubeAPIService()
     
-    private var coreDataStorage  = CoreDataStorage()
-    private var context = CoreDataManager.instance.context
+ 
     
     init(){
         print("init MainStoryListViewModel")
@@ -103,12 +125,20 @@ final class MyStoryListViewVM:ObservableObject{
                 do{
                     let  coreDataStories = try self.context.fetch(request)
                     
-                    //get the youtubeContentItem  !!!
+                    /*
+                     This process will !!!
+                        1)check the youtubeContentItem inside YoutubeContentResource by
+                           checking the youtubeId
+                        2)if there any matches videoId  between StoryEntity with youtubeContentItem
+                        3)Set the  AdventureTubeData and set this to youtubeContentItem
+                     */
                     let tempYoutuebeContentItem = youtubeContentResource.items.map { youtubeContentItem -> YoutubeContentItem  in
                         
                         var tempYoutubeContentItem = youtubeContentItem
                         coreDataStories.forEach { storyEntity in
                             if(storyEntity.youtubeId == tempYoutubeContentItem.contentDetails.videoId){
+                                
+                                let newAdventureTubeData : AdventureTubeData
                                 
                                 var chapters : [AdventureTubeChapter] = []
                                 var categroies : [Category] = []
@@ -144,7 +174,7 @@ final class MyStoryListViewVM:ObservableObject{
                                 let uniquePlaces = places.removingDuplicates()
                                 
                                 //5 set a adventureTubData
-                                let newAdventureTubeData =  AdventureTubeData(coreDataID: storyEntity.id,
+                                newAdventureTubeData =  AdventureTubeData(coreDataID: storyEntity.id,
                                                                               youtubeContentID: storyEntity.youtubeId,
                                                                               youtubeTitle: storyEntity.youtubeTitle,
                                                                               youtubeDescription: storyEntity.youtubeDescription,

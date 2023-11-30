@@ -119,7 +119,7 @@ struct CreateChapterView: View {
 //                }
                 .sheet(item: $searchMapSheetData) { searchMapSheetData in
                     GoogleSearchMapView(createChapterViewVM: searchMapSheetData.createChapterViewVM){
-                        GoogleMapViewControllerBridge(confirmedMarker: $createChapterViewVM.markers,
+                        GoogleMapViewForCreateStoryControllerBridge(confirmedMarker: $createChapterViewVM.markers,
                                                       selectedMarker: $createChapterViewVM.selectedMarker,
                                                       isMarkerWillRedrawing:$createChapterViewVM.isMarkerWillRedrawing,
                                                       isGoogleMapSheetMode: $createChapterViewVM.isGoogleMapSheetMode,
@@ -200,7 +200,7 @@ struct CreateChapterView: View {
         
     }
     var googleMap : some View {
-        GoogleMapViewControllerBridge(confirmedMarker: $createChapterViewVM.markers,
+        GoogleMapViewForCreateStoryControllerBridge(confirmedMarker: $createChapterViewVM.markers,
                                       selectedMarker: $createChapterViewVM.selectedMarker,
                                       isMarkerWillRedrawing:$createChapterViewVM.isMarkerWillRedrawing,
                                       isGoogleMapSheetMode: $createChapterViewVM.isGoogleMapSheetMode,

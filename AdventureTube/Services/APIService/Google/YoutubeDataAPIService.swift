@@ -14,19 +14,19 @@ import GoogleAPIClientForREST
 
 class YoutubeDataAPIService{
     
-    var youTubeService: GTLRYouTubeService = {
-        let service = GTLRYouTubeService()
-
-        // Have the service object set tickets to fetch consecutive pages
-        // of the feed so we do not need to manually fetch them.
-        service.shouldFetchNextPages = true
-
-        // Have the service object set tickets to retry temporary error conditions
-        // automatically.
-        service.isRetryEnabled = true
-
-        return service
-    }()
+//    var youTubeService: GTLRYouTubeService = {
+//        let service = GTLRYouTubeService()
+//
+//        // Have the service object set tickets to fetch consecutive pages
+//        // of the feed so we do not need to manually fetch them.
+//        service.shouldFetchNextPages = true
+//
+//        // Have the service object set tickets to retry temporary error conditions
+//        // automatically.
+//        service.isRetryEnabled = true
+//
+//        return service
+//    }()
     
     
     
