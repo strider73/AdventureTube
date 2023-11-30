@@ -23,11 +23,11 @@ struct GoogleMapViewForCreateStoryControllerBridge: UIViewControllerRepresentabl
     
     // this mathod is called by switfui to create underying UViewController.
     // This is where you would instantiate your UIVeiwController and pass it its initiate state.
-    func makeUIViewController(context: Context) -> GoogleMapViewControllerForCreateStory {
+    func makeUIViewController(context: Context) -> GoogleMapViewForCreateStoryController {
         print("GoogleMapViewControllerBridge.makeUIViewController has been called")
         
         // initiate UIViewController
-        let uiViewController = GoogleMapViewControllerForCreateStory()
+        let uiViewController = GoogleMapViewForCreateStoryController()
         
         //Set the YoutubePopUpMapViewCoordinator as the map view's delegate
         uiViewController.mapView.delegate = context.coordinator
@@ -48,7 +48,7 @@ struct GoogleMapViewForCreateStoryControllerBridge: UIViewControllerRepresentabl
      This is where you would make any modifications to the underlying UIViewController to react
      in response to the state change.
      */
-    func updateUIViewController(_ uiViewController: GoogleMapViewControllerForCreateStory, context: Context) {
+    func updateUIViewController(_ uiViewController: GoogleMapViewForCreateStoryController, context: Context) {
         print("GoogleMapViewControllerBridge.updateUIViewController has been called")
         //without this all method below will be excuted every time
         //when  youtubePopView receive update ex) current time in every sec from YoutubePopVM
@@ -68,7 +68,7 @@ struct GoogleMapViewForCreateStoryControllerBridge: UIViewControllerRepresentabl
     }
     
     
-    private func animateToSelectedMarker(viewController:GoogleMapViewControllerForCreateStory){
+    private func animateToSelectedMarker(viewController:GoogleMapViewForCreateStoryController){
         guard let selectedMarker = selectedMarker else {
             return
         }

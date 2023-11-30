@@ -4,9 +4,9 @@
 //
 //  Created by chris Lee on 31/8/2022.
 //
+//https://developers.google.com/codelabs/maps-platform/maps-platform-ios-swiftui#5
 
 import Foundation
-import GoogleMaps
 import SwiftUI
 
 struct StoryMapViewControllerBridge : UIViewControllerRepresentable{

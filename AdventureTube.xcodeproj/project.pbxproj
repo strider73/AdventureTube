@@ -93,8 +93,8 @@
 		B4003BBD288525E5002926F1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3A288525E4002926F1 /* LoadingView.swift */; };
 		B4003BBE288525E5002926F1 /* SystemErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3B288525E4002926F1 /* SystemErrorView.swift */; };
 		B4003BBF288525E5002926F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3D288525E4002926F1 /* LoginView.swift */; };
-		B4003BC0288525E5002926F1 /* GoogleMapViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3F288525E4002926F1 /* GoogleMapViewControllerBridge.swift */; };
-		B4003BC1288525E5002926F1 /* GoogleMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B40288525E5002926F1 /* GoogleMapViewController.swift */; };
+		B4003BC0288525E5002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3F288525E4002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift */; };
+		B4003BC1288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B40288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift */; };
 		B4003BC2288525E5002926F1 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B42288525E5002926F1 /* MapView.swift */; };
 		B4003BC3288525E5002926F1 /* MapViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B43288525E5002926F1 /* MapViewVM.swift */; };
 		B4003BC4288525E5002926F1 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B45288525E5002926F1 /* SettingView.swift */; };
@@ -123,6 +123,8 @@
 		B4003BDD288525E5002926F1 /* CustonTextFieldDropDownList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B6E288525E5002926F1 /* CustonTextFieldDropDownList.swift */; };
 		B4003BDE288525E5002926F1 /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B6F288525E5002926F1 /* Overlay.swift */; };
 		B4003BDF288525E5002926F1 /* ExampleViewForNavigartionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B70288525E5002926F1 /* ExampleViewForNavigartionBar.swift */; };
+		B40118072B17601000AA9286 /* AdventureTubeAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */; };
+		B401180A2B182BBF00AA9286 /* Restaurants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118092B182BBF00AA9286 /* Restaurants.swift */; };
 		B419E1B12885847500F669CA /* AdventureTube.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B419E1AF2885847500F669CA /* AdventureTube.xcdatamodeld */; };
 		B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */; };
 		B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */; };
@@ -255,8 +257,8 @@
 		B4003B3A288525E4002926F1 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		B4003B3B288525E4002926F1 /* SystemErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemErrorView.swift; sourceTree = "<group>"; };
 		B4003B3D288525E4002926F1 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		B4003B3F288525E4002926F1 /* GoogleMapViewControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewControllerBridge.swift; sourceTree = "<group>"; };
-		B4003B40288525E5002926F1 /* GoogleMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewController.swift; sourceTree = "<group>"; };
+		B4003B3F288525E4002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryControllerBridge.swift; sourceTree = "<group>"; };
+		B4003B40288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryController.swift; sourceTree = "<group>"; };
 		B4003B42288525E5002926F1 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		B4003B43288525E5002926F1 /* MapViewVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewVM.swift; sourceTree = "<group>"; };
 		B4003B45288525E5002926F1 /* SettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
@@ -285,6 +287,8 @@
 		B4003B6E288525E5002926F1 /* CustonTextFieldDropDownList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustonTextFieldDropDownList.swift; sourceTree = "<group>"; };
 		B4003B6F288525E5002926F1 /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
 		B4003B70288525E5002926F1 /* ExampleViewForNavigartionBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewForNavigartionBar.swift; sourceTree = "<group>"; };
+		B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeAPIService.swift; sourceTree = "<group>"; };
+		B40118092B182BBF00AA9286 /* Restaurants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Restaurants.swift; sourceTree = "<group>"; };
 		B419E1B02885847500F669CA /* AdventureTube.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventureTube.xcdatamodel; sourceTree = "<group>"; };
 		B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeApp.swift; sourceTree = "<group>"; };
 		B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
@@ -431,6 +435,7 @@
 		B4003AF1288525E4002926F1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B40118082B182BA100AA9286 /* Test */,
 				B4003AF2288525E4002926F1 /* YoutubeChannelResource.swift */,
 				B4003AF5288525E4002926F1 /* UserModel.swift */,
 				B4003AF6288525E4002926F1 /* YoutubeContentResource.swift */,
@@ -454,7 +459,6 @@
 				B4D4F0882B0EDB0500F6C1CB /* TestUI */,
 				B4003AFD288525E4002926F1 /* YoutubeView */,
 				B4003B00288525E4002926F1 /* Tab&Navi */,
-				B4003B10288525E4002926F1 /* SavedStory */,
 				B4003B14288525E4002926F1 /* MyStory */,
 				B4003B2F288525E4002926F1 /* Common */,
 				B4003B3E288525E4002926F1 /* GoogleMap */,
@@ -674,7 +678,7 @@
 			children = (
 				B469E486288F6917003EB360 /* UserDefaulPublisher */,
 				B4003B47288525E5002926F1 /* CoreDataService */,
-				B4003B4F288525E5002926F1 /* AdditioanlSNSService */,
+				B4003B4F288525E5002926F1 /* APIService */,
 				B4003B53288525E5002926F1 /* NetworkService */,
 				B4003B55288525E5002926F1 /* LoginService */,
 				B4003B5D288525E5002926F1 /* FileService */,
@@ -702,12 +706,13 @@
 			path = CoreDataService;
 			sourceTree = "<group>";
 		};
-		B4003B4F288525E5002926F1 /* AdditioanlSNSService */ = {
+		B4003B4F288525E5002926F1 /* APIService */ = {
 			isa = PBXGroup;
 			children = (
 				B4003B50288525E5002926F1 /* Google */,
+				B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */,
 			);
-			path = AdditioanlSNSService;
+			path = APIService;
 			sourceTree = "<group>";
 		};
 		B4003B50288525E5002926F1 /* Google */ = {
@@ -819,6 +824,14 @@
 			path = Example;
 			sourceTree = "<group>";
 		};
+		B40118082B182BA100AA9286 /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				B40118092B182BBF00AA9286 /* Restaurants.swift */,
+			);
+			path = Test;
+			sourceTree = "<group>";
+		};
 		B45EBE0D2AE0DCC40097498C /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -838,8 +851,8 @@
 		B486DDDA28BF1FF9003F59BC /* AddChapter */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B3F288525E4002926F1 /* GoogleMapViewControllerBridge.swift */,
-				B4003B40288525E5002926F1 /* GoogleMapViewController.swift */,
+				B4003B40288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift */,
+				B4003B3F288525E4002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift */,
 			);
 			path = AddChapter;
 			sourceTree = "<group>";
@@ -910,6 +923,7 @@
 		B48C346D28851BB8005AA142 /* AdventureTubeTests */ = {
 			isa = PBXGroup;
 			children = (
+				B4003B10288525E4002926F1 /* SavedStory */,
 				B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */,
 				B469E489288F7500003EB360 /* MockedStorage.swift */,
 			);
@@ -1156,6 +1170,7 @@
 				B4003BA7288525E5002926F1 /* ConfirmChapterModalView.swift in Sources */,
 				B4003BA2288525E5002926F1 /* DescriptionEditorView.swift in Sources */,
 				B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */,
+				B401180A2B182BBF00AA9286 /* Restaurants.swift in Sources */,
 				B4003B80288525E5002926F1 /* CustomSheet.swift in Sources */,
 				B486DDD528BF0713003F59BC /* ChapterEntity+CoreDataProperties.swift in Sources */,
 				B4003B90288525E5002926F1 /* YoutubeViewVM.swift in Sources */,
@@ -1194,7 +1209,7 @@
 				B4003BD2288525E5002926F1 /* FacebookLoginService.swift in Sources */,
 				B4003BD9288525E5002926F1 /* GoogleSignInButtonWrapper.swift in Sources */,
 				B4003BC2288525E5002926F1 /* MapView.swift in Sources */,
-				B4003BC1288525E5002926F1 /* GoogleMapViewController.swift in Sources */,
+				B4003BC1288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift in Sources */,
 				B4003B99288525E5002926F1 /* TabBarItemInfoEnum.swift in Sources */,
 				B4003BB5288525E5002926F1 /* ModalView.swift in Sources */,
 				B4003BAF288525E5002926F1 /* YoutubeAccessGrantRequestView2.swift in Sources */,
@@ -1237,10 +1252,11 @@
 				B4003BDE288525E5002926F1 /* Overlay.swift in Sources */,
 				B4003B8D288525E5002926F1 /* AdventureTubeData.swift in Sources */,
 				B4003BCE288525E5002926F1 /* LoginServiceProtocol.swift in Sources */,
+				B40118072B17601000AA9286 /* AdventureTubeAPIService.swift in Sources */,
 				B4003BB7288525E5002926F1 /* PagerViewWithDots.swift in Sources */,
 				B4003B77288525E5002926F1 /* ConerRadius.swift in Sources */,
 				B4003BAC288525E5002926F1 /* AddStoryView.swift in Sources */,
-				B4003BC0288525E5002926F1 /* GoogleMapViewControllerBridge.swift in Sources */,
+				B4003BC0288525E5002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */,
 				B4003B98288525E5002926F1 /* CustomNavBarItems.swift in Sources */,
 				B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */,
 				B4003BD8288525E5002926F1 /* Birthday.swift in Sources */,

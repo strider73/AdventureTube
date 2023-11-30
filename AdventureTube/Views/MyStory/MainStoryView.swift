@@ -15,7 +15,7 @@ struct MainStoryView: View {
      call the managedObjectContext and store at private property
      
      */
-    @Environment(\.managedObjectContext) private var viewContext
+//    @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var loginManager : LoginManager
     @State private var isShowingLogin = false
     @StateObject var myStoryListVM : MyStoryListViewVM  =  MyStoryListViewVM()

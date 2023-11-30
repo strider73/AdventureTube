@@ -62,6 +62,8 @@ struct PlayChapterView: View {
          place : Binding<GoogleMapAPIPlace>,
          selectedIndex : Int ,
          adventureTubeData : AdventureTubeData?){
+        print("initialize PlayChapterView ========>")
+        
         self.youtubeViewVM = youtubeViewVM
         self.createChapterViewVM = createChapterViewVM
         self.adventureTubeData = adventureTubeData
@@ -100,7 +102,7 @@ struct PlayChapterView: View {
                     .background(Color(.systemBackground))
                     .shadow(color: .black.opacity(0.1),radius: 46,x: 0,y: 15)
                 //selected Category if they've saved in coredata already
-                if let  categorySelection = categorySelection {
+                if categorySelection.count > 1 {
                     /*
                      
                      case with coredata
@@ -173,7 +175,7 @@ struct PlayChapterView: View {
                 
                 ZStack {
                     
-                    GoogleMapViewControllerBridge(confirmedMarker: $createChapterViewVM.markers,
+                    GoogleMapViewForCreateStoryControllerBridge(confirmedMarker: $createChapterViewVM.markers,
                                                   selectedMarker: $createChapterViewVM.selectedMarker,
                                                   isMarkerWillRedrawing: $createChapterViewVM.isMarkerWillRedrawing,
                                                   isGoogleMapSheetMode: $createChapterViewVM.isGoogleMapSheetMode,
