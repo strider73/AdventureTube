@@ -52,7 +52,7 @@ final class MyStoryListViewVM:ObservableObject{
  
     
     init(){
-        print("init MainStoryListViewModel")
+        print("init MyStoryListViewVM")
         listenCoreDataSaveAndUpdate()
     }
     
