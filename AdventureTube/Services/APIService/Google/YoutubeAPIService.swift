@@ -43,7 +43,7 @@ class YoutubeAPIService  {
     var prevPageToken : String?
     
     init(){
-        print("init YoutubeService")
+        print("init YoutubeAPIService")
     }
     
     
