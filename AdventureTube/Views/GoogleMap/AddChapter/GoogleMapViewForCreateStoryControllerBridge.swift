@@ -9,7 +9,7 @@ import Foundation
 import GoogleMaps
 import SwiftUI
 
-struct GoogleMapViewControllerBridge: UIViewControllerRepresentable {
+struct GoogleMapViewForCreateStoryControllerBridge: UIViewControllerRepresentable {
     
     //These values are updated by user's action in google mapView 
     //and apply back to createChapterViewVM since it's bined and
@@ -23,11 +23,11 @@ struct GoogleMapViewControllerBridge: UIViewControllerRepresentable {
     
     // this mathod is called by switfui to create underying UViewController.
     // This is where you would instantiate your UIVeiwController and pass it its initiate state.
-    func makeUIViewController(context: Context) -> GoogleMapViewController {
+    func makeUIViewController(context: Context) -> GoogleMapViewControllerForCreateStory {
         print("GoogleMapViewControllerBridge.makeUIViewController has been called")
         
         // initiate UIViewController
-        let uiViewController = GoogleMapViewController()
+        let uiViewController = GoogleMapViewControllerForCreateStory()
         
         //Set the YoutubePopUpMapViewCoordinator as the map view's delegate
         uiViewController.mapView.delegate = context.coordinator
@@ -48,7 +48,7 @@ struct GoogleMapViewControllerBridge: UIViewControllerRepresentable {
      This is where you would make any modifications to the underlying UIViewController to react
      in response to the state change.
      */
-    func updateUIViewController(_ uiViewController: GoogleMapViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: GoogleMapViewControllerForCreateStory, context: Context) {
         print("GoogleMapViewControllerBridge.updateUIViewController has been called")
         //without this all method below will be excuted every time
         //when  youtubePopView receive update ex) current time in every sec from YoutubePopVM
@@ -68,7 +68,7 @@ struct GoogleMapViewControllerBridge: UIViewControllerRepresentable {
     }
     
     
-    private func animateToSelectedMarker(viewController:GoogleMapViewController){
+    private func animateToSelectedMarker(viewController:GoogleMapViewControllerForCreateStory){
         guard let selectedMarker = selectedMarker else {
             return
         }
@@ -93,8 +93,8 @@ struct GoogleMapViewControllerBridge: UIViewControllerRepresentable {
     ///This coordinatior allow ControllerBridge class response to Delegate method
     ///https://developers.google.com/maps/documentation/ios-sdk/reference/protocol_g_m_s_map_view_delegate-p
     final class YoutubePopUpMapViewCoordinator : NSObject, GMSMapViewDelegate{
-        var googleMapViewControllerBridge : GoogleMapViewControllerBridge
-        init(_ atMapViewControllerBridge: GoogleMapViewControllerBridge){
+        var googleMapViewControllerBridge : GoogleMapViewForCreateStoryControllerBridge
+        init(_ atMapViewControllerBridge: GoogleMapViewForCreateStoryControllerBridge){
             self.googleMapViewControllerBridge = atMapViewControllerBridge
         }
         
