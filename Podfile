@@ -14,9 +14,16 @@ target 'AdventureTube' do
 #    pod 'GooglePlaces', '6.1.1'
      
      pod 'GoogleAPIClientForREST/YouTube'
-     pod 'GoogleMaps', '5.1.0'
+     pod 'GoogleMaps', '7.3.0'
      pod 'GooglePlaces', '5.0.0'
-     pod 'GoogleMapsPlatformCombine', '0.3.1'
+     pod 'Google-Maps-iOS-Utils', '4.2.2'
+
+     
+     
+      #https://developers.google.com/maps/documentation/ios-sdk/combine
+      #This Library currently not in use at this moment and
+      #has dependency on GoogleMap 5.1.0
+      #pod 'GoogleMapsPlatformCombine', '0.3.1'
 #  end
 #
 #  target 'AdventureTubeTests' do
