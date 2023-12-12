@@ -93,8 +93,6 @@
 		B4003BBD288525E5002926F1 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3A288525E4002926F1 /* LoadingView.swift */; };
 		B4003BBE288525E5002926F1 /* SystemErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3B288525E4002926F1 /* SystemErrorView.swift */; };
 		B4003BBF288525E5002926F1 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3D288525E4002926F1 /* LoginView.swift */; };
-		B4003BC0288525E5002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B3F288525E4002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift */; };
-		B4003BC1288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B40288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift */; };
 		B4003BC2288525E5002926F1 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B42288525E5002926F1 /* MapView.swift */; };
 		B4003BC3288525E5002926F1 /* MapViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B43288525E5002926F1 /* MapViewVM.swift */; };
 		B4003BC4288525E5002926F1 /* SettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B45288525E5002926F1 /* SettingView.swift */; };
@@ -141,8 +139,6 @@
 		B486DDD628BF0713003F59BC /* PlaceEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDD028BF0713003F59BC /* PlaceEntity+CoreDataClass.swift */; };
 		B486DDD728BF0713003F59BC /* PlaceEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDD128BF0713003F59BC /* PlaceEntity+CoreDataProperties.swift */; };
 		B486DDD928BF0AB2003F59BC /* PublishWatermark.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDD828BF0AB2003F59BC /* PublishWatermark.swift */; };
-		B486DDDD28BF2087003F59BC /* StoryMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDDC28BF2087003F59BC /* StoryMapViewController.swift */; };
-		B486DDDF28BF2106003F59BC /* StoryMapViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDDE28BF2106003F59BC /* StoryMapViewControllerBridge.swift */; };
 		B48C346228851BB8005AA142 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B48C346128851BB8005AA142 /* Assets.xcassets */; };
 		B48C346528851BB8005AA142 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B48C346428851BB8005AA142 /* Preview Assets.xcassets */; };
 		B48C347928851BB8005AA142 /* AdventureTubeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48C347828851BB8005AA142 /* AdventureTubeUITests.swift */; };
@@ -256,8 +252,6 @@
 		B4003B3A288525E4002926F1 /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		B4003B3B288525E4002926F1 /* SystemErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemErrorView.swift; sourceTree = "<group>"; };
 		B4003B3D288525E4002926F1 /* LoginView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		B4003B3F288525E4002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryControllerBridge.swift; sourceTree = "<group>"; };
-		B4003B40288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryController.swift; sourceTree = "<group>"; };
 		B4003B42288525E5002926F1 /* MapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		B4003B43288525E5002926F1 /* MapViewVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewVM.swift; sourceTree = "<group>"; };
 		B4003B45288525E5002926F1 /* SettingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingView.swift; sourceTree = "<group>"; };
@@ -304,8 +298,6 @@
 		B486DDD028BF0713003F59BC /* PlaceEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlaceEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDD128BF0713003F59BC /* PlaceEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PlaceEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDD828BF0AB2003F59BC /* PublishWatermark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishWatermark.swift; sourceTree = "<group>"; };
-		B486DDDC28BF2087003F59BC /* StoryMapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryMapViewController.swift; sourceTree = "<group>"; };
-		B486DDDE28BF2106003F59BC /* StoryMapViewControllerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryMapViewControllerBridge.swift; sourceTree = "<group>"; };
 		B48C345A28851BB7005AA142 /* AdventureTube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdventureTube.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B48C346128851BB8005AA142 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B48C346428851BB8005AA142 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -459,7 +451,6 @@
 				B4003B00288525E4002926F1 /* Tab&Navi */,
 				B4003B14288525E4002926F1 /* MyStory */,
 				B4003B2F288525E4002926F1 /* Common */,
-				B4003B3E288525E4002926F1 /* GoogleMap */,
 				B4003B41288525E5002926F1 /* StoryMap */,
 				B4003B44288525E5002926F1 /* Setting */,
 			);
@@ -642,15 +633,6 @@
 				B4003B3D288525E4002926F1 /* LoginView.swift */,
 			);
 			path = Login;
-			sourceTree = "<group>";
-		};
-		B4003B3E288525E4002926F1 /* GoogleMap */ = {
-			isa = PBXGroup;
-			children = (
-				B486DDDB28BF2020003F59BC /* StoryMap */,
-				B486DDDA28BF1FF9003F59BC /* AddChapter */,
-			);
-			path = GoogleMap;
 			sourceTree = "<group>";
 		};
 		B4003B41288525E5002926F1 /* StoryMap */ = {
@@ -843,24 +825,6 @@
 				B469E487288F693B003EB360 /* UserDefaultPublisher.swift */,
 			);
 			path = UserDefaulPublisher;
-			sourceTree = "<group>";
-		};
-		B486DDDA28BF1FF9003F59BC /* AddChapter */ = {
-			isa = PBXGroup;
-			children = (
-				B4003B40288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift */,
-				B4003B3F288525E4002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift */,
-			);
-			path = AddChapter;
-			sourceTree = "<group>";
-		};
-		B486DDDB28BF2020003F59BC /* StoryMap */ = {
-			isa = PBXGroup;
-			children = (
-				B486DDDC28BF2087003F59BC /* StoryMapViewController.swift */,
-				B486DDDE28BF2106003F59BC /* StoryMapViewControllerBridge.swift */,
-			);
-			path = StoryMap;
 			sourceTree = "<group>";
 		};
 		B48C345128851BB7005AA142 = {
@@ -1159,7 +1123,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B486DDDF28BF2106003F59BC /* StoryMapViewControllerBridge.swift in Sources */,
 				B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */,
 				B4003BC5288525E5002926F1 /* CoreDataManager.swift in Sources */,
 				B4003BA3288525E5002926F1 /* StoryView.swift in Sources */,
@@ -1205,7 +1168,6 @@
 				B4003BD2288525E5002926F1 /* FacebookLoginService.swift in Sources */,
 				B4003BD9288525E5002926F1 /* GoogleSignInButtonWrapper.swift in Sources */,
 				B4003BC2288525E5002926F1 /* MapView.swift in Sources */,
-				B4003BC1288525E5002926F1 /* GoogleMapViewForCreateStoryController.swift in Sources */,
 				B4003B99288525E5002926F1 /* TabBarItemInfoEnum.swift in Sources */,
 				B4003BB5288525E5002926F1 /* ModalView.swift in Sources */,
 				B4003BAF288525E5002926F1 /* YoutubeAccessGrantRequestView2.swift in Sources */,
@@ -1242,7 +1204,6 @@
 				B4003B73288525E5002926F1 /* Binding.swift in Sources */,
 				B4003B91288525E5002926F1 /* YoutubeView.swift in Sources */,
 				B4003B7B288525E5002926F1 /* KeyboardPublisher.swift in Sources */,
-				B486DDDD28BF2087003F59BC /* StoryMapViewController.swift in Sources */,
 				B4003ACF288525B0002926F1 /* HomeView.swift in Sources */,
 				B4003BB0288525E5002926F1 /* MyStoryListView.swift in Sources */,
 				B4003BDE288525E5002926F1 /* Overlay.swift in Sources */,
@@ -1252,7 +1213,6 @@
 				B4003BB7288525E5002926F1 /* PagerViewWithDots.swift in Sources */,
 				B4003B77288525E5002926F1 /* ConerRadius.swift in Sources */,
 				B4003BAC288525E5002926F1 /* AddStoryView.swift in Sources */,
-				B4003BC0288525E5002926F1 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */,
 				B4003B98288525E5002926F1 /* CustomNavBarItems.swift in Sources */,
 				B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */,
 				B4003BD8288525E5002926F1 /* Birthday.swift in Sources */,
