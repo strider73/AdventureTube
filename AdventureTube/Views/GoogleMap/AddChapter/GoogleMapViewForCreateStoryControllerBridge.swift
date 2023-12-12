@@ -110,9 +110,9 @@ struct GoogleMapViewForCreateStoryControllerBridge: UIViewControllerRepresentabl
             let northWestCoordinate =  mapView.projection.coordinate(for: CGPoint(x: 0, y: 0))
             let southEastCoordinate =  mapView.projection.coordinate(for:  CGPoint(x:mapView.bounds.maxX, y: mapView.bounds.maxY))
 
-            print(" centerPoint         \(centerCoordinate.latitude),\(centerCoordinate.longitude)")
-            print(" northWestCoordinate \(northWestCoordinate.latitude),\(northWestCoordinate.longitude)")
-            print(" southEastCoordinate \(southEastCoordinate.latitude),\(northWestCoordinate.longitude)")
+//            print(" centerPoint         \(centerCoordinate.latitude),\(centerCoordinate.longitude)")
+//            print(" northWestCoordinate \(northWestCoordinate.latitude),\(northWestCoordinate.longitude)")
+//            print(" southEastCoordinate \(southEastCoordinate.latitude),\(northWestCoordinate.longitude)")
 
         }
         
