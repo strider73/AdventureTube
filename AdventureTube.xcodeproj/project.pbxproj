@@ -143,6 +143,10 @@
 		B48C346528851BB8005AA142 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B48C346428851BB8005AA142 /* Preview Assets.xcassets */; };
 		B48C347928851BB8005AA142 /* AdventureTubeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48C347828851BB8005AA142 /* AdventureTubeUITests.swift */; };
 		B48C347B28851BB8005AA142 /* AdventureTubeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48C347A28851BB8005AA142 /* AdventureTubeUITestsLaunchTests.swift */; };
+		B4B7DE102B28BE0600582C23 /* StoryMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE0E2B28BE0600582C23 /* StoryMapViewController.swift */; };
+		B4B7DE112B28BE0600582C23 /* StoryMapViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */; };
+		B4B7DE152B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */; };
+		B4B7DE162B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE142B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift */; };
 		B4D4F08A2B0EDB1800F6C1CB /* TestScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D4F0892B0EDB1800F6C1CB /* TestScrollView.swift */; };
 		B4FB96D92A2997F100AAED3A /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FB96D82A2997F100AAED3A /* ProfileView.swift */; };
 /* End PBXBuildFile section */
@@ -305,6 +309,10 @@
 		B48C347428851BB8005AA142 /* AdventureTubeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AdventureTubeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B48C347828851BB8005AA142 /* AdventureTubeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeUITests.swift; sourceTree = "<group>"; };
 		B48C347A28851BB8005AA142 /* AdventureTubeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B4B7DE0E2B28BE0600582C23 /* StoryMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryMapViewController.swift; sourceTree = "<group>"; };
+		B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryMapViewControllerBridge.swift; sourceTree = "<group>"; };
+		B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryControllerBridge.swift; sourceTree = "<group>"; };
+		B4B7DE142B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryController.swift; sourceTree = "<group>"; };
 		B4D4F0892B0EDB1800F6C1CB /* TestScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestScrollView.swift; sourceTree = "<group>"; };
 		B4FB96D82A2997F100AAED3A /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -555,6 +563,7 @@
 		B4003B1B288525E4002926F1 /* Chapter */ = {
 			isa = PBXGroup;
 			children = (
+				B4B7DE122B28BE1B00582C23 /* GoogleMap */,
 				B4003B1C288525E4002926F1 /* ConfirmChapterView.swift */,
 				B4003B1D288525E4002926F1 /* CreateChapterViewVM.swift */,
 				B4003B1E288525E4002926F1 /* ConfirmChapterModalView.swift */,
@@ -638,6 +647,7 @@
 		B4003B41288525E5002926F1 /* StoryMap */ = {
 			isa = PBXGroup;
 			children = (
+				B4B7DE0D2B28BE0600582C23 /* GoogleMap */,
 				B4003B42288525E5002926F1 /* MapView.swift */,
 				B4003B43288525E5002926F1 /* MapViewVM.swift */,
 			);
@@ -900,6 +910,24 @@
 			path = AdventureTubeUITests;
 			sourceTree = "<group>";
 		};
+		B4B7DE0D2B28BE0600582C23 /* GoogleMap */ = {
+			isa = PBXGroup;
+			children = (
+				B4B7DE0E2B28BE0600582C23 /* StoryMapViewController.swift */,
+				B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */,
+			);
+			path = GoogleMap;
+			sourceTree = "<group>";
+		};
+		B4B7DE122B28BE1B00582C23 /* GoogleMap */ = {
+			isa = PBXGroup;
+			children = (
+				B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */,
+				B4B7DE142B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift */,
+			);
+			path = GoogleMap;
+			sourceTree = "<group>";
+		};
 		B4D4F0882B0EDB0500F6C1CB /* TestUI */ = {
 			isa = PBXGroup;
 			children = (
@@ -1128,6 +1156,7 @@
 				B4003BA3288525E5002926F1 /* StoryView.swift in Sources */,
 				B4003BA6288525E5002926F1 /* CreateChapterViewVM.swift in Sources */,
 				B4003BA7288525E5002926F1 /* ConfirmChapterModalView.swift in Sources */,
+				B4B7DE112B28BE0600582C23 /* StoryMapViewControllerBridge.swift in Sources */,
 				B4003BA2288525E5002926F1 /* DescriptionEditorView.swift in Sources */,
 				B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */,
 				B401180A2B182BBF00AA9286 /* Restaurant.swift in Sources */,
@@ -1145,6 +1174,7 @@
 				B4003B9B288525E5002926F1 /* TabBarItemsPreferenceKey .swift in Sources */,
 				B4003B7D288525E5002926F1 /* Icon.swift in Sources */,
 				B4003BB3288525E5002926F1 /* MyStoryCommonDetailViewVM.swift in Sources */,
+				B4B7DE162B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift in Sources */,
 				B4003BD3288525E5002926F1 /* LocalFileManager.swift in Sources */,
 				B4003BB4288525E5002926F1 /* BlankView.swift in Sources */,
 				B486DDD928BF0AB2003F59BC /* PublishWatermark.swift in Sources */,
@@ -1200,6 +1230,7 @@
 				B469E485288EC402003EB360 /* OrderedArray.swift in Sources */,
 				B4003B93288525E5002926F1 /* CustomNavView.swift in Sources */,
 				B4003B8B288525E5002926F1 /* UserModel.swift in Sources */,
+				B4B7DE102B28BE0600582C23 /* StoryMapViewController.swift in Sources */,
 				B4003B9A288525E5002926F1 /* CustomTabBarView.swift in Sources */,
 				B4003B73288525E5002926F1 /* Binding.swift in Sources */,
 				B4003B91288525E5002926F1 /* YoutubeView.swift in Sources */,
@@ -1216,6 +1247,7 @@
 				B4003B98288525E5002926F1 /* CustomNavBarItems.swift in Sources */,
 				B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */,
 				B4003BD8288525E5002926F1 /* Birthday.swift in Sources */,
+				B4B7DE152B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */,
 				B4003BC7288525E5002926F1 /* CoreDataStorage.swift in Sources */,
 				B4003BB2288525E5002926F1 /* MyStoryCellView.swift in Sources */,
 				B4003BBD288525E5002926F1 /* LoadingView.swift in Sources */,
