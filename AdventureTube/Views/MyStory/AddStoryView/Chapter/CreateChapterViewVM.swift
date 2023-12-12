@@ -88,7 +88,7 @@ class CreateChapterViewVM : ObservableObject {
     let swBoundsCorner : CLLocationCoordinate2D
     
     private var cancellables = Set<AnyCancellable>()
-    private let googleMapAPIService  = GoogleMapAPIService()
+    private let googleMapAPIService  = GoogleMapAndPlaceAPIService()
     
     
     private let manager = CoreDataManager.instance

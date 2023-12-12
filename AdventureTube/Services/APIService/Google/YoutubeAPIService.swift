@@ -195,8 +195,8 @@ class YoutubeAPIService  {
                         youtubeChannelResource.items.forEach { item in
                             print("playlistId =========>\(item.contentDetails.relatedPlaylists.uploads)")
                             playListId = item.contentDetails.relatedPlaylists.uploads
-                            print("youtubeChannelResource==========>")
-                            print(youtubeChannelResource)
+                            //print("youtubeChannelResource==========>")
+                            //print(youtubeChannelResource)
                         }
                         return playListId
                     }

@@ -27,14 +27,22 @@ struct MapView: View {
             .preferredColorScheme(.light)
             .navigationBarHidden(true)
         }.onAppear{
-           // mapViewVM.fetchRestaurants()
+            mapViewVM.fetchRestaurants()
         }
     }
         
     
     
+    
     var storyMap:some View{
-        StoryMapViewControllerBridge().edgesIgnoringSafeArea(.all)
+            StoryMapViewControllerBridge(markers: $mapViewVM.markers){southWestCoordinate,northEastCoordinate in
+                mapViewVM.southWestCoordinate = southWestCoordinate
+                mapViewVM.northEastCoordinate = northEastCoordinate
+            }
+//        StoryMapViewControllerBridge(markers: $mapViewVM.markers){centerPoint in
+//            mapViewVM.centerPoint = centerPoint
+//        }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

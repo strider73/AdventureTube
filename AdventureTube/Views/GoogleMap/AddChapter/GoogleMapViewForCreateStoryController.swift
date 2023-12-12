@@ -9,10 +9,6 @@
  
  1) need to use API key for Place SDK
  https://developers.google.com/maps/documentation/places/ios-sdk/get-api-key
- 
- 
- 
- 
  */
 
 import GoogleMaps
@@ -31,42 +27,13 @@ class GoogleMapViewForCreateStoryController:UIViewController{
         
         mapView.mapType = .terrain
         mapView.isMyLocationEnabled = true
-        self.mapView.camera = GMSCameraPosition(latitude: 40.82302903, longitude: -73.93414657 ,zoom: 8)
-    
-        var northWestCoordinate =  self.mapView.projection.coordinate(for: CGPoint(x: 0, y: 0))
-        var southEastCoordinate =  self.mapView.projection.coordinate(for:  CGPoint(x:self.mapView.bounds.maxX, y: self.mapView.bounds.maxY))
-
         
-        print("https://www.google.com/maps/@\(northWestCoordinate.latitude),\(northWestCoordinate.longitude)")
-        print("https://www.google.com/maps/@\(southEastCoordinate.latitude),\(northWestCoordinate.longitude)")
-    
-//        if mapView.selectedMarker == nil{
-//            locationManager.requestLocation {[weak self] location in
-//                guard let self = self else{return}
-////                self.mapView.camera = GMSCameraPosition(latitude:location.latitude, longitude: location.longitude, zoom: 8)
-//                self.mapView.camera = GMSCameraPosition(latitude: 40.82302903, longitude: -73.93414657 ,zoom: 8)
-//
-//                var northWestCoordinate =  self.mapView.projection.coordinate(for: CGPoint(x: 0, y: 0))
-//                var southEastCoordinate =  self.mapView.projection.coordinate(for:  CGPoint(x:self.mapView.bounds.maxX, y: self.mapView.bounds.maxY))
-//
-//
-//                print("https://www.google.com/maps/@\(northWestCoordinate.latitude),\(northWestCoordinate.longitude)")
-//                print("https://www.google.com/maps/@\(southEastCoordinate.latitude),\(northWestCoordinate.longitude)")
-//
-//
-//            }
-//        }
-        
-        
-        //        if  let myLocation  = mapView.myLocation {
-        //
-        //            mapView.camera = GMSCameraPosition(latitude:myLocation.coordinate.latitude, longitude: myLocation.coordinate.longitude, zoom: 4)
-        //
-        //
-        //        }
-        
-        
-        
+        if mapView.selectedMarker == nil{
+            locationManager.requestLocation {[weak self] location in
+                guard let self = self else{return}
+                self.mapView.camera = GMSCameraPosition(latitude:location.latitude, longitude: location.longitude, zoom: 8)
+            }
+        }
         self.view = mapView
     }
 }

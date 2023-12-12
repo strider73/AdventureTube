@@ -103,7 +103,7 @@
 		B4003BC7288525E5002926F1 /* CoreDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B4A288525E5002926F1 /* CoreDataStorage.swift */; };
 		B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B4D288525E5002926F1 /* CoreDataFetchResultsPublisher.swift */; };
 		B4003BCA288525E5002926F1 /* CoreDataDeleteModelPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B4E288525E5002926F1 /* CoreDataDeleteModelPublisher.swift */; };
-		B4003BCB288525E5002926F1 /* GoogleMapAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B51288525E5002926F1 /* GoogleMapAPIService.swift */; };
+		B4003BCB288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B51288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift */; };
 		B4003BCC288525E5002926F1 /* YoutubeAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B52288525E5002926F1 /* YoutubeAPIService.swift */; };
 		B4003BCD288525E5002926F1 /* DownloadPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B54288525E5002926F1 /* DownloadPublisher.swift */; };
 		B4003BCE288525E5002926F1 /* LoginServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B57288525E5002926F1 /* LoginServiceProtocol.swift */; };
@@ -124,7 +124,7 @@
 		B4003BDE288525E5002926F1 /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B6F288525E5002926F1 /* Overlay.swift */; };
 		B4003BDF288525E5002926F1 /* ExampleViewForNavigartionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B70288525E5002926F1 /* ExampleViewForNavigartionBar.swift */; };
 		B40118072B17601000AA9286 /* AdventureTubeAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */; };
-		B401180A2B182BBF00AA9286 /* Restaurants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118092B182BBF00AA9286 /* Restaurants.swift */; };
+		B401180A2B182BBF00AA9286 /* Restaurant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118092B182BBF00AA9286 /* Restaurant.swift */; };
 		B419E1B12885847500F669CA /* AdventureTube.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B419E1AF2885847500F669CA /* AdventureTube.xcdatamodeld */; };
 		B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */; };
 		B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */; };
@@ -134,7 +134,6 @@
 		B469E48A288F7500003EB360 /* MockedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E489288F7500003EB360 /* MockedStorage.swift */; };
 		B469E48C288F776F003EB360 /* PublishedAppStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */; };
 		B46A2C0D2B04541800C54E5D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B46A2C0C2B04541800C54E5D /* README.md */; };
-		B46A2C112B07A6CD00C54E5D /* YoutubeDataAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46A2C102B07A6CD00C54E5D /* YoutubeDataAPIService.swift */; };
 		B486DDD228BF0713003F59BC /* StoryEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */; };
 		B486DDD328BF0713003F59BC /* StoryEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */; };
 		B486DDD428BF0713003F59BC /* ChapterEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCE28BF0713003F59BC /* ChapterEntity+CoreDataClass.swift */; };
@@ -267,7 +266,7 @@
 		B4003B4A288525E5002926F1 /* CoreDataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStorage.swift; sourceTree = "<group>"; };
 		B4003B4D288525E5002926F1 /* CoreDataFetchResultsPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataFetchResultsPublisher.swift; sourceTree = "<group>"; };
 		B4003B4E288525E5002926F1 /* CoreDataDeleteModelPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataDeleteModelPublisher.swift; sourceTree = "<group>"; };
-		B4003B51288525E5002926F1 /* GoogleMapAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapAPIService.swift; sourceTree = "<group>"; };
+		B4003B51288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapAndPlaceAPIService.swift; sourceTree = "<group>"; };
 		B4003B52288525E5002926F1 /* YoutubeAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeAPIService.swift; sourceTree = "<group>"; };
 		B4003B54288525E5002926F1 /* DownloadPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadPublisher.swift; sourceTree = "<group>"; };
 		B4003B57288525E5002926F1 /* LoginServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginServiceProtocol.swift; sourceTree = "<group>"; };
@@ -288,7 +287,7 @@
 		B4003B6F288525E5002926F1 /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
 		B4003B70288525E5002926F1 /* ExampleViewForNavigartionBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewForNavigartionBar.swift; sourceTree = "<group>"; };
 		B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeAPIService.swift; sourceTree = "<group>"; };
-		B40118092B182BBF00AA9286 /* Restaurants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Restaurants.swift; sourceTree = "<group>"; };
+		B40118092B182BBF00AA9286 /* Restaurant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Restaurant.swift; sourceTree = "<group>"; };
 		B419E1B02885847500F669CA /* AdventureTube.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventureTube.xcdatamodel; sourceTree = "<group>"; };
 		B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeApp.swift; sourceTree = "<group>"; };
 		B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
@@ -298,7 +297,6 @@
 		B469E489288F7500003EB360 /* MockedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedStorage.swift; sourceTree = "<group>"; };
 		B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishedAppStorageTests.swift; sourceTree = "<group>"; };
 		B46A2C0C2B04541800C54E5D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		B46A2C102B07A6CD00C54E5D /* YoutubeDataAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeDataAPIService.swift; sourceTree = "<group>"; };
 		B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoryEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoryEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDCE28BF0713003F59BC /* ChapterEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
@@ -718,9 +716,8 @@
 		B4003B50288525E5002926F1 /* Google */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B51288525E5002926F1 /* GoogleMapAPIService.swift */,
+				B4003B51288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift */,
 				B4003B52288525E5002926F1 /* YoutubeAPIService.swift */,
-				B46A2C102B07A6CD00C54E5D /* YoutubeDataAPIService.swift */,
 			);
 			path = Google;
 			sourceTree = "<group>";
@@ -827,7 +824,7 @@
 		B40118082B182BA100AA9286 /* Test */ = {
 			isa = PBXGroup;
 			children = (
-				B40118092B182BBF00AA9286 /* Restaurants.swift */,
+				B40118092B182BBF00AA9286 /* Restaurant.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -1170,7 +1167,7 @@
 				B4003BA7288525E5002926F1 /* ConfirmChapterModalView.swift in Sources */,
 				B4003BA2288525E5002926F1 /* DescriptionEditorView.swift in Sources */,
 				B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */,
-				B401180A2B182BBF00AA9286 /* Restaurants.swift in Sources */,
+				B401180A2B182BBF00AA9286 /* Restaurant.swift in Sources */,
 				B4003B80288525E5002926F1 /* CustomSheet.swift in Sources */,
 				B486DDD528BF0713003F59BC /* ChapterEntity+CoreDataProperties.swift in Sources */,
 				B4003B90288525E5002926F1 /* YoutubeViewVM.swift in Sources */,
@@ -1179,7 +1176,6 @@
 				B4003BA0288525E5002926F1 /* MainSavedStoryView.swift in Sources */,
 				B486DDD328BF0713003F59BC /* StoryEntity+CoreDataProperties.swift in Sources */,
 				B4003BDD288525E5002926F1 /* CustonTextFieldDropDownList.swift in Sources */,
-				B46A2C112B07A6CD00C54E5D /* YoutubeDataAPIService.swift in Sources */,
 				B4003B75288525E5002926F1 /* CategoryWatermark.swift in Sources */,
 				B4003BB1288525E5002926F1 /* MyStoryListViewVM.swift in Sources */,
 				B4003BDF288525E5002926F1 /* ExampleViewForNavigartionBar.swift in Sources */,
@@ -1201,7 +1197,7 @@
 				B4003BA5288525E5002926F1 /* ConfirmChapterView.swift in Sources */,
 				B4003BC4288525E5002926F1 /* SettingView.swift in Sources */,
 				B4003B81288525E5002926F1 /* ObjectSavable.swift in Sources */,
-				B4003BCB288525E5002926F1 /* GoogleMapAPIService.swift in Sources */,
+				B4003BCB288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift in Sources */,
 				B4003BA4288525E5002926F1 /* MainStoryView.swift in Sources */,
 				B4003B95288525E5002926F1 /* CustomNavLink.swift in Sources */,
 				B4003B9F288525E5002926F1 /* UserProfileImageLoader.swift in Sources */,

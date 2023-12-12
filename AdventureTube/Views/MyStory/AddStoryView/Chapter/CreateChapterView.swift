@@ -119,6 +119,18 @@ struct CreateChapterView: View {
 //                }
                 .sheet(item: $searchMapSheetData) { searchMapSheetData in
                     GoogleSearchMapView(createChapterViewVM: searchMapSheetData.createChapterViewVM){
+                        /*
+                         This entire section is using a @ViewBuilder
+                         it allow the same mapUI can be used in both
+                               * GoogleSearchMapView
+                               * CreateChapterView which is currentView itself
+                         
+                         and the [newMarker] which is value from the GoogleMapViewForCreateStoryControllerBridge
+                         when it tapped by one of GMSMapViewDelegate method !!!!!
+                         incredable !!!!
+                            
+                         */
+                        
                         GoogleMapViewForCreateStoryControllerBridge(confirmedMarker: $createChapterViewVM.markers,
                                                       selectedMarker: $createChapterViewVM.selectedMarker,
                                                       isMarkerWillRedrawing:$createChapterViewVM.isMarkerWillRedrawing,

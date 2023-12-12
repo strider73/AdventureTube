@@ -96,8 +96,8 @@ final class MyStoryListViewVM:ObservableObject{
                         print("Error retrieving for Data \(error)")
                 }
             }, receiveValue: {  youtubeContentResource in
-                print("===========Value has been received ===============")
-                print(youtubeContentResource)
+                //print("===========Value has been received ===============")
+                //print(youtubeContentResource)
                 //set the pageToken
                 
                 
