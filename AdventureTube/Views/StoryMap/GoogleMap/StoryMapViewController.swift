@@ -4,6 +4,17 @@
 //
 //  Created by chris Lee on 31/8/2022.
 //
+//How to set up marker cluster https://developers.google.com/maps/documentation/ios-sdk/utility/marker-clustering
+// 1) Create the cluster  manager on StoryMapViewController
+//        using  GMUClusterIconGenerator,GMUClusterAlgorithm,GMUClusterRenderer
+//
+//        setting a map delegate process is not require here since 
+//        mapView delegation has been set in StoryMApViewControllerBridge
+//        =>   uiViewController.mapView.delegate = context.coordinator
+// 2) Addin  Marker in StoryMApVeiwContorllerBridge
+// 3) call the maker cluster clusterManager.cluster()
+
+
 
 import GoogleMaps
 import SwiftUI
