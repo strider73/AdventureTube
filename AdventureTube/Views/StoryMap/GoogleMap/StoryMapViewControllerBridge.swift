@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import GoogleMaps
+import GoogleMapsUtils
 
 struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
     //    @Binding  var confirmedMarker:[GMSMarker]
@@ -30,11 +31,19 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
     func updateUIViewController(_ uiViewController: StoryMapViewController, context: Context) {
         //in here need to delete the mark outside screeb
         uiViewController.mapView.clear()
+        print("Zoom is \(uiViewController.mapView.camera.zoom)")
         
-        markers.forEach { marker in
-            print("markers.forEach  in update method ==========>")
-            marker.map = uiViewController.mapView
+        if markers.count  < 100 || uiViewController.mapView.camera.zoom > 16 {
+            markers.forEach { marker in
+                print("markers.forEach  in update method ==========>")
+                marker.map = uiViewController.mapView
+            }
+        }else{
+            uiViewController.clusterManager.add(markers)
+            uiViewController.clusterManager.cluster()
         }
+        
+        
     }
     
     
@@ -78,15 +87,9 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
             let southWestCoordinate =  mapView.projection.coordinate(for:  CGPoint(x:0, y: mapView.bounds.maxY))
             let northEastCoordinate =  mapView.projection.coordinate(for: CGPoint(x: mapView.bounds.maxX, y: 0))
             
-            print(" centerPoint         \(centerCoordinate.longitude),\(centerCoordinate.latitude)")
-            print("  [\(southWestCoordinate.longitude),\(southWestCoordinate.latitude)],")
-            print("  [\(northEastCoordinate.longitude),\(northEastCoordinate.latitude)]")
+        
             
-            //storyMapViewControllerBridge.getCenterPointOnMap(centerCoordinate)
             storyMapViewControllerBridge.getBoxPointOnMap(southWestCoordinate,northEastCoordinate)
-            //storyMapViewControllerBridge.getBoxPointOnMap(centerCoordinate)
-            
-            
             
         }
         
