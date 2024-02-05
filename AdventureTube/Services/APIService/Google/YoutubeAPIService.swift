@@ -193,7 +193,7 @@ class YoutubeAPIService  {
                         var playListId : String = ""
 //                       var videoCount : String = ""
                         youtubeChannelResource.items.forEach { item in
-                            print("playlistId =========>\(item.contentDetails.relatedPlaylists.uploads)")
+                            //print("playlistId =========>\(item.contentDetails.relatedPlaylists.uploads)")
                             playListId = item.contentDetails.relatedPlaylists.uploads
                             //print("youtubeChannelResource==========>")
                             //print(youtubeChannelResource)

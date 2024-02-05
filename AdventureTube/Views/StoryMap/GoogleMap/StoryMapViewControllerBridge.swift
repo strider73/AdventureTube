@@ -4,21 +4,33 @@
 //
 //  Created by chris Lee on 31/8/2022.
 //
-//https://developers.google.com/codelabs/maps-platform/maps-platform-ios-swiftui#5
+// https://developers.google.com/codelabs/maps-platform/maps-platform-ios-swiftui#5
+// in here set the delegation of   "var mapView : GMSMapView = GMSMapView(frame: .zero)"
+// by  return StoryMapViewControllerBridgeCoordinator(self)
+// without implement GMSMapViewDelegate  inside  "StoryMapViewController"
 
 import Foundation
 import SwiftUI
 import GoogleMaps
 import GoogleMapsUtils
 
+
+/*
+ 
+ in this struct all the member valueable is immutable and why ?
+ 
+ 
+ 
+ 
+ */
+
 struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
-    //    @Binding  var confirmedMarker:[GMSMarker]
-    //    @Binding  var selectedMarker: GMSMarker?
+    
     @Binding  var markers:[GMSMarker]
-    //   @Binding  var centerPoint: CLLocationCoordinate2D
-    //    var getCenterPointOnMap : (CLLocationCoordinate2D) -> Void
     var getBoxPointOnMap : (CLLocationCoordinate2D,CLLocationCoordinate2D) -> Void
-    //var getBoxPointOnMap : (CLLocationCoordinate2D) -> Void
+    var markerCountLimitforClsuter = 200
+    var markkerZoomLimitForCluster : Float = 14.0
+    
     func makeUIViewController(context: Context) ->  StoryMapViewController {
         let uiViewController = StoryMapViewController()
         uiViewController.mapView.delegate = context.coordinator
@@ -31,14 +43,18 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
     func updateUIViewController(_ uiViewController: StoryMapViewController, context: Context) {
         //in here need to delete the mark outside screeb
         uiViewController.mapView.clear()
+        uiViewController.clusterManager.clearItems()
+        
         print("Zoom is \(uiViewController.mapView.camera.zoom)")
         
-        if markers.count  < 100 || uiViewController.mapView.camera.zoom > 16 {
+        if  markers.count  < markerCountLimitforClsuter  {
+            print("No Cluster markers.count  \(markers.count)")
             markers.forEach { marker in
-                print("markers.forEach  in update method ==========>")
                 marker.map = uiViewController.mapView
             }
         }else{
+            print("With Cluster markers.count  \(markers.count)")
+
             uiViewController.clusterManager.add(markers)
             uiViewController.clusterManager.cluster()
         }
@@ -64,6 +80,7 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
     //        }
     //    }
     
+    //This is where delegation has been set which is self ATM
     func makeCoordinator() -> StoryMapViewControllerBridgeCoordinator {
         return StoryMapViewControllerBridgeCoordinator(self)
     }
@@ -87,11 +104,25 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
             let southWestCoordinate =  mapView.projection.coordinate(for:  CGPoint(x:0, y: mapView.bounds.maxY))
             let northEastCoordinate =  mapView.projection.coordinate(for: CGPoint(x: mapView.bounds.maxX, y: 0))
             
-        
-            
             storyMapViewControllerBridge.getBoxPointOnMap(southWestCoordinate,northEastCoordinate)
-            
         }
         
+        
+        
+        func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+            
+            // center the map on tapped marker
+            mapView.animate(toLocation: marker.position)
+            // check if a cluster icon was tapped
+            if marker.userData is GMUCluster {
+                // zoom in on tapped cluster                
+                mapView.animate(toZoom: 17)
+                NSLog("Did tap cluster")
+                return true
+            }
+            
+            NSLog("Did tap a normal marker")
+            return false
+        }
     }
 }
