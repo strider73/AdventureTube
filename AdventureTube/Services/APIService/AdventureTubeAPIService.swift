@@ -10,6 +10,7 @@ import UIKit
 import Combine
 
 class AdventureTubeAPIService : NSObject {
+    //This is SingleTon Parttern
     static let shared = AdventureTubeAPIService()
     
     private var cancellables = Set<AnyCancellable>() // (3)
@@ -41,7 +42,7 @@ class AdventureTubeAPIService : NSObject {
                         }
                     }
                 }, receiveValue: {  data in  // (10)
-                    print(data)
+                    //print(data)
                     promise(.success(data)
                     ) })
                 .store(in: &self.cancellables)  // (11)
