@@ -14,6 +14,25 @@
  * limitations under the License.
  */
 
+//https://developers.google.com/identity/sign-in/ios/start-integrating
+/*    
+ 1)  OAuth Client ID
+ 
+ClientId  is App's OAuth client ID to identify itself to Google's authentication backend.
+for iOS and mac OS the "OAuth clientID application type" must be configured as iOS.
+here is my clintID section .
+https://console.cloud.google.com/projectselector2/apis/credentials?project=_&supportedpurview=project
+=> clientID has been moved to info.plist
+clientID = "657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com"
+
+ 2)  OAuth Server Client
+ App will need to pass the identity of signed-in users to backend service.
+ To securely pass the identity of users who signed in with Google to backend , use the ID token.
+ Retrieving a user's ID token requires server client ID which represents backend server
+ => serverClientID  has been moved to info.plist
+serverClientID = "657433323337-t5e70nbjmink2ldmt3e34pci55v3sv6k.apps.googleusercontent.com"
+ */
+
 import Foundation
 import GoogleSignIn
 //import GoogleAPIClientForREST
@@ -21,34 +40,8 @@ import GoogleSignIn
 /// An observable class for authenticating via Google.
 final class GoogleLoginService: LoginServiceProtocol {
  
-    /*    OAuth Client ID  from  https://developers.google.com/identity/sign-in/ios/start-integrating
-    ClientId  is App's OAuth client ID to identify itself to Google's authentication backend.
-    for iOS and mac OS the "OAuth clientID application type" must be configured as iOS.
-     
-    here is my clintID section .
-    https://console.cloud.google.com/projectselector2/apis/credentials?project=_&supportedpurview=project
-     
-    => clientID has been moved to info.plist
-     */
-    // private let clientID = "657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com"
-    
-    /*   OAuth Server Client ID  from  https://developers.google.com/identity/sign-in/ios/start-integrating
-     App will need to pass the identity of signed-in users to backend service.
-     To securely pass the identity of users who signed in with Google to backend , use the ID token.
-     
-     Retrieving a user's ID token requires server client ID which represents backend server 
-     
-     => serverClientID  has been moved to info.plist
-     */
-     // private let serverClientID = "657433323337-t5e70nbjmink2ldmt3e34pci55v3sv6k.apps.googleusercontent.com"
-    
-//    private let service = GTLRYouTubeService()
+   
 
-    
-//    private lazy var configuration: GIDConfiguration = {
-//        return GIDConfiguration(clientID: clientID,serverClientID: serverClientID)
-//    }()
-//
     private var loginManager: LoginManager
     
     /// Creates an instance of this authenticator.
