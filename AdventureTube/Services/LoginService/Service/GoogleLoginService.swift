@@ -15,22 +15,22 @@
  */
 
 //https://developers.google.com/identity/sign-in/ios/start-integrating
-/*    
+/*
  1)  OAuth Client ID
  
-ClientId  is App's OAuth client ID to identify itself to Google's authentication backend.
-for iOS and mac OS the "OAuth clientID application type" must be configured as iOS.
-here is my clintID section .
-https://console.cloud.google.com/projectselector2/apis/credentials?project=_&supportedpurview=project
-=> clientID has been moved to info.plist
-clientID = "657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com"
-
+ ClientId  is App's OAuth client ID to identify itself to Google's authentication backend.
+ for iOS and mac OS the "OAuth clientID application type" must be configured as iOS.
+ here is my clintID section .
+ https://console.cloud.google.com/projectselector2/apis/credentials?project=_&supportedpurview=project
+ => clientID has been moved to info.plist
+ clientID = "657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com"
+ 
  2)  OAuth Server Client
  App will need to pass the identity of signed-in users to backend service.
  To securely pass the identity of users who signed in with Google to backend , use the ID token.
  Retrieving a user's ID token requires server client ID which represents backend server
  => serverClientID  has been moved to info.plist
-serverClientID = "657433323337-t5e70nbjmink2ldmt3e34pci55v3sv6k.apps.googleusercontent.com"
+ serverClientID = "657433323337-t5e70nbjmink2ldmt3e34pci55v3sv6k.apps.googleusercontent.com"
  */
 
 import Foundation
@@ -39,9 +39,9 @@ import GoogleSignIn
 
 /// An observable class for authenticating via Google.
 final class GoogleLoginService: LoginServiceProtocol {
- 
-   
-
+    
+    
+    
     private var loginManager: LoginManager
     
     /// Creates an instance of this authenticator.
@@ -59,8 +59,10 @@ final class GoogleLoginService: LoginServiceProtocol {
             print("There is no root view controller!")
             return
         }
+        
+        
         GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { signInResult, error in
-  
+            
             guard error == nil else {
                 print("Error! \(String(describing: error))")
                 return
@@ -78,11 +80,11 @@ final class GoogleLoginService: LoginServiceProtocol {
             
             
             var adventureUser  = UserModel(signed_in: true,
-                                  emailAddress: emailAddress,
-                                  fullName: fullName,
-                                  givenName: givenName,
-                                  familyName: familyName,
-                                  profilePicUrl: profilePicUrl?.absoluteString)
+                                           emailAddress: emailAddress,
+                                           fullName: fullName,
+                                           givenName: givenName,
+                                           familyName: familyName,
+                                           profilePicUrl: profilePicUrl?.absoluteString)
             
             
             
@@ -106,42 +108,44 @@ final class GoogleLoginService: LoginServiceProtocol {
                     print(error.localizedDescription)
                 }
                 self.loginManager.loginState = .signedIn(user)
-
+                
                 // return the data to call back method
                 completion(adventureUser)
                 
             }
+            
             
             //get the UserID token
             /* GoogleSignIn V6.0 pattern need to remmove
-            user.authentication.do { authentication, error in
-                guard error == nil else { return }
-                guard let authentication = authentication else { return }
-                
-                let idToken = authentication.idToken
-                adventureUser.idToken = idToken
-                
-                // Store Data in UserDefault
-                let userDefaults = UserDefaults.standard
-                do {
-                    try userDefaults.setObject(adventureUser, forKey: "user")
-                    print("user data has been setting in user default ")
-                } catch {
-                    print(error.localizedDescription)
-                }
-                self.loginManager.loginState = .signedIn(user)
-
-                // return the data to call back method
-                completion(adventureUser)
-            }
+             user.authentication.do { authentication, error in
+             guard error == nil else { return }
+             guard let authentication = authentication else { return }
+             
+             let idToken = authentication.idToken
+             adventureUser.idToken = idToken
+             
+             // Store Data in UserDefault
+             let userDefaults = UserDefaults.standard
+             do {
+             try userDefaults.setObject(adventureUser, forKey: "user")
+             print("user data has been setting in user default ")
+             } catch {
+             print(error.localizedDescription)
+             }
+             self.loginManager.loginState = .signedIn(user)
+             
+             // return the data to call back method
+             completion(adventureUser)
+             }
              */
             
-//            self.loginManager.loginState = .signedIn(googleUser)
+            //            self.loginManager.loginState = .signedIn(googleUser)
+            
         }
     }
     
     
-  
+    
     
     //TODO: call this function after create my backend server
     public static func tokenSignInExample(idToken: String) {
@@ -189,7 +193,7 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     
-  
+    
     /// Adds the youtube channel  read scope for the current user.
     /// - parameter completion: An escaping closure that is called upon successful completion of the
     /// `addScopes(_:presenting:)` request.
@@ -236,153 +240,153 @@ final class GoogleLoginService: LoginServiceProtocol {
      --header 'Accept: application/json' \
      --compressed
      */
-//    func fetchChannelResource() {
-////        let query = GTLRYouTubeQuery_ChannelsList.query(withPart: "snippet,statistics,contentDetails")
-//        let query = GTLRYouTubeQuery_ChannelsList.query(withPart: "snippet,statistics,contentDetails")
-//        print("Querty :  \(query)")
-//        query.mine = true
-//        service.executeQuery(query) { _, result, error in
-//            guard let response = result as? GTLRYouTube_ChannelListResponse ,
-//                  let channels = response.items
-//            else{
-//                print("Found error while Youtube read scope: \(error!).")
-//                return
-//            }
-//
-//            if !channels.isEmpty{
-//                var outputText = ""
-//                let channel = response.items![0]
-//                let title = channel.snippet!.title
-//                let description = channel.snippet?.descriptionProperty
-//                let viewCount = channel.statistics?.viewCount
-//                outputText += "title: \(title!)\n"
-//                outputText += "description: \(description!)\n"
-//                outputText += "view count: \(viewCount!)\n"
-//
-//                //added bty Chris
-//                if let playListIdForUploads = channel.contentDetails?.relatedPlaylists?.uploads{
-//                    print("uploadListId is ===> \(playListIdForUploads)")
-//                   self.fetchUploadsResource(playListIdForUploads)
-//                }else{
-//                    print("Fail to get the uploadListId !!!!!");
-//                }
-//                print(outputText)
-////                self.output.text = outputText
-//
-//            }
-//        }
-//    }
-   /*
-    'https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cid&playlistId=UUMg4QJXtDH-VeoJvlEpfEYg&key=[YOUR_API_KEY]' \
-    --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-    --header 'Accept: application/json' \
-    --compressed
-    */
+    //    func fetchChannelResource() {
+    ////        let query = GTLRYouTubeQuery_ChannelsList.query(withPart: "snippet,statistics,contentDetails")
+    //        let query = GTLRYouTubeQuery_ChannelsList.query(withPart: "snippet,statistics,contentDetails")
+    //        print("Querty :  \(query)")
+    //        query.mine = true
+    //        service.executeQuery(query) { _, result, error in
+    //            guard let response = result as? GTLRYouTube_ChannelListResponse ,
+    //                  let channels = response.items
+    //            else{
+    //                print("Found error while Youtube read scope: \(error!).")
+    //                return
+    //            }
+    //
+    //            if !channels.isEmpty{
+    //                var outputText = ""
+    //                let channel = response.items![0]
+    //                let title = channel.snippet!.title
+    //                let description = channel.snippet?.descriptionProperty
+    //                let viewCount = channel.statistics?.viewCount
+    //                outputText += "title: \(title!)\n"
+    //                outputText += "description: \(description!)\n"
+    //                outputText += "view count: \(viewCount!)\n"
+    //
+    //                //added bty Chris
+    //                if let playListIdForUploads = channel.contentDetails?.relatedPlaylists?.uploads{
+    //                    print("uploadListId is ===> \(playListIdForUploads)")
+    //                   self.fetchUploadsResource(playListIdForUploads)
+    //                }else{
+    //                    print("Fail to get the uploadListId !!!!!");
+    //                }
+    //                print(outputText)
+    ////                self.output.text = outputText
+    //
+    //            }
+    //        }
+    //    }
+    /*
+     'https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cid&playlistId=UUMg4QJXtDH-VeoJvlEpfEYg&key=[YOUR_API_KEY]' \
+     --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
+     --header 'Accept: application/json' \
+     --compressed
+     */
     
-//    func fetchUploadsResource(_ playListIdForUploads:String) {
-//        let query = GTLRYouTubeQuery_PlaylistItemsList.query(withPart: "snippet,contentDetails,id")
-//        query.playlistId = playListIdForUploads
-//        query.maxResults = 10
-//        //query.pageToken = "EAAaBlBUOkNCUQ"
-//        
-//        service.executeQuery(query) { _, result, error in
-//            guard let response = result as? GTLRYouTube_PlaylistItemListResponse
-//            else{
-//                print("Found error while Youtube read scope: \(error!).")
-//                return
-//            }
-//            print(response.json!)
-//            
-////            let data = response.jsonString().data(using: .utf8)!
-////            let items = try! JSONDecoder().decode(Items.self,from: data)
-////
-////            print("items pageInfo \(items.pageInfo)")
-////            //prepare date  convertion
-////            let localISOFormatter = ISO8601DateFormatter()
-////            localISOFormatter.timeZone = TimeZone.current
-////            // Parsing a string timestamp representing a date
-////            //            let dateString = "2019-09-22T07:15:56Z"
-////            //            if  let localDate :Date = localISOFormatter.date(from: dateString){
-////            //            print(localDate)
-////            //            }
-////            //prepare coredate
-////            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-////                return
-////            }
-////            let managedContext = appDelegate.persistentContainer.viewContext
-////            items.items.forEach { item in
-////                let entity = NSEntityDescription.entity(forEntityName: "Video", in: managedContext)!
-////                let video =  NSManagedObject(entity: entity, insertInto: managedContext)
-////                video.setValue(item.id, forKeyPath: "id")
-////                video.setValue(item.etag, forKeyPath: "etag")
-////
-////                video.setValue(item.contentDetails.videoID, forKeyPath: "videoId")
-////                if  let localDate :Date = localISOFormatter.date(from: item.contentDetails.videoPublishedAt){
-////                    video.setValue(localDate, forKey: "publishedAt")
-////                }
-////                video.setValue(item.snippet.playlistID, forKey: "playListId")
-////                video.setValue(item.snippet.title, forKeyPath: "title")
-////                video.setValue(item.snippet.snippetDescription, forKeyPath: "videoDescription")
-////                video.setValue(item.snippet.channelID, forKeyPath: "channelId")
-////                video.setValue(item.snippet.channelTitle, forKeyPath: "channelTitle")
-////                video.setValue(item.snippet.position, forKeyPath: "position")
-////
-////
-////
-////                //Default image
-////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.url,    forKeyPath: "thumbnailDefaultURL")
-////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.width,  forKeyPath: "thumbnailDefaultWidth")
-////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.height, forKeyPath: "thumbnailDefaultHeight")
-////                //High image
-////                video.setValue(item.snippet.thumbnails.high?.url,    forKeyPath: "thumbnailHighURL")
-////                video.setValue(item.snippet.thumbnails.high?.width,  forKeyPath: "thumbnailHighWidth")
-////                video.setValue(item.snippet.thumbnails.high?.height, forKeyPath: "thumbnailHighHeight")
-////                //Maxres Image
-////                video.setValue(item.snippet.thumbnails.maxres?.url,   forKeyPath: "thumbnailMaxresURL")
-////                video.setValue(item.snippet.thumbnails.maxres?.width, forKeyPath: "thumbnailMaxresWidth")
-////                video.setValue(item.snippet.thumbnails.maxres?.height, forKeyPath: "thumbnailMaxresHeight")
-////                //Medium Image
-////                video.setValue(item.snippet.thumbnails.medium?.url,    forKeyPath: "thumbnailMediumURL")
-////                video.setValue(item.snippet.thumbnails.medium?.width,  forKeyPath: "thumbnailMediumWidth")
-////                video.setValue(item.snippet.thumbnails.medium?.height, forKeyPath: "thumbnailMediumHeight")
-////                //Standard Image
-////                video.setValue(item.snippet.thumbnails.standard?.url,    forKeyPath: "thumbnailStandardURL")
-////                video.setValue(item.snippet.thumbnails.standard?.width,  forKeyPath: "thumbnailStandardWidth")
-////                video.setValue(item.snippet.thumbnails.standard?.height, forKeyPath: "thumbnailStandardHeight")
-////
-////
-////
-////                do{
-////                    try managedContext.save()
-////
-////                }catch let error as NSError{
-////                    print("Could not save. \(error), \(error.userInfo)")
-////                }
-////            }
-//
-//            
-//            
-//            
-//            //           error message is important when it need a test
-//            //            do{
-//            //                 items = try JSONDecoder().decode(Items.self,from: data)
-//            //
-//            //            }catch{
-//            //                print(error)
-//            //            }
-//            
-//        }
-//    }
+    //    func fetchUploadsResource(_ playListIdForUploads:String) {
+    //        let query = GTLRYouTubeQuery_PlaylistItemsList.query(withPart: "snippet,contentDetails,id")
+    //        query.playlistId = playListIdForUploads
+    //        query.maxResults = 10
+    //        //query.pageToken = "EAAaBlBUOkNCUQ"
+    //
+    //        service.executeQuery(query) { _, result, error in
+    //            guard let response = result as? GTLRYouTube_PlaylistItemListResponse
+    //            else{
+    //                print("Found error while Youtube read scope: \(error!).")
+    //                return
+    //            }
+    //            print(response.json!)
+    //
+    ////            let data = response.jsonString().data(using: .utf8)!
+    ////            let items = try! JSONDecoder().decode(Items.self,from: data)
+    ////
+    ////            print("items pageInfo \(items.pageInfo)")
+    ////            //prepare date  convertion
+    ////            let localISOFormatter = ISO8601DateFormatter()
+    ////            localISOFormatter.timeZone = TimeZone.current
+    ////            // Parsing a string timestamp representing a date
+    ////            //            let dateString = "2019-09-22T07:15:56Z"
+    ////            //            if  let localDate :Date = localISOFormatter.date(from: dateString){
+    ////            //            print(localDate)
+    ////            //            }
+    ////            //prepare coredate
+    ////            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+    ////                return
+    ////            }
+    ////            let managedContext = appDelegate.persistentContainer.viewContext
+    ////            items.items.forEach { item in
+    ////                let entity = NSEntityDescription.entity(forEntityName: "Video", in: managedContext)!
+    ////                let video =  NSManagedObject(entity: entity, insertInto: managedContext)
+    ////                video.setValue(item.id, forKeyPath: "id")
+    ////                video.setValue(item.etag, forKeyPath: "etag")
+    ////
+    ////                video.setValue(item.contentDetails.videoID, forKeyPath: "videoId")
+    ////                if  let localDate :Date = localISOFormatter.date(from: item.contentDetails.videoPublishedAt){
+    ////                    video.setValue(localDate, forKey: "publishedAt")
+    ////                }
+    ////                video.setValue(item.snippet.playlistID, forKey: "playListId")
+    ////                video.setValue(item.snippet.title, forKeyPath: "title")
+    ////                video.setValue(item.snippet.snippetDescription, forKeyPath: "videoDescription")
+    ////                video.setValue(item.snippet.channelID, forKeyPath: "channelId")
+    ////                video.setValue(item.snippet.channelTitle, forKeyPath: "channelTitle")
+    ////                video.setValue(item.snippet.position, forKeyPath: "position")
+    ////
+    ////
+    ////
+    ////                //Default image
+    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.url,    forKeyPath: "thumbnailDefaultURL")
+    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.width,  forKeyPath: "thumbnailDefaultWidth")
+    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.height, forKeyPath: "thumbnailDefaultHeight")
+    ////                //High image
+    ////                video.setValue(item.snippet.thumbnails.high?.url,    forKeyPath: "thumbnailHighURL")
+    ////                video.setValue(item.snippet.thumbnails.high?.width,  forKeyPath: "thumbnailHighWidth")
+    ////                video.setValue(item.snippet.thumbnails.high?.height, forKeyPath: "thumbnailHighHeight")
+    ////                //Maxres Image
+    ////                video.setValue(item.snippet.thumbnails.maxres?.url,   forKeyPath: "thumbnailMaxresURL")
+    ////                video.setValue(item.snippet.thumbnails.maxres?.width, forKeyPath: "thumbnailMaxresWidth")
+    ////                video.setValue(item.snippet.thumbnails.maxres?.height, forKeyPath: "thumbnailMaxresHeight")
+    ////                //Medium Image
+    ////                video.setValue(item.snippet.thumbnails.medium?.url,    forKeyPath: "thumbnailMediumURL")
+    ////                video.setValue(item.snippet.thumbnails.medium?.width,  forKeyPath: "thumbnailMediumWidth")
+    ////                video.setValue(item.snippet.thumbnails.medium?.height, forKeyPath: "thumbnailMediumHeight")
+    ////                //Standard Image
+    ////                video.setValue(item.snippet.thumbnails.standard?.url,    forKeyPath: "thumbnailStandardURL")
+    ////                video.setValue(item.snippet.thumbnails.standard?.width,  forKeyPath: "thumbnailStandardWidth")
+    ////                video.setValue(item.snippet.thumbnails.standard?.height, forKeyPath: "thumbnailStandardHeight")
+    ////
+    ////
+    ////
+    ////                do{
+    ////                    try managedContext.save()
+    ////
+    ////                }catch let error as NSError{
+    ////                    print("Could not save. \(error), \(error.userInfo)")
+    ////                }
+    ////            }
+    //
+    //
+    //
+    //
+    //            //           error message is important when it need a test
+    //            //            do{
+    //            //                 items = try JSONDecoder().decode(Items.self,from: data)
+    //            //
+    //            //            }catch{
+    //            //                print(error)
+    //            //            }
+    //
+    //        }
+    //    }
     
     
     /// Disconnects the previously granted scope and signs the user out.
     func disconnectAdditionalScope() {
         GIDSignIn.sharedInstance.disconnect { error in
-          if let error = error {
-            print("Encountered error disconnecting scope: \(error).")
-          }
+            if let error = error {
+                print("Encountered error disconnecting scope: \(error).")
+            }
         }
     }
     
-
+    
 }

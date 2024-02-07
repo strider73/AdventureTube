@@ -39,9 +39,7 @@ class LoginManager : ObservableObject  {
     //it will initailized when it called first time
     //
     //only stored property require evaluated in the intialization process
-    private var loginService : LoginServiceProtocol {
-        return GoogleLoginService(loginManager: self)
-    }
+    private var loginService : LoginServiceProtocol?
     
     
     /*
@@ -86,32 +84,46 @@ class LoginManager : ObservableObject  {
      and that  different service can be assigned using a dependencey injection
      
      */
-    func signIn(completion:@escaping () -> Void){
-        //TODO can be assigned different Login Service 
+    func googleSignIn(completion:@escaping () -> Void){
+        //TODO can be assigned different Login Service so  loginService property need to be assigned accordingly
+
+        loginService = GoogleLoginService(loginManager: self)
         
-        loginService.signIn { [weak self] adventureUser in
-            //check the user data
-            print("loginService.login completionHandlder =======>")
-            print(adventureUser.signed_in)
-            print("user fullName \(adventureUser.fullName ?? "No FallName")")
-            print("user email \(adventureUser.emailAddress ?? "No Email")")
-            print("user token  \(adventureUser.idToken?.count ?? 0)")
-            
-            // update user object 
-            self?.userData = adventureUser
-            completion()
+        if let loginService = loginService{
+            loginService.signIn{ [weak self] adventureUser in
+                //check the user data
+                print("loginService.login completionHandlder =======>")
+                print(adventureUser.signed_in)
+                print("user fullName \(adventureUser.fullName ?? "No FallName")")
+                print("user email \(adventureUser.emailAddress ?? "No Email")")
+                print("user token  \(adventureUser.idToken?.count ?? 0)")
+                
+                // update user object
+                self?.userData = adventureUser
+                completion()
+            }
         }
 
     }
-   
+    func facebookSignIn(){
+        print("No Facebook SignIn Support Yet")
+    }
+    
+    
+    func twitterSignIn(){
+        print("No Twitter SignIn Support Yet")
+    }
+    
     
     func signOut(){
-        //delete User deafult
-        UserDefaults.resetStandardUserDefaults()
-        //disconnect youtube access
-        loginService.disconnectAdditionalScope()
-        //sign out from google
-        loginService.signOut()
+        if let loginService = loginService{
+            //delete User deafult
+            UserDefaults.resetStandardUserDefaults()
+            //disconnect youtube access
+            loginService.disconnectAdditionalScope()
+            //sign out from google
+            loginService.signOut()
+        }
         
         
     }
@@ -132,7 +144,9 @@ class LoginManager : ObservableObject  {
         /// reinitalize MyStoriesView and also create New YoutubeService with New MyStoryListViewModel
         /// will be the reason of deinitialize of origianal both object 
         //loginState = .youtubeAccessRequest
-        loginService.addMoreScope(completion:completion)
+        if let loginService = loginService {
+            loginService.addMoreScope(completion:completion)
+        }
     }
     
     
@@ -169,5 +183,14 @@ extension LoginManager  {
         case signedIn(GIDGoogleUser)
         case signedOut
         case initial
+    }
+}
+
+
+extension LoginManager {
+    enum LoginFrom:Equatable{
+        case Google
+        case Facebook
+        case instagram
     }
 }
