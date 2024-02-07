@@ -64,7 +64,7 @@ struct LoginView: View {
                     Image("FacebookLogin_type1")
                         .loginButton()
                     Button(action: {
-                        loginManager.signIn{
+                        loginManager.googleSignIn{
                             //This closure will called after login finished
                             print("need to be redirect ")
                         }

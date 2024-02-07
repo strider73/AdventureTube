@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 protocol LoginServiceProtocol {
     
     func signIn(completion:@escaping(_ userData : UserModel) -> ())
