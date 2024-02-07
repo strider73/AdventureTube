@@ -7,7 +7,7 @@
 
 import SwiftUI
 import GoogleSignIn
-
+//TODO: This is the view to make decison of implementation of LoginServiceProtocol 
 struct LoginView: View {
     
     @EnvironmentObject private var loginManager : LoginManager
