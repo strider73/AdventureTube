@@ -17,6 +17,7 @@ struct AdventureTubeApp: App {
     //    let persistenceController = PersistenceController.shared
     
     // initializae SettingViewModel and store as environmentObject
+    //TODO: loginManager has to be ready for other social Login Service 
     @StateObject private var loginManager : LoginManager = LoginManager()
     @StateObject private var customTabVM : CustomTabBarViewVM = CustomTabBarViewVM()
 
