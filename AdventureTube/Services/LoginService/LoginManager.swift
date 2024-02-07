@@ -5,10 +5,20 @@
 //  Created by chris Lee on 21/1/22.
 //
 
+
+//TODO: loginService injection
+/*
+ 
+ in LoginManager I've used Dependecy injection with Protocol
+ in order to prepare to use other login service
+ but since its currently google  only using computed property instead atm.
+ 
+ */
+
 import Foundation
 import GoogleSignIn
 
-class LoginManager : ObservableObject {
+class LoginManager : ObservableObject  {
     @Published  var userData : UserModel = UserModel()
     @Published  var loginState : State = .initial{
           willSet(loginState){
@@ -25,7 +35,6 @@ class LoginManager : ObservableObject {
         }
     }
     
-//    var loginService : LoginServiceProtocol = GoogleSignInAuthenticator(loginManager: self) => This is not working
     //This is computed value and will not evalueated and
     //it will initailized when it called first time
     //
