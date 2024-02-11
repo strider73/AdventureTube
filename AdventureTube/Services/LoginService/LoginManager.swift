@@ -35,37 +35,45 @@ class LoginManager : ObservableObject  {
         }
     }
     
-    //This is computed value and will not evalueated and
-    //it will initailized when it called first time
-    //
-    //only stored property require evaluated in the intialization process
+    //TODO:Google Login only at ths moment so loginService property setting need to change later
     private var loginService : LoginServiceProtocol?
     
-    
-    /*
-     must be initiated only once but not able to guarrenty here
-     */
     init(){
         //check the UserDefault
         print("init LoginManager")
         do{
             let adventureUser = try UserDefaults.standard.getObject(forKey: "user", castTo: UserModel.self)
             
-            GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
-                if let user = user {
-                    self.loginState = .signedIn(user)
-                    print("email : \(adventureUser.emailAddress as String?)")
-                    print("fullName  : \(adventureUser.fullName as String?)")
-                    print("profilePicUrl  : \(adventureUser.profilePicUrl as String?)")
-                    self.userData = adventureUser
-                    print("user setting has been stored in enviromentObject")
-                } else if let error = error {
-                    self.loginState = .signedOut
-                    print("There was an error restoring the previous sign-in: \(error)")
-                } else {
-                    self.loginState = .signedOut
-                    print("user state signed out ")
-                }
+            switch(adventureUser.loginSource){
+                case .google:
+                    loginService = GoogleLoginService(loginManager: self)
+
+                    GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                        if let user = user {
+                            self.loginState = .signedIn(user)
+                            print("email : \(adventureUser.emailAddress as String?)")
+                            print("fullName  : \(adventureUser.fullName as String?)")
+                            print("profilePicUrl  : \(adventureUser.profilePicUrl as String?)")
+                            self.userData = adventureUser
+                            print("user setting has been stored in enviromentObject")
+                        } else if let error = error {
+                            self.loginState = .signedOut
+                            print("There was an error restoring the previous sign-in: \(error)")
+                        } else {
+                            self.loginState = .signedOut
+                            print("user state signed out ")
+                        }
+                    }
+                case .apple:
+                    print("apple login is not implemented yet")
+                case .facebook:
+                    print("facebook login is not implemented yet")
+                case .instagram:
+                    print("instagram login is not implemented yet")
+                case .twitter:
+                    print("twitter login  is not implemented yet")
+                case .none:
+                    print("user never been signed in !!!")
             }
             
         }catch{
@@ -187,10 +195,3 @@ extension LoginManager  {
 }
 
 
-extension LoginManager {
-    enum LoginFrom:Equatable{
-        case Google
-        case Facebook
-        case instagram
-    }
-}

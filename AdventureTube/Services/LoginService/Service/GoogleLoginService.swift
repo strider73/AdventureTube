@@ -63,10 +63,12 @@ final class GoogleLoginService: LoginServiceProtocol {
         
         GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { signInResult, error in
             
+            //step1  make sure there is no error in signIn process
             guard error == nil else {
                 print("Error! \(String(describing: error))")
                 return
             }
+            //step2 get the signInResult
             guard let signInResult = signInResult else { return }
             let user = signInResult.user
             print("Initial Google Signed in Success")
@@ -78,13 +80,14 @@ final class GoogleLoginService: LoginServiceProtocol {
             let familyName = user.profile?.familyName ?? "No Family Name"
             let profilePicUrl = user.profile?.imageURL(withDimension: 320) ?? URL(string: "No image URL")
             
-            
+            //create adventuretube userModel base on information from google user object 
             var adventureUser  = UserModel(signed_in: true,
                                            emailAddress: emailAddress,
                                            fullName: fullName,
                                            givenName: givenName,
                                            familyName: familyName,
-                                           profilePicUrl: profilePicUrl?.absoluteString)
+                                           profilePicUrl: profilePicUrl?.absoluteString,
+                                           loginSource: .google)
             
             
             
