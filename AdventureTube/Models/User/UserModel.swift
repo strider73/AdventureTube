@@ -13,7 +13,7 @@ struct UserModel : Codable{
     //User Profile Data
 //    @AppStorage("signed_in")    var currentUserSignedIn : Bool = false
 //    @AppStorage("emailAddress") var emailAddress : String = ""
-//    @AppStorage("fullName")     var fullName : String = ""
+//    @AppStorage("fullName")     var fullName : String = ""switch
 //    @AppStorage("givenName")    var givenName : String = ""
 //    @AppStorage("familyName")   var familyName : String = ""
 //    @AppStorage("profilePicUrl")var profilePicUrl : String = ""
@@ -29,6 +29,7 @@ struct UserModel : Codable{
     var profilePicUrl : String?
     
     var idToken : String?
+    var loginSource : LoginSource?
     
     enum UserKeys: String {
         case signed_in
@@ -37,6 +38,7 @@ struct UserModel : Codable{
         case givenName 
         case familyName
         case profilePicUrl
+        case loginSource
     }
 }
 
