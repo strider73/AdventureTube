@@ -116,62 +116,64 @@ enum Category : String ,CaseIterable ,Identifiable  , Codable{
          party,beer,music,
          
          unknown
-    
     var key: String {
-        switch self{
-        case .camping :
-            return "camping"
-        case .hiking :
-            return "hiking"
-        case .campfire :
-            return "campfire"
-        case .geocaching :
-            return "geocaching"
-        case .cooking :
-            return "cooking"
-        case .caravan :
-            return "caravan"
-        case .bbq :
-            return "bbq"
-        case .lookout :
-            return "lookout"
-        case .driving :
-            return "driving"
-        case .navigation :
-            return "navigation"
+      return rawValue
 
-
-        case .swimming :
-            return "swimming"
-        case .mtb :
-            return "mtb"
-        case .marine :
-            return "marine"
-        case .fishing :
-            return "fishing"
-        case .dirtbike :
-            return "dirtbike"
-        case .surf :
-            return "surf"
-        case .scubadiving :
-            return "scubadiving"
-        case .kayak :
-            return "kayak"
-
-        case .party :
-            return "party"
-        case .beer :
-            return "beer"
-        case .music :
-            return "music"
-            
-        case .unknown :
-             return "unknown"
-
-//        default :
-//            return "unknown"
-
-        }
+//    var key: String {
+//        switch self{
+//        case .camping :
+//            return "camping"
+//        case .hiking :
+//            return "hiking"
+//        case .campfire :
+//            return "campfire"
+//        case .geocaching :
+//            return "geocaching"
+//        case .cooking :
+//            return "cooking"
+//        case .caravan :
+//            return "caravan"
+//        case .bbq :
+//            return "bbq"
+//        case .lookout :
+//            return "lookout"
+//        case .driving :
+//            return "driving"
+//        case .navigation :
+//            return "navigation"
+//
+//
+//        case .swimming :
+//            return "swimming"
+//        case .mtb :
+//            return "mtb"
+//        case .marine :
+//            return "marine"
+//        case .fishing :
+//            return "fishing"
+//        case .dirtbike :
+//            return "dirtbike"
+//        case .surf :
+//            return "surf"
+//        case .scubadiving :
+//            return "scubadiving"
+//        case .kayak :
+//            return "kayak"
+//
+//        case .party :
+//            return "party"
+//        case .beer :
+//            return "beer"
+//        case .music :
+//            return "music"
+//            
+//        case .unknown :
+//             return "unknown"
+//
+////        default :
+////            return "unknown"
+//
+//        }
     }
     //https://stackoverflow.com/questions/35119647/overriding-enum-initrawvalue-string-to-not-be-optional 3rd solution
     static func build(rawValue: String ) -> Category {

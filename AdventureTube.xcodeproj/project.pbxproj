@@ -126,6 +126,7 @@
 		B419E1B12885847500F669CA /* AdventureTube.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B419E1AF2885847500F669CA /* AdventureTube.xcdatamodeld */; };
 		B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */; };
 		B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */; };
+		B46829C22B749F7700DCE22B /* LoginSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46829C12B749F7700DCE22B /* LoginSource.swift */; };
 		B469E483288E465B003EB360 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E482288E465B003EB360 /* Array.swift */; };
 		B469E485288EC402003EB360 /* OrderedArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E484288EC402003EB360 /* OrderedArray.swift */; };
 		B469E488288F693C003EB360 /* UserDefaultPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E487288F693B003EB360 /* UserDefaultPublisher.swift */; };
@@ -289,6 +290,7 @@
 		B419E1B02885847500F669CA /* AdventureTube.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventureTube.xcdatamodel; sourceTree = "<group>"; };
 		B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeApp.swift; sourceTree = "<group>"; };
 		B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
+		B46829C12B749F7700DCE22B /* LoginSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSource.swift; sourceTree = "<group>"; };
 		B469E482288E465B003EB360 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		B469E484288EC402003EB360 /* OrderedArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedArray.swift; sourceTree = "<group>"; };
 		B469E487288F693B003EB360 /* UserDefaultPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultPublisher.swift; sourceTree = "<group>"; };
@@ -433,10 +435,9 @@
 		B4003AF1288525E4002926F1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B46829C42B74A41200DCE22B /* User */,
+				B46829C32B74A3BF00DCE22B /* Youtube */,
 				B40118082B182BA100AA9286 /* Test */,
-				B4003AF2288525E4002926F1 /* YoutubeChannelResource.swift */,
-				B4003AF5288525E4002926F1 /* UserModel.swift */,
-				B4003AF6288525E4002926F1 /* YoutubeContentResource.swift */,
 				B4003AF7288525E4002926F1 /* GoogleModel */,
 			);
 			path = Models;
@@ -827,6 +828,24 @@
 				B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B46829C32B74A3BF00DCE22B /* Youtube */ = {
+			isa = PBXGroup;
+			children = (
+				B4003AF6288525E4002926F1 /* YoutubeContentResource.swift */,
+				B4003AF2288525E4002926F1 /* YoutubeChannelResource.swift */,
+			);
+			path = Youtube;
+			sourceTree = "<group>";
+		};
+		B46829C42B74A41200DCE22B /* User */ = {
+			isa = PBXGroup;
+			children = (
+				B46829C12B749F7700DCE22B /* LoginSource.swift */,
+				B4003AF5288525E4002926F1 /* UserModel.swift */,
+			);
+			path = User;
 			sourceTree = "<group>";
 		};
 		B469E486288F6917003EB360 /* UserDefaulPublisher */ = {
@@ -1237,6 +1256,7 @@
 				B4003B7B288525E5002926F1 /* KeyboardPublisher.swift in Sources */,
 				B4003ACF288525B0002926F1 /* HomeView.swift in Sources */,
 				B4003BB0288525E5002926F1 /* MyStoryListView.swift in Sources */,
+				B46829C22B749F7700DCE22B /* LoginSource.swift in Sources */,
 				B4003BDE288525E5002926F1 /* Overlay.swift in Sources */,
 				B4003B8D288525E5002926F1 /* AdventureTubeData.swift in Sources */,
 				B4003BCE288525E5002926F1 /* LoginServiceProtocol.swift in Sources */,
