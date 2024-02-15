@@ -8,7 +8,9 @@
 import Foundation
 import SwiftUI
 
-enum TabBarItemInfoEnum : Hashable {
+enum TabBarItemInfoEnum : String , Hashable ,Identifiable {
+    var id: String {return self.rawValue}
+    
     case storymap  , mystory , savedstory , setting
     
     var iconName : String {

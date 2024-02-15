@@ -42,8 +42,11 @@ class LoginManager : ObservableObject  {
         //check the UserDefault
         print("init LoginManager")
         do{
+            //step1 bring the userModel from the UserDefault Object
             let adventureUser = try UserDefaults.standard.getObject(forKey: "user", castTo: UserModel.self)
             
+            
+            //step2 check the loginSource and initiate loginService instance accordinly
             switch(adventureUser.loginSource){
                 case .google:
                     loginService = GoogleLoginService(loginManager: self)

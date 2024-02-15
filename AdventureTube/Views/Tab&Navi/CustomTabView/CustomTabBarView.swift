@@ -19,7 +19,7 @@ struct CustomTabBarView: View {
     
     var body: some View {
         HStack {
-            ForEach(tabs, id: \.self) { tab in
+            ForEach(tabs) { tab in
                 tabView1(tab: tab)
                     .onTapGesture {
                         switchToTab(tab: tab)
