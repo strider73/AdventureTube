@@ -8,6 +8,21 @@
 import Foundation
 import SwiftUI
 
+enum APIService :String {
+    
+    case  rasberryTestServer , AWSRealServer
+    
+    var address : String {
+        switch self {
+            case .rasberryTestServer :
+                return "https://mobile.adventuretube.net/api/v1"
+               //   return  "https://192.168.1.100:8888/api/vi/adventuretubedata"
+            case .AWSRealServer :
+                return ""
+        }
+    }
+}
+
 enum ColorConstant : Hashable {
     case  background , foreground , videobackground
     
