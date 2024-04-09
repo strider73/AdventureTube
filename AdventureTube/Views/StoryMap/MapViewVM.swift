@@ -66,20 +66,19 @@ class MapViewVM : ObservableObject {
     }
     
     //Search area is circle base on center point
-    func generateEndpoint( maxDistance: Double = 2) -> String {
-        return "http://192.168.1.106:8888/api/v1/restaurants/near?longitude=\(centerPoint.latitude)&latitude=\(centerPoint.latitude)&maxDistance=\(maxDistance)"    }
+//    func generateEndpoint( maxDistance: Double = 2) -> String {
+//        return "http://192.168.1.106:8888/api/v1/restaurants/near?longitude=\(centerPoint.latitude)&latitude=\(centerPoint.latitude)&maxDistance=\(maxDistance)"    }
     
     //Search area is square base on two edge position 
     func generateEndpoint2( maxDistance: Double = 0.2) -> String {
-        return "https://mobile.adventuretripvideo.com/api/v1/restaurants/locations-in-bounding-box?swLon=\(southWestCoordinate.longitude)&swLat=\(southWestCoordinate.latitude)&neLon=\(northEastCoordinate.longitude)&neLat=\(northEastCoordinate.latitude)"
+        return "\(APIService.rasberryTestServer.address)/restaurants/locations-in-bounding-box?swLon=\(southWestCoordinate.longitude)&swLat=\(southWestCoordinate.latitude)&neLon=\(northEastCoordinate.longitude)&neLat=\(northEastCoordinate.latitude)"
     }
     
     
     func fetchRestaurants() {
         // Replace the endpoint with your actual API endpoint
         let endpoint = generateEndpoint2()
-        //let endpoint = "http://192.168.1.106:8888/api/v1/restaurants"
-        //let endpoint = "https://mobile.adventuretripvideo.com/api/v1/restaurants"
+  
         
         //validate end point and return here if fail
         

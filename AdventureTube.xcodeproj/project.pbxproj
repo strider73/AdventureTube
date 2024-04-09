@@ -859,6 +859,7 @@
 		B48C345128851BB7005AA142 = {
 			isa = PBXGroup;
 			children = (
+				B4F291D72BC4D1B2006F99F2 /* ImageForReadme */,
 				B46A2C0C2B04541800C54E5D /* README.md */,
 				B4003ABC288523CB002926F1 /* Resources */,
 				B48C345C28851BB7005AA142 /* AdventureTube */,
@@ -953,6 +954,13 @@
 				B4D4F0892B0EDB1800F6C1CB /* TestScrollView.swift */,
 			);
 			path = TestUI;
+			sourceTree = "<group>";
+		};
+		B4F291D72BC4D1B2006F99F2 /* ImageForReadme */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ImageForReadme;
 			sourceTree = "<group>";
 		};
 		B901FED697C24E57499413A4 /* Pods */ = {
