@@ -33,3 +33,9 @@ External SNS Service
 Observing changes to managed objects across contexts with Combine(https://www.donnywals.com/observing-changes-to-managed-objects-across-contexts-with-combine/)
 
      This allows to observe specific managed objects across different contexts so app UI can easily update  when that managed object was changed on a background queue.
+
+
+
+GoogleMapView https://developers.google.com/codelabs/maps-platform/maps-platform-ios-swiftui#0
+
+     1.Setup Google Cloud Platform
