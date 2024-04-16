@@ -17,7 +17,7 @@ class MapViewVM : ObservableObject {
     //here is the the very first place that initialize googleMap and Place API Service using a API_KEY !!!!
     private let googleMapAPIService  = GoogleMapAndPlaceAPIService()
     
-    private var apiService = AdventureTubeAPIService.shared
+    private var adventureTubeApiService = AdventureTubeAPIService.shared
     private var cancellables = Set<AnyCancellable>()
     
     //    @Published var restaurants: [Restaurants] = []{
@@ -83,7 +83,7 @@ class MapViewVM : ObservableObject {
         //validate end point and return here if fail
         
         
-        apiService.getData(endpoint: endpoint, type: [Restaurant].self)
+        adventureTubeApiService.getData(endpoint: endpoint, type: [Restaurant].self)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self = self else { return }
                 

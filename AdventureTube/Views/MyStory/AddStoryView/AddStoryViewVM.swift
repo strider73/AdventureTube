@@ -440,7 +440,7 @@ class AddStoryViewVM : ObservableObject {
         do {
             if let storyEntity = targetStoryEntity {
                 
-                guard let url = URL(string: APIService.rasberryTestServer.address) else { return }
+                guard let url = URL(string: APIService.rasberryTestServer.address+"/adventuretubedata") else { return }
                 var request = URLRequest(url: url)
                 request.httpMethod = "POST"
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")

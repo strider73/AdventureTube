@@ -25,9 +25,12 @@ import GoogleMapsUtils
  */
 
 struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
+   
     
-    @Binding  var markers:[GMSMarker]
+    //    @Binding  var markers:[GMSMarker]  no reason to be a @Binding at this moment 
+    var markers:[GMSMarker]
     var getBoxPointOnMap : (CLLocationCoordinate2D,CLLocationCoordinate2D) -> Void
+    
     var markerCountLimitforClsuter = 200
     var markkerZoomLimitForCluster : Float = 14.0
     

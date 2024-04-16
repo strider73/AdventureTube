@@ -4,6 +4,9 @@
 //
 //  Created by chris Lee on 2/5/22.
 //https://www.donnywals.com/observing-changes-to-managed-objects-across-contexts-with-combine/
+/*
+ 
+ */
 
 import Foundation
 import CoreData
@@ -14,11 +17,11 @@ class CoreDataStorage {
     
     
     
-    //in order to make it as easy as possible to be notified of changes to specific managed objects that are
-    //shown in the UI.
-    //By doing write a function tha return a publisher that emits values a certainer managed object changes
-    //
-    //This one can only listen for changes to exiting managed object BUT NOT able to listen insert or delete .
+   /* in order to make it as easy as possible to be notified of changes to specific managed objects that are
+    shown in the UI , by doing write a function tha return a publisher that emits values a certainer managed object changes
+    
+    This one can only listen for changes to exiting managed object BUT NOT able to listen insert or delete .
+    */
     func publisher<T: NSManagedObject>(for managedObject: T,
                                        in context: NSManagedObjectContext) -> AnyPublisher<T, Never> {
         
