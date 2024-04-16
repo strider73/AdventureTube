@@ -35,7 +35,7 @@ struct MapView: View {
     
     
     var storyMap:some View{
-            StoryMapViewControllerBridge(markers: $mapViewVM.markers){southWestCoordinate,northEastCoordinate in
+            StoryMapViewControllerBridge(markers: mapViewVM.markers){southWestCoordinate,northEastCoordinate in
                 mapViewVM.southWestCoordinate = southWestCoordinate
                 mapViewVM.northEastCoordinate = northEastCoordinate
             }
