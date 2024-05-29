@@ -83,7 +83,7 @@ class MapViewVM : ObservableObject {
         //validate end point and return here if fail
         
         
-        adventureTubeApiService.getData(endpoint: endpoint, type: [Restaurant].self)
+        adventureTubeApiService.getData(endpoint: endpoint, returnData: [Restaurant].self)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self = self else { return }
                 
