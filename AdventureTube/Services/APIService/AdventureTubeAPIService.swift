@@ -15,7 +15,7 @@ class AdventureTubeAPIService : NSObject {
     
     private var cancellables = Set<AnyCancellable>() // (3)
     
-    func getData<T: Decodable>(endpoint: String, id: Int? = nil, type: T.Type) -> Future<T, Error> {
+    func getData<T: Decodable>(endpoint: String, id: Int? = nil, returnData: T.Type) -> Future<T, Error> {
         return Future<T, Error> { [weak self] promise in  // (4) -> Future Publisher
             guard let self = self, let url = URL(string: endpoint) else {
                 return promise(.failure(NetworkError.invalidURL))
