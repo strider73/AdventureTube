@@ -680,14 +680,10 @@
 		B4003B47288525E5002926F1 /* CoreDataService */ = {
 			isa = PBXGroup;
 			children = (
-				B4793B102BCEC8BA0000FB5B /* WithCombineroup */,
 				B4793B0F2BCEC48F0000FB5B /* Entity */,
-				B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */,
-				B4003B48288525E5002926F1 /* CoreDataManager.swift */,
-				B4003B49288525E5002926F1 /* CoreDataSaveModelPublisher.swift */,
-				B4003B4A288525E5002926F1 /* CoreDataStorage.swift */,
-				B4003B4D288525E5002926F1 /* CoreDataFetchResultsPublisher.swift */,
-				B4003B4E288525E5002926F1 /* CoreDataDeleteModelPublisher.swift */,
+				B4793B122BD0B98A0000FB5B /* MVVM */,
+				B4793B102BCEC8BA0000FB5B /* WithCombine */,
+				B4793B112BD027910000FB5B /* WithCombine2 */,
 			);
 			path = CoreDataService;
 			sourceTree = "<group>";
@@ -774,6 +770,7 @@
 		B4003B63288525E5002926F1 /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				B4003B60288525E5002926F1 /* UIKit */,
 				B4003B64288525E5002926F1 /* ReadJsonData.swift */,
 				B4003B65288525E5002926F1 /* PreviewProvider.swift */,
 			);
@@ -857,11 +854,31 @@
 			path = Entity;
 			sourceTree = "<group>";
 		};
-		B4793B102BCEC8BA0000FB5B /* WithCombineroup */ = {
+		B4793B102BCEC8BA0000FB5B /* WithCombine */ = {
 			isa = PBXGroup;
 			children = (
+				B4003B49288525E5002926F1 /* CoreDataSaveModelPublisher.swift */,
+				B4003B4D288525E5002926F1 /* CoreDataFetchResultsPublisher.swift */,
+				B4003B4E288525E5002926F1 /* CoreDataDeleteModelPublisher.swift */,
 			);
-			path = WithCombineroup;
+			path = WithCombine;
+			sourceTree = "<group>";
+		};
+		B4793B112BD027910000FB5B /* WithCombine2 */ = {
+			isa = PBXGroup;
+			children = (
+				B4003B4A288525E5002926F1 /* CoreDataStorage.swift */,
+				B4003B48288525E5002926F1 /* CoreDataManager.swift */,
+			);
+			path = WithCombine2;
+			sourceTree = "<group>";
+		};
+		B4793B122BD0B98A0000FB5B /* MVVM */ = {
+			isa = PBXGroup;
+			children = (
+				B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */,
+			);
+			path = MVVM;
 			sourceTree = "<group>";
 		};
 		B48C345128851BB7005AA142 = {
@@ -896,7 +913,6 @@
 				B4003AF1288525E4002926F1 /* Models */,
 				B4003B46288525E5002926F1 /* Services */,
 				B4003B63288525E5002926F1 /* Test */,
-				B4003B60288525E5002926F1 /* UIKit */,
 				B4003AD4288525E4002926F1 /* Util */,
 				B4003AFA288525E4002926F1 /* Views */,
 				B4003ACB28852496002926F1 /* Info.plist */,
