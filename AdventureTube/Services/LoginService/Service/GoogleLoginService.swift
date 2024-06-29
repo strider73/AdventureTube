@@ -35,6 +35,7 @@
 
 import Foundation
 import GoogleSignIn
+import Combine
 //import GoogleAPIClientForREST
 
 /// An observable class for authenticating via Google.
@@ -43,6 +44,8 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     private var loginManager: LoginManager
+    private var cancellables = Set<AnyCancellable>()
+
     
     /// Creates an instance of this authenticator.
     /// - parameter authViewModel: The view model this authenticator will set logged in status on.
@@ -53,7 +56,7 @@ final class GoogleLoginService: LoginServiceProtocol {
     /// Signs in the user based upon the selected account.'
     /// - note: Successful calls to this will set the `authViewModel`'s `state` property.
     
-    func signIn(completion: @escaping (UserModel) -> Void) {
+    func signIn(completion: @escaping (UserModel?) -> Void) {
         
         guard let rootViewController =  UIApplication.shared.windows.first?.rootViewController else {
             print("There is no root view controller!")
@@ -66,10 +69,14 @@ final class GoogleLoginService: LoginServiceProtocol {
             //step1  make sure there is no error in signIn process
             guard error == nil else {
                 print("Error! \(String(describing: error))")
+                completion(nil)
                 return
             }
             //step2 get the signInResult
-            guard let signInResult = signInResult else { return }
+            guard let signInResult = signInResult else { 
+                completion(nil)
+                return
+            }
             let user = signInResult.user
             print("Initial Google Signed in Success")
             
@@ -81,74 +88,131 @@ final class GoogleLoginService: LoginServiceProtocol {
             let profilePicUrl = user.profile?.imageURL(withDimension: 320) ?? URL(string: "No image URL")
             
             //create adventuretube userModel base on information from google user object 
-            var adventureUser  = UserModel(signed_in: true,
-                                           emailAddress: emailAddress,
-                                           fullName: fullName,
-                                           givenName: givenName,
-                                           familyName: familyName,
-                                           profilePicUrl: profilePicUrl?.absoluteString,
-                                           loginSource: .google)
+            var adventureUser  = self.createAdventureUser(from: user);
             
-            
-            
-            signInResult.user.refreshTokensIfNeeded { user, error in
-                guard error == nil else {return}
-                guard let user = user else {return}
+            user.refreshTokensIfNeeded {[weak self] refreshedUSer, error in
+                guard let self = self else {return}
+                guard error == nil else {
+                    completion(nil)
+                    return
+                }
+                guard let refreshedUSer = refreshedUSer else {
+                    completion(nil)
+                    return
+                }
                 
-                if let idToken = user.idToken {
+                if let idToken = refreshedUSer.idToken , let userId = refreshedUSer.userID {
+                    
                     //not quite sure to cast to String type
                     adventureUser.idToken = idToken.tokenString
+                    adventureUser.userId = userId
+                    
+                    sendTokenToBackend(adventureUser: adventureUser)
+                        .sink(receiveCompletion: { completionSink in
+                            switch completionSink {
+                            case .finished:
+                                print("Request finished successfully")
+                            case .failure(let error):
+                                print("Error: \(error.localizedDescription)")
+                                //TODO need to show up error message and ask to retry again later
+                                adventureUser.signed_in = false;
+                                completion(nil)
+                            }
+                        }, receiveValue: { authResponse in
+                            // Process the received authResponse
+                            guard let accessToken = authResponse.accessToken ,
+                                  let refreshToken = authResponse.refreshToken else{
+                                print("Failed to retreive token from backend")
+                                adventureUser.signed_in = false;
+                                completion(nil)
+                                return
+                            }
+                            //TODO need to validate a token later 
+                            adventureUser.adventuretubeJWTToken = accessToken
+                            adventureUser.adventuretubeRefreshJWTToken = refreshToken
+                            print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
+                            let userDefaults = UserDefaults.standard
+                            do {
+                                try userDefaults.setObject(adventureUser, forKey: "user")
+                                print("user data has been setting in user default ")
+                            } catch {
+                                print(error.localizedDescription)
+                            }
+                            self.loginManager.loginState = .signedIn(refreshedUSer)
+                        })
+                        .store(in: &cancellables)
+                    
+               
+                    
                 }else{
                     print("idToken for Backend Server retrieve failed!!!!");
+                    completion(nil)
                 }
-                
-                // Store Data in UserDefault
-                let userDefaults = UserDefaults.standard
-                do {
-                    try userDefaults.setObject(adventureUser, forKey: "user")
-                    print("user data has been setting in user default ")
-                } catch {
-                    print(error.localizedDescription)
-                }
-                self.loginManager.loginState = .signedIn(user)
-                
+
                 // return the data to call back method
                 completion(adventureUser)
                 
             }
-            
-            
-            //get the UserID token
-            /* GoogleSignIn V6.0 pattern need to remmove
-             user.authentication.do { authentication, error in
-             guard error == nil else { return }
-             guard let authentication = authentication else { return }
-             
-             let idToken = authentication.idToken
-             adventureUser.idToken = idToken
-             
-             // Store Data in UserDefault
-             let userDefaults = UserDefaults.standard
-             do {
-             try userDefaults.setObject(adventureUser, forKey: "user")
-             print("user data has been setting in user default ")
-             } catch {
-             print(error.localizedDescription)
-             }
-             self.loginManager.loginState = .signedIn(user)
-             
-             // return the data to call back method
-             completion(adventureUser)
-             }
-             */
-            
-            //            self.loginManager.loginState = .signedIn(googleUser)
+        
             
         }
     }
+      
+    func sendTokenToBackend(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+        guard let url = URL(string: "http://192.168.1.106:8030/auth/register") else {
+            fatalError("Invalid URL")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // Safely unwrap optional properties
+           guard let idToken = adventureUser.idToken,
+                 let fullName = adventureUser.fullName,
+                 let emailAddress = adventureUser.emailAddress,
+                 let password = adventureUser.userId
+            else {
+               fatalError("Missing user information")
+           }
+        let body: [String: Any] = [
+                "googleIdToken": idToken,
+                "username": fullName,
+                "email": emailAddress,
+                "role": "USER",
+                "password": "1111111"
+            ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
+        print("googleIdToken : \(idToken)")
+        return URLSession.shared.dataTaskPublisher(for: request)
+                .tryMap { result -> Data in
+                    guard let httpResponse = result.response as? HTTPURLResponse else {
+                        throw BackendError.unknownError
+                    }
+
+                    if (200...299).contains(httpResponse.statusCode) {
+                        return result.data
+                    } else {
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? "Unknown server error"
+                        throw BackendError.serverError(message: errorMessage)
+                    }
+                }
+                .decode(type: AuthResponse.self, decoder: JSONDecoder())
+                .mapError { error -> BackendError in
+                    if let backendError = error as? BackendError {
+                        return backendError
+                    } else if let decodingError = error as? DecodingError {
+                        return BackendError.decodingError(message: decodingError.localizedDescription)
+                    } else {
+                        return BackendError.unknownError
+                    }
+                }
+                .receive(on: DispatchQueue.main)
+                .eraseToAnyPublisher()
+    }
+
     
-    
-    
+  
     
     //TODO: call this function after create my backend server
     public static func tokenSignInExample(idToken: String) {
@@ -192,6 +256,7 @@ final class GoogleLoginService: LoginServiceProtocol {
     func signOut() {
         GIDSignIn.sharedInstance.signOut()
         loginManager.loginState = .signedOut
+        //sign Out from backend server
     }
     
     
@@ -236,150 +301,21 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     
-    
-    /*
-     'https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics%2CcontentDetails&mine=true&key=[YOUR_API_KEY]' \
-     --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-     --header 'Accept: application/json' \
-     --compressed
-     */
-    //    func fetchChannelResource() {
-    ////        let query = GTLRYouTubeQuery_ChannelsList.query(withPart: "snippet,statistics,contentDetails")
-    //        let query = GTLRYouTubeQuery_ChannelsList.query(withPart: "snippet,statistics,contentDetails")
-    //        print("Querty :  \(query)")
-    //        query.mine = true
-    //        service.executeQuery(query) { _, result, error in
-    //            guard let response = result as? GTLRYouTube_ChannelListResponse ,
-    //                  let channels = response.items
-    //            else{
-    //                print("Found error while Youtube read scope: \(error!).")
-    //                return
-    //            }
-    //
-    //            if !channels.isEmpty{
-    //                var outputText = ""
-    //                let channel = response.items![0]
-    //                let title = channel.snippet!.title
-    //                let description = channel.snippet?.descriptionProperty
-    //                let viewCount = channel.statistics?.viewCount
-    //                outputText += "title: \(title!)\n"
-    //                outputText += "description: \(description!)\n"
-    //                outputText += "view count: \(viewCount!)\n"
-    //
-    //                //added bty Chris
-    //                if let playListIdForUploads = channel.contentDetails?.relatedPlaylists?.uploads{
-    //                    print("uploadListId is ===> \(playListIdForUploads)")
-    //                   self.fetchUploadsResource(playListIdForUploads)
-    //                }else{
-    //                    print("Fail to get the uploadListId !!!!!");
-    //                }
-    //                print(outputText)
-    ////                self.output.text = outputText
-    //
-    //            }
-    //        }
-    //    }
-    /*
-     'https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cid&playlistId=UUMg4QJXtDH-VeoJvlEpfEYg&key=[YOUR_API_KEY]' \
-     --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-     --header 'Accept: application/json' \
-     --compressed
-     */
-    
-    //    func fetchUploadsResource(_ playListIdForUploads:String) {
-    //        let query = GTLRYouTubeQuery_PlaylistItemsList.query(withPart: "snippet,contentDetails,id")
-    //        query.playlistId = playListIdForUploads
-    //        query.maxResults = 10
-    //        //query.pageToken = "EAAaBlBUOkNCUQ"
-    //
-    //        service.executeQuery(query) { _, result, error in
-    //            guard let response = result as? GTLRYouTube_PlaylistItemListResponse
-    //            else{
-    //                print("Found error while Youtube read scope: \(error!).")
-    //                return
-    //            }
-    //            print(response.json!)
-    //
-    ////            let data = response.jsonString().data(using: .utf8)!
-    ////            let items = try! JSONDecoder().decode(Items.self,from: data)
-    ////
-    ////            print("items pageInfo \(items.pageInfo)")
-    ////            //prepare date  convertion
-    ////            let localISOFormatter = ISO8601DateFormatter()
-    ////            localISOFormatter.timeZone = TimeZone.current
-    ////            // Parsing a string timestamp representing a date
-    ////            //            let dateString = "2019-09-22T07:15:56Z"
-    ////            //            if  let localDate :Date = localISOFormatter.date(from: dateString){
-    ////            //            print(localDate)
-    ////            //            }
-    ////            //prepare coredate
-    ////            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-    ////                return
-    ////            }
-    ////            let managedContext = appDelegate.persistentContainer.viewContext
-    ////            items.items.forEach { item in
-    ////                let entity = NSEntityDescription.entity(forEntityName: "Video", in: managedContext)!
-    ////                let video =  NSManagedObject(entity: entity, insertInto: managedContext)
-    ////                video.setValue(item.id, forKeyPath: "id")
-    ////                video.setValue(item.etag, forKeyPath: "etag")
-    ////
-    ////                video.setValue(item.contentDetails.videoID, forKeyPath: "videoId")
-    ////                if  let localDate :Date = localISOFormatter.date(from: item.contentDetails.videoPublishedAt){
-    ////                    video.setValue(localDate, forKey: "publishedAt")
-    ////                }
-    ////                video.setValue(item.snippet.playlistID, forKey: "playListId")
-    ////                video.setValue(item.snippet.title, forKeyPath: "title")
-    ////                video.setValue(item.snippet.snippetDescription, forKeyPath: "videoDescription")
-    ////                video.setValue(item.snippet.channelID, forKeyPath: "channelId")
-    ////                video.setValue(item.snippet.channelTitle, forKeyPath: "channelTitle")
-    ////                video.setValue(item.snippet.position, forKeyPath: "position")
-    ////
-    ////
-    ////
-    ////                //Default image
-    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.url,    forKeyPath: "thumbnailDefaultURL")
-    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.width,  forKeyPath: "thumbnailDefaultWidth")
-    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.height, forKeyPath: "thumbnailDefaultHeight")
-    ////                //High image
-    ////                video.setValue(item.snippet.thumbnails.high?.url,    forKeyPath: "thumbnailHighURL")
-    ////                video.setValue(item.snippet.thumbnails.high?.width,  forKeyPath: "thumbnailHighWidth")
-    ////                video.setValue(item.snippet.thumbnails.high?.height, forKeyPath: "thumbnailHighHeight")
-    ////                //Maxres Image
-    ////                video.setValue(item.snippet.thumbnails.maxres?.url,   forKeyPath: "thumbnailMaxresURL")
-    ////                video.setValue(item.snippet.thumbnails.maxres?.width, forKeyPath: "thumbnailMaxresWidth")
-    ////                video.setValue(item.snippet.thumbnails.maxres?.height, forKeyPath: "thumbnailMaxresHeight")
-    ////                //Medium Image
-    ////                video.setValue(item.snippet.thumbnails.medium?.url,    forKeyPath: "thumbnailMediumURL")
-    ////                video.setValue(item.snippet.thumbnails.medium?.width,  forKeyPath: "thumbnailMediumWidth")
-    ////                video.setValue(item.snippet.thumbnails.medium?.height, forKeyPath: "thumbnailMediumHeight")
-    ////                //Standard Image
-    ////                video.setValue(item.snippet.thumbnails.standard?.url,    forKeyPath: "thumbnailStandardURL")
-    ////                video.setValue(item.snippet.thumbnails.standard?.width,  forKeyPath: "thumbnailStandardWidth")
-    ////                video.setValue(item.snippet.thumbnails.standard?.height, forKeyPath: "thumbnailStandardHeight")
-    ////
-    ////
-    ////
-    ////                do{
-    ////                    try managedContext.save()
-    ////
-    ////                }catch let error as NSError{
-    ////                    print("Could not save. \(error), \(error.userInfo)")
-    ////                }
-    ////            }
-    //
-    //
-    //
-    //
-    //            //           error message is important when it need a test
-    //            //            do{
-    //            //                 items = try JSONDecoder().decode(Items.self,from: data)
-    //            //
-    //            //            }catch{
-    //            //                print(error)
-    //            //            }
-    //
-    //        }
-    //    }
+    private func createAdventureUser(from user: GIDGoogleUser) -> UserModel {
+           let emailAddress = user.profile?.email ?? "No Email"
+           let fullName = user.profile?.name ?? "No Name"
+           let givenName = user.profile?.givenName ?? "No Given Name"
+           let familyName = user.profile?.familyName ?? "No Family Name"
+           let profilePicUrl = user.profile?.imageURL(withDimension: 320)
+           
+           return UserModel(signed_in: true,
+                            emailAddress: emailAddress,
+                            fullName: fullName,
+                            givenName: givenName,
+                            familyName: familyName,
+                            profilePicUrl: profilePicUrl?.absoluteString,
+                            loginSource: .google)
+       }
     
     
     /// Disconnects the previously granted scope and signs the user out.
@@ -392,4 +328,46 @@ final class GoogleLoginService: LoginServiceProtocol {
     }
     
     
+}
+
+
+
+// Define the response model
+struct AuthResponse: Codable {
+    let userDetails: MemberDTO?
+    let accessToken: String?
+    let refreshToken: String?
+    let errorMessage: String?
+
+}
+
+struct MemberDTO: Codable {
+    let id: Int?
+    let email: String?
+    let password: String?
+    let username: String?
+    let googleIdToken: String?
+    let googleIdTokenExp: Int?
+    let googleIdTokenIat: Int?
+    let googleIdTokenSub: String?
+    let googleProfilePicture: String?
+    let channelId: String?
+    let role: String?
+}
+
+enum BackendError: LocalizedError {
+    case serverError(message: String)
+    case decodingError(message: String)
+    case unknownError
+
+    var errorDescription: String? {
+        switch self {
+        case .serverError(let message):
+            return message
+        case .decodingError(let message):
+            return message
+        case .unknownError:
+            return "An unknown error occurred"
+        }
+    }
 }

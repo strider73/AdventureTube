@@ -89,7 +89,7 @@ class LoginManager : ObservableObject  {
     }
 
     
-    /* call the loginService Sign - In (currently GoogleLoginService)
+    /* call the LoginService Sign - In (currently GoogleLoginService)
      
      but since it is protocol it can be different sign - in service like FacebookLogin
      and that  different service can be assigned using a dependencey injection
@@ -102,6 +102,11 @@ class LoginManager : ObservableObject  {
         
         if let loginService = loginService{
             loginService.signIn{ [weak self] adventureUser in
+                guard let adventureUser = adventureUser else {
+                    print("Failed to sign in: adventureUser is nil")
+                    completion()
+                    return
+                }
                 //check the user data
                 print("loginService.login completionHandlder =======>")
                 print(adventureUser.signed_in)
