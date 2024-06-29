@@ -8,7 +8,7 @@
 import Foundation
 protocol LoginServiceProtocol {
     
-    func signIn(completion:@escaping(_ userData : UserModel) -> ())
+    func signIn(completion:@escaping(_ userData : UserModel?) -> ())
     
     func signOut()
     

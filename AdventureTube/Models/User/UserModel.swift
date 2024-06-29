@@ -29,6 +29,9 @@ struct UserModel : Codable{
     var profilePicUrl : String?
     
     var idToken : String?
+    var userId  : String?
+    var adventuretubeJWTToken: String?
+    var adventuretubeRefreshJWTToken: String?
     var loginSource : LoginSource?
     
     enum UserKeys: String {
@@ -39,6 +42,11 @@ struct UserModel : Codable{
         case familyName
         case profilePicUrl
         case loginSource
+        case userId
+        case adventuretubeJWTToken
+        case adventuretubeRefreshJWTToken
+        case isYoutubeAccountReady
+        case idToken
     }
 }
 
