@@ -45,12 +45,14 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     private var loginManager: LoginManager
     private var cancellables = Set<AnyCancellable>()
+    private var adventuretubeAPIService : AdventureTubeAPIPrototol
 
     
     /// Creates an instance of this authenticator.
     /// - parameter authViewModel: The view model this authenticator will set logged in status on.
-    init(loginManager: LoginManager) {
+    init(loginManager: LoginManager, apiService:AdventureTubeAPIPrototol = AdventureTubeAPIService.shared) {
         self.loginManager = loginManager
+        self.adventuretubeAPIService = apiService
     }
     
     /// Signs in the user based upon the selected account.'
@@ -80,13 +82,6 @@ final class GoogleLoginService: LoginServiceProtocol {
             let user = signInResult.user
             print("Initial Google Signed in Success")
             
-            
-            let emailAddress = user.profile?.email ?? "NoEamil"
-            let fullName = user.profile?.name ?? "No Name"
-            let givenName = user.profile?.givenName ?? "No Given Name"
-            let familyName = user.profile?.familyName ?? "No Family Name"
-            let profilePicUrl = user.profile?.imageURL(withDimension: 320) ?? URL(string: "No image URL")
-            
             //create adventuretube userModel base on information from google user object 
             var adventureUser  = self.createAdventureUser(from: user);
             
@@ -107,7 +102,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                     adventureUser.idToken = idToken.tokenString
                     adventureUser.userId = userId
                     
-                    sendTokenToBackend(adventureUser: adventureUser)
+                    adventuretubeAPIService.signIn(adventureUser: adventureUser)
                         .sink(receiveCompletion: { completionSink in
                             switch completionSink {
                             case .finished:
@@ -158,61 +153,7 @@ final class GoogleLoginService: LoginServiceProtocol {
         }
     }
       
-    func sendTokenToBackend(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
-        guard let url = URL(string: "http://192.168.1.106:8030/auth/register") else {
-            fatalError("Invalid URL")
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        // Safely unwrap optional properties
-           guard let idToken = adventureUser.idToken,
-                 let fullName = adventureUser.fullName,
-                 let emailAddress = adventureUser.emailAddress,
-                 let password = adventureUser.userId
-            else {
-               fatalError("Missing user information")
-           }
-        let body: [String: Any] = [
-                "googleIdToken": idToken,
-                "username": fullName,
-                "email": emailAddress,
-                "role": "USER",
-                "password": "1111111"
-            ]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
-        print("googleIdToken : \(idToken)")
-        return URLSession.shared.dataTaskPublisher(for: request)
-                .tryMap { result -> Data in
-                    guard let httpResponse = result.response as? HTTPURLResponse else {
-                        throw BackendError.unknownError
-                    }
 
-                    if (200...299).contains(httpResponse.statusCode) {
-                        return result.data
-                    } else {
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? "Unknown server error"
-                        throw BackendError.serverError(message: errorMessage)
-                    }
-                }
-                .decode(type: AuthResponse.self, decoder: JSONDecoder())
-                .mapError { error -> BackendError in
-                    if let backendError = error as? BackendError {
-                        return backendError
-                    } else if let decodingError = error as? DecodingError {
-                        return BackendError.decodingError(message: decodingError.localizedDescription)
-                    } else {
-                        return BackendError.unknownError
-                    }
-                }
-                .receive(on: DispatchQueue.main)
-                .eraseToAnyPublisher()
-    }
-
-    
-  
     
     //TODO: call this function after create my backend server
     public static func tokenSignInExample(idToken: String) {
@@ -257,9 +198,37 @@ final class GoogleLoginService: LoginServiceProtocol {
         GIDSignIn.sharedInstance.signOut()
         loginManager.loginState = .signedOut
         //sign Out from backend server
+        adventuretubeAPIService.signOut()
+            .sink(receiveCompletion: { completionSink in
+                switch completionSink {
+                case .finished:
+                    print("Request finished successfully")
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                    //TODO need to show up error message and ask to retry again later
+                }
+            }, receiveValue: { response in
+                // Process the received authResponse
+                guard let message = response.message ,
+                      let detail = response.details 
+                else{
+                    print("Failed to logut from backend")
+                    return
+                }
+                //TODO need to validate a token later
+                let userDefaults = UserDefaults.standard
+                //self.loginManager.loginState = .signedIn(refreshedUSer)
+            })
+            .store(in: &cancellables)
+        
+        
+        
+        
+        
+        
     }
     
-    
+
     
     
     /// Adds the youtube channel  read scope for the current user.
@@ -332,42 +301,3 @@ final class GoogleLoginService: LoginServiceProtocol {
 
 
 
-// Define the response model
-struct AuthResponse: Codable {
-    let userDetails: MemberDTO?
-    let accessToken: String?
-    let refreshToken: String?
-    let errorMessage: String?
-
-}
-
-struct MemberDTO: Codable {
-    let id: Int?
-    let email: String?
-    let password: String?
-    let username: String?
-    let googleIdToken: String?
-    let googleIdTokenExp: Int?
-    let googleIdTokenIat: Int?
-    let googleIdTokenSub: String?
-    let googleProfilePicture: String?
-    let channelId: String?
-    let role: String?
-}
-
-enum BackendError: LocalizedError {
-    case serverError(message: String)
-    case decodingError(message: String)
-    case unknownError
-
-    var errorDescription: String? {
-        switch self {
-        case .serverError(let message):
-            return message
-        case .decodingError(let message):
-            return message
-        case .unknownError:
-            return "An unknown error occurred"
-        }
-    }
-}
