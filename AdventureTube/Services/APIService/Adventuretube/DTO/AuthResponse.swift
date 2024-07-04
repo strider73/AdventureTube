@@ -6,3 +6,10 @@
 //
 
 import Foundation
+struct AuthResponse: Codable {
+    let userDetails: MemberDTO?
+    let accessToken: String?
+    let refreshToken: String?
+    let errorMessage: String?
+
+}
