@@ -35,6 +35,7 @@
 
 import Foundation
 import GoogleSignIn
+import Combine
 //import GoogleAPIClientForREST
 
 /// An observable class for authenticating via Google.
@@ -43,11 +44,15 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     private var loginManager: LoginManager
+    private var adventuretubeAPI: AdventureTubeAPIPrototol
+    private var cancellables = Set<AnyCancellable>()
+
     
     /// Creates an instance of this authenticator.
     /// - parameter authViewModel: The view model this authenticator will set logged in status on.
-    init(loginManager: LoginManager) {
+    init(loginManager: LoginManager , apiService:AdventureTubeAPIPrototol = AdventureTubeAPIService.shared) {
         self.loginManager = loginManager
+        self.adventuretubeAPI = apiService
     }
     
     /// Signs in the user based upon the selected account.'
@@ -81,27 +86,20 @@ final class GoogleLoginService: LoginServiceProtocol {
             let profilePicUrl = user.profile?.imageURL(withDimension: 320) ?? URL(string: "No image URL")
             
             //create adventuretube userModel base on information from google user object 
-            var adventureUser  = UserModel(signed_in: true,
-                                           emailAddress: emailAddress,
-                                           fullName: fullName,
-                                           givenName: givenName,
-                                           familyName: familyName,
-                                           profilePicUrl: profilePicUrl?.absoluteString,
-                                           loginSource: .google)
+            var adventureUser  = self.createAdventureUser(from: user);
+
             
-            
-            
-            signInResult.user.refreshTokensIfNeeded { user, error in
-                guard error == nil else {return}
-                guard let user = user else {return}
+            signInResult.user.refreshTokensIfNeeded {[weak self] user, error in
+                guard let self = self , let user = user , error  == nil else{return}
+
                 
-                if let idToken = user.idToken {
+                if let idToken = user.idToken , let userId = user.userID  {
                     //not quite sure to cast to String type
                     adventureUser.idToken = idToken.tokenString
+                    adventureUser.googleUserId = userId
                 }else{
                     print("idToken for Backend Server retrieve failed!!!!");
                 }
-                
                 // Store Data in UserDefault
                 let userDefaults = UserDefaults.standard
                 do {
@@ -110,90 +108,119 @@ final class GoogleLoginService: LoginServiceProtocol {
                 } catch {
                     print(error.localizedDescription)
                 }
+                //check the JWT  token
+                //if user doesn't have a adventuretube UserID  => user need to register
+                //if user doesn't have token but have a UserID => user need to login and get token
+                
+                if let adventureTube_id =  adventureUser.adventureTube_id{
+                    //user already have a adventureTube_id  check the  JWT Token
+                    if let adventureTube_token = adventureUser.adventuretubeRefreshJWTToken{
+                        //user has a refresh token
+                        print("user has a refresh token")
+                    }else{
+                        //user need to login again since logout has been done
+                        print("user need to login again since logout has been don")
+                    }
+                }else{
+                    //user need to register
+                    print("user need to register")
+                    adventuretubeAPI.registerUser(adventureUser: adventureUser)
+                        .sink(receiveCompletion: { completionSink in
+                            switch completionSink {
+                            case .finished:
+                                print("Request finished successfully")
+                            case .failure(let error):
+                                print("Error: \(error.localizedDescription)")
+                                //TODO need to show up error message and ask to retry again later
+                                adventureUser.signed_in = false;
+                                completion(adventureUser)
+                            }
+                        }, receiveValue: { authResponse in
+                            // Process the received authResponse
+                            guard let accessToken = authResponse.accessToken ,
+                                  let refreshToken = authResponse.refreshToken else{
+                                print("Failed to retreive token from backend")
+                                adventureUser.signed_in = false;
+                                completion(adventureUser)
+                                return
+                            }
+                            //TODO need to validate a token later
+                            adventureUser.adventuretubeJWTToken = accessToken
+                            adventureUser.adventuretubeRefreshJWTToken = refreshToken
+                            print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
+                        })
+                        .store(in: &cancellables)
+                }
+                
+                
+    
                 self.loginManager.loginState = .signedIn(user)
+                //user need to register or login to the adventuretube
                 
                 // return the data to call back method
                 completion(adventureUser)
                 
             }
             
-            
-            //get the UserID token
-            /* GoogleSignIn V6.0 pattern need to remmove
-             user.authentication.do { authentication, error in
-             guard error == nil else { return }
-             guard let authentication = authentication else { return }
-             
-             let idToken = authentication.idToken
-             adventureUser.idToken = idToken
-             
-             // Store Data in UserDefault
-             let userDefaults = UserDefaults.standard
-             do {
-             try userDefaults.setObject(adventureUser, forKey: "user")
-             print("user data has been setting in user default ")
-             } catch {
-             print(error.localizedDescription)
-             }
-             self.loginManager.loginState = .signedIn(user)
-             
-             // return the data to call back method
-             completion(adventureUser)
-             }
-             */
-            
-            //            self.loginManager.loginState = .signedIn(googleUser)
+
             
         }
     }
     
     
     
-    
-    //TODO: call this function after create my backend server
-    public static func tokenSignInExample(idToken: String) {
-        guard let authData = try? JSONEncoder().encode(["idToken": idToken]) else {
-            return
-        }
-        let url = URL(string: "https://yourbackend.example.com/tokensignin")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let task = URLSession.shared.uploadTask(with: request, from: authData) { data, response, error in
-            // Handle response from your backend.
-        }
-        task.resume()
-        
-        /*
-         Verify the integrity of the ID token
-         
-         To verify that the token is valid, ensure that the following criteria are satisfied:
-         
-         1)The ID token is properly signed by Google. Use Google's public keys (available in JWK or PEM format) to verify the token's signature.
-         These keys are regularly rotated; examine the Cache-Control header in the response to determine when you should retrieve them again.
-         
-         2)The value of aud in the ID token is equal to one of your app's client IDs.
-         This check is necessary to prevent ID tokens issued to a malicious app being used to access data about the same user on your app's backend server.
-         
-         3)The value of iss in the ID token is equal to accounts.google.com or https://accounts.google.com.
-         The expiry time (exp) of the ID token has not passed.
-         
-         4)If you want to restrict access to only members of your G Suite domain, verify that the ID token has an hd claim that matches your G Suite domain name.
-         
-         
-         Rather than writing your own code to perform these verification steps, we strongly recommend using a Google API client library for your platform,
-         
-         check the link : https://developers.google.com/identity/sign-in/ios/backend-auth
-         */
-    }
-    
+  
     /// Signs out the current user.
     func signOut() {
         GIDSignIn.sharedInstance.signOut()
         loginManager.loginState = .signedOut
+        //sign Out from backend server
+        adventuretubeAPI.signOut()
+            .sink(receiveCompletion: { completionSink in
+                switch completionSink {
+                case .finished:
+                    print("Request finished successfully")
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                    //TODO need to show up error message and ask to retry again later
+                }
+            }, receiveValue: { response in
+                // Process the received authResponse
+                guard let message = response.message ,
+                      let detail = response.details
+                else{
+                    print("Failed to logut from backend")
+                    return
+                }
+                //TODO need to validate a token later
+                let userDefaults = UserDefaults.standard
+                //self.loginManager.loginState = .signedIn(refreshedUSer)
+            })
+            .store(in: &cancellables)
+        
+        
+        
+        
+        
+        
     }
     
+    
+    private func createAdventureUser(from user: GIDGoogleUser) -> UserModel {
+           let emailAddress = user.profile?.email ?? "No Email"
+           let fullName = user.profile?.name ?? "No Name"
+           let givenName = user.profile?.givenName ?? "No Given Name"
+           let familyName = user.profile?.familyName ?? "No Family Name"
+           let profilePicUrl = user.profile?.imageURL(withDimension: 320)
+           
+           return UserModel(signed_in: true,
+                            emailAddress: emailAddress,
+                            fullName: fullName,
+                            givenName: givenName,
+                            familyName: familyName,
+                            profilePicUrl: profilePicUrl?.absoluteString,
+                            loginSource: .google)
+       }
     
     
     
@@ -234,152 +261,6 @@ final class GoogleLoginService: LoginServiceProtocol {
         }
     }
     
-    
-    
-    
-    /*
-     'https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics%2CcontentDetails&mine=true&key=[YOUR_API_KEY]' \
-     --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-     --header 'Accept: application/json' \
-     --compressed
-     */
-    //    func fetchChannelResource() {
-    ////        let query = GTLRYouTubeQuery_ChannelsList.query(withPart: "snippet,statistics,contentDetails")
-    //        let query = GTLRYouTubeQuery_ChannelsList.query(withPart: "snippet,statistics,contentDetails")
-    //        print("Querty :  \(query)")
-    //        query.mine = true
-    //        service.executeQuery(query) { _, result, error in
-    //            guard let response = result as? GTLRYouTube_ChannelListResponse ,
-    //                  let channels = response.items
-    //            else{
-    //                print("Found error while Youtube read scope: \(error!).")
-    //                return
-    //            }
-    //
-    //            if !channels.isEmpty{
-    //                var outputText = ""
-    //                let channel = response.items![0]
-    //                let title = channel.snippet!.title
-    //                let description = channel.snippet?.descriptionProperty
-    //                let viewCount = channel.statistics?.viewCount
-    //                outputText += "title: \(title!)\n"
-    //                outputText += "description: \(description!)\n"
-    //                outputText += "view count: \(viewCount!)\n"
-    //
-    //                //added bty Chris
-    //                if let playListIdForUploads = channel.contentDetails?.relatedPlaylists?.uploads{
-    //                    print("uploadListId is ===> \(playListIdForUploads)")
-    //                   self.fetchUploadsResource(playListIdForUploads)
-    //                }else{
-    //                    print("Fail to get the uploadListId !!!!!");
-    //                }
-    //                print(outputText)
-    ////                self.output.text = outputText
-    //
-    //            }
-    //        }
-    //    }
-    /*
-     'https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails%2Cid&playlistId=UUMg4QJXtDH-VeoJvlEpfEYg&key=[YOUR_API_KEY]' \
-     --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-     --header 'Accept: application/json' \
-     --compressed
-     */
-    
-    //    func fetchUploadsResource(_ playListIdForUploads:String) {
-    //        let query = GTLRYouTubeQuery_PlaylistItemsList.query(withPart: "snippet,contentDetails,id")
-    //        query.playlistId = playListIdForUploads
-    //        query.maxResults = 10
-    //        //query.pageToken = "EAAaBlBUOkNCUQ"
-    //
-    //        service.executeQuery(query) { _, result, error in
-    //            guard let response = result as? GTLRYouTube_PlaylistItemListResponse
-    //            else{
-    //                print("Found error while Youtube read scope: \(error!).")
-    //                return
-    //            }
-    //            print(response.json!)
-    //
-    ////            let data = response.jsonString().data(using: .utf8)!
-    ////            let items = try! JSONDecoder().decode(Items.self,from: data)
-    ////
-    ////            print("items pageInfo \(items.pageInfo)")
-    ////            //prepare date  convertion
-    ////            let localISOFormatter = ISO8601DateFormatter()
-    ////            localISOFormatter.timeZone = TimeZone.current
-    ////            // Parsing a string timestamp representing a date
-    ////            //            let dateString = "2019-09-22T07:15:56Z"
-    ////            //            if  let localDate :Date = localISOFormatter.date(from: dateString){
-    ////            //            print(localDate)
-    ////            //            }
-    ////            //prepare coredate
-    ////            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-    ////                return
-    ////            }
-    ////            let managedContext = appDelegate.persistentContainer.viewContext
-    ////            items.items.forEach { item in
-    ////                let entity = NSEntityDescription.entity(forEntityName: "Video", in: managedContext)!
-    ////                let video =  NSManagedObject(entity: entity, insertInto: managedContext)
-    ////                video.setValue(item.id, forKeyPath: "id")
-    ////                video.setValue(item.etag, forKeyPath: "etag")
-    ////
-    ////                video.setValue(item.contentDetails.videoID, forKeyPath: "videoId")
-    ////                if  let localDate :Date = localISOFormatter.date(from: item.contentDetails.videoPublishedAt){
-    ////                    video.setValue(localDate, forKey: "publishedAt")
-    ////                }
-    ////                video.setValue(item.snippet.playlistID, forKey: "playListId")
-    ////                video.setValue(item.snippet.title, forKeyPath: "title")
-    ////                video.setValue(item.snippet.snippetDescription, forKeyPath: "videoDescription")
-    ////                video.setValue(item.snippet.channelID, forKeyPath: "channelId")
-    ////                video.setValue(item.snippet.channelTitle, forKeyPath: "channelTitle")
-    ////                video.setValue(item.snippet.position, forKeyPath: "position")
-    ////
-    ////
-    ////
-    ////                //Default image
-    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.url,    forKeyPath: "thumbnailDefaultURL")
-    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.width,  forKeyPath: "thumbnailDefaultWidth")
-    ////                video.setValue(item.snippet.thumbnails.thumbnailsDefault?.height, forKeyPath: "thumbnailDefaultHeight")
-    ////                //High image
-    ////                video.setValue(item.snippet.thumbnails.high?.url,    forKeyPath: "thumbnailHighURL")
-    ////                video.setValue(item.snippet.thumbnails.high?.width,  forKeyPath: "thumbnailHighWidth")
-    ////                video.setValue(item.snippet.thumbnails.high?.height, forKeyPath: "thumbnailHighHeight")
-    ////                //Maxres Image
-    ////                video.setValue(item.snippet.thumbnails.maxres?.url,   forKeyPath: "thumbnailMaxresURL")
-    ////                video.setValue(item.snippet.thumbnails.maxres?.width, forKeyPath: "thumbnailMaxresWidth")
-    ////                video.setValue(item.snippet.thumbnails.maxres?.height, forKeyPath: "thumbnailMaxresHeight")
-    ////                //Medium Image
-    ////                video.setValue(item.snippet.thumbnails.medium?.url,    forKeyPath: "thumbnailMediumURL")
-    ////                video.setValue(item.snippet.thumbnails.medium?.width,  forKeyPath: "thumbnailMediumWidth")
-    ////                video.setValue(item.snippet.thumbnails.medium?.height, forKeyPath: "thumbnailMediumHeight")
-    ////                //Standard Image
-    ////                video.setValue(item.snippet.thumbnails.standard?.url,    forKeyPath: "thumbnailStandardURL")
-    ////                video.setValue(item.snippet.thumbnails.standard?.width,  forKeyPath: "thumbnailStandardWidth")
-    ////                video.setValue(item.snippet.thumbnails.standard?.height, forKeyPath: "thumbnailStandardHeight")
-    ////
-    ////
-    ////
-    ////                do{
-    ////                    try managedContext.save()
-    ////
-    ////                }catch let error as NSError{
-    ////                    print("Could not save. \(error), \(error.userInfo)")
-    ////                }
-    ////            }
-    //
-    //
-    //
-    //
-    //            //           error message is important when it need a test
-    //            //            do{
-    //            //                 items = try JSONDecoder().decode(Items.self,from: data)
-    //            //
-    //            //            }catch{
-    //            //                print(error)
-    //            //            }
-    //
-    //        }
-    //    }
     
     
     /// Disconnects the previously granted scope and signs the user out.
