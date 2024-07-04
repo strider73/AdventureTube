@@ -27,8 +27,13 @@ struct UserModel : Codable{
     var givenName    : String?
     var familyName   : String?
     var profilePicUrl : String?
-    
+    //for youtube
     var idToken : String?
+    var googleUserId  : String?
+    //for Adventuretube
+    var adventureTube_id : String?
+    var adventuretubeJWTToken: String?
+    var adventuretubeRefreshJWTToken: String?
     var loginSource : LoginSource?
     
     enum UserKeys: String {
