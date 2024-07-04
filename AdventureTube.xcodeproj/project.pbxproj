@@ -133,6 +133,10 @@
 		B469E48A288F7500003EB360 /* MockedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E489288F7500003EB360 /* MockedStorage.swift */; };
 		B469E48C288F776F003EB360 /* PublishedAppStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */; };
 		B46A2C0D2B04541800C54E5D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B46A2C0C2B04541800C54E5D /* README.md */; };
+		B46E34062C3638580025DE65 /* AdventureTubeAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */; };
+		B46E34092C3638BF0025DE65 /* MemberDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E34082C3638BF0025DE65 /* MemberDTO.swift */; };
+		B46E340B2C3638DC0025DE65 /* RestAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */; };
+		B46E340D2C3638F30025DE65 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E340C2C3638F30025DE65 /* AuthResponse.swift */; };
 		B486DDD228BF0713003F59BC /* StoryEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */; };
 		B486DDD328BF0713003F59BC /* StoryEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */; };
 		B486DDD428BF0713003F59BC /* ChapterEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCE28BF0713003F59BC /* ChapterEntity+CoreDataClass.swift */; };
@@ -297,6 +301,10 @@
 		B469E489288F7500003EB360 /* MockedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedStorage.swift; sourceTree = "<group>"; };
 		B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishedAppStorageTests.swift; sourceTree = "<group>"; };
 		B46A2C0C2B04541800C54E5D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeAPIProtocol.swift; sourceTree = "<group>"; };
+		B46E34082C3638BF0025DE65 /* MemberDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDTO.swift; sourceTree = "<group>"; };
+		B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestAPIResponse.swift; sourceTree = "<group>"; };
+		B46E340C2C3638F30025DE65 /* AuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResponse.swift; sourceTree = "<group>"; };
 		B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoryEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoryEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDCE28BF0713003F59BC /* ChapterEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
@@ -700,8 +708,8 @@
 		B4003B4F288525E5002926F1 /* APIService */ = {
 			isa = PBXGroup;
 			children = (
+				B46E34042C3631F60025DE65 /* Adventuretube */,
 				B4003B50288525E5002926F1 /* Google */,
-				B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */,
 			);
 			path = APIService;
 			sourceTree = "<group>";
@@ -854,6 +862,26 @@
 				B469E487288F693B003EB360 /* UserDefaultPublisher.swift */,
 			);
 			path = UserDefaulPublisher;
+			sourceTree = "<group>";
+		};
+		B46E34042C3631F60025DE65 /* Adventuretube */ = {
+			isa = PBXGroup;
+			children = (
+				B46E34072C3638AA0025DE65 /* DTO */,
+				B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */,
+				B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */,
+			);
+			path = Adventuretube;
+			sourceTree = "<group>";
+		};
+		B46E34072C3638AA0025DE65 /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				B46E34082C3638BF0025DE65 /* MemberDTO.swift */,
+				B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */,
+				B46E340C2C3638F30025DE65 /* AuthResponse.swift */,
+			);
+			path = DTO;
 			sourceTree = "<group>";
 		};
 		B48C345128851BB7005AA142 = {
@@ -1175,6 +1203,7 @@
 				B4003BA3288525E5002926F1 /* StoryView.swift in Sources */,
 				B4003BA6288525E5002926F1 /* CreateChapterViewVM.swift in Sources */,
 				B4003BA7288525E5002926F1 /* ConfirmChapterModalView.swift in Sources */,
+				B46E340B2C3638DC0025DE65 /* RestAPIResponse.swift in Sources */,
 				B4B7DE112B28BE0600582C23 /* StoryMapViewControllerBridge.swift in Sources */,
 				B4003BA2288525E5002926F1 /* DescriptionEditorView.swift in Sources */,
 				B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */,
@@ -1183,6 +1212,7 @@
 				B486DDD528BF0713003F59BC /* ChapterEntity+CoreDataProperties.swift in Sources */,
 				B4003B90288525E5002926F1 /* YoutubeViewVM.swift in Sources */,
 				B4003BD4288525E5002926F1 /* LocalImageFileManager.swift in Sources */,
+				B46E34062C3638580025DE65 /* AdventureTubeAPIProtocol.swift in Sources */,
 				B4003B89288525E5002926F1 /* YoutubeChannelResource.swift in Sources */,
 				B4003BA0288525E5002926F1 /* MainSavedStoryView.swift in Sources */,
 				B486DDD328BF0713003F59BC /* StoryEntity+CoreDataProperties.swift in Sources */,
@@ -1264,6 +1294,7 @@
 				B4003BB7288525E5002926F1 /* PagerViewWithDots.swift in Sources */,
 				B4003B77288525E5002926F1 /* ConerRadius.swift in Sources */,
 				B4003BAC288525E5002926F1 /* AddStoryView.swift in Sources */,
+				B46E34092C3638BF0025DE65 /* MemberDTO.swift in Sources */,
 				B4003B98288525E5002926F1 /* CustomNavBarItems.swift in Sources */,
 				B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */,
 				B4003BD8288525E5002926F1 /* Birthday.swift in Sources */,
@@ -1285,6 +1316,7 @@
 				B4003BBB288525E5002926F1 /* ExplainViewNo4.swift in Sources */,
 				B4003B88288525E5002926F1 /* AdventureTube.swift in Sources */,
 				B486DDD228BF0713003F59BC /* StoryEntity+CoreDataClass.swift in Sources */,
+				B46E340D2C3638F30025DE65 /* AuthResponse.swift in Sources */,
 				B486DDD628BF0713003F59BC /* PlaceEntity+CoreDataClass.swift in Sources */,
 				B4003B78288525E5002926F1 /* UIImage.swift in Sources */,
 				B4003B96288525E5002926F1 /* NavBarButton.swift in Sources */,
