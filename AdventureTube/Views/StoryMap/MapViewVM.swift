@@ -66,48 +66,51 @@ class MapViewVM : ObservableObject {
     }
     
     //Search area is circle base on center point
-//    func generateEndpoint( maxDistance: Double = 2) -> String {
-//        return "http://192.168.1.106:8888/api/v1/restaurants/near?longitude=\(centerPoint.latitude)&latitude=\(centerPoint.latitude)&maxDistance=\(maxDistance)"    }
+    //    func generateEndpoint( maxDistance: Double = 2) -> String {
+    //        return "http://192.168.1.106:8888/api/v1/restaurants/near?longitude=\(centerPoint.latitude)&latitude=\(centerPoint.latitude)&maxDistance=\(maxDistance)"    }
     
     //Search area is square base on two edge position 
     func generateEndpoint2( maxDistance: Double = 0.2) -> String {
         return "\(APIService.rasberryTestServer.address)/restaurants/locations-in-bounding-box?swLon=\(southWestCoordinate.longitude)&swLat=\(southWestCoordinate.latitude)&neLon=\(northEastCoordinate.longitude)&neLat=\(northEastCoordinate.latitude)"
     }
     
-    
-    func fetchRestaurants() {
-        // Replace the endpoint with your actual API endpoint
-        let endpoint = generateEndpoint2()
-  
-        
-        //validate end point and return here if fail
-        
-        
-        apiService.getData(endpoint: endpoint, returnData: [Restaurant].self)
-            .sink(receiveCompletion: { [weak self] completion in
-                guard let self = self else { return }
-                
-                switch completion {
-                    case .finished:
-                        break // Do nothing on success, as you'll handle the values in the receiveValue closure
-                    case .failure(let error):
-                        self.errorMessage = error.localizedDescription
-                }
-            }, receiveValue: { [weak self] (receivedRestaurants: [Restaurant]) in
-                guard let self = self else { return }
-                
-                print("getting data now ===========>")
-                // Update the @Published property
-                //self.restaurants = receivedRestaurants
-                markers = receivedRestaurants.map{ restaurant -> GMSMarker in
-                    let marker = GMSMarker(position: CLLocationCoordinate2D(latitude: restaurant.location.coordinates[1], longitude: restaurant.location.coordinates[0]))
-                    marker.title = restaurant.name
-                    marker.appearAnimation = GMSMarkerAnimation.fadeIn
-                    return marker
-                }
-            })
-            .store(in: &cancellables)
+    func fetchRestaurants(){
+        print("This is mockup call for fetchRestaurants()");
     }
+    
+    //    func fetchRestaurants() {
+    //        // Replace the endpoint with your actual API endpoint
+    //        let endpoint = generateEndpoint2()
+    //  
+    //        
+    //        //validate end point and return here if fail
+    //        
+    //        
+    //        apiService.getData(endpoint: endpoint, returnData: [Restaurant].self)
+    //            .sink(receiveCompletion: { [weak self] completion in
+    //                guard let self = self else { return }
+    //                
+    //                switch completion {
+    //                    case .finished:
+    //                        break // Do nothing on success, as you'll handle the values in the receiveValue closure
+    //                    case .failure(let error):
+    //                        self.errorMessage = error.localizedDescription
+    //                }
+    //            }, receiveValue: { [weak self] (receivedRestaurants: [Restaurant]) in
+    //                guard let self = self else { return }
+    //                
+    //                print("getting data now ===========>")
+    //                // Update the @Published property
+    //                //self.restaurants = receivedRestaurants
+    //                markers = receivedRestaurants.map{ restaurant -> GMSMarker in
+    //                    let marker = GMSMarker(position: CLLocationCoordinate2D(latitude: restaurant.location.coordinates[1], longitude: restaurant.location.coordinates[0]))
+    //                    marker.title = restaurant.name
+    //                    marker.appearAnimation = GMSMarkerAnimation.fadeIn
+    //                    return marker
+    //                }
+    //            })
+    //            .store(in: &cancellables)
+    //    }
 }
 
 
