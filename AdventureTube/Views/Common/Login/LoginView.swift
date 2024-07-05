@@ -7,7 +7,7 @@
 
 import SwiftUI
 import GoogleSignIn
-//TODO: This is the view to make decison of implementation of LoginServiceProtocol 
+//TODO: This is the view to make decison of implementation of LoginServiceProtocol
 struct LoginView: View {
     
     @EnvironmentObject private var loginManager : LoginManager
@@ -17,6 +17,9 @@ struct LoginView: View {
     @State private var name :   String = "E-Mail"
     @State private var passwd : String = "Password"
     @State private var checked = false
+    @State private var isLoading = false // Add a state variable for loading
+    @State private var errorMessag : String?
+
     
     var body: some View {
         ZStack{
@@ -51,7 +54,7 @@ struct LoginView: View {
                             .font(Font.system(size: 20))
                             .padding(EdgeInsets(top: 20, leading: 160, bottom: 20, trailing: 160))
                             .overlay(RoundedRectangle(cornerRadius: 4)
-                                        .stroke(Color.black, lineWidth: 1))
+                                .stroke(Color.black, lineWidth: 1))
                             .background(Color.black)
                             .foregroundColor(.white)
                     }
@@ -64,9 +67,18 @@ struct LoginView: View {
                     Image("FacebookLogin_type1")
                         .loginButton()
                     Button(action: {
-                        loginManager.googleSignIn{
+                        isLoading = true // Set loading state to true
+                        loginManager.googleSignIn{ result in
+                            isLoading = false // Set loading state to false after login finished
                             //This closure will called after login finished
-                            print("need to be redirect ")
+                            switch result {
+                                case  .success(let user):
+                                    print("user signed in successfully")
+                                    loginManager.loginState = .signedIn
+                                case .failure(let error):
+                                    errorMessag = error.localizedDescription
+                                    print("Login error :\(error.localizedDescription)")
+                            }
                         }
                         
                     }) {
@@ -77,6 +89,14 @@ struct LoginView: View {
                         .loginButton()
                 }
                 Spacer()
+            }
+            if isLoading {
+                // Show a loading indicator when isLoading is true
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                ProgressView("Signing in...")
+                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .scaleEffect(2)
             }
             
             
@@ -107,7 +127,7 @@ struct LoginView_Previews: PreviewProvider {
 //            Group{
 //                CustomTextFieldView(field:$name)
 //                CustomTextFieldView(field:$passwd, isSecureField: true)
-//                
+//
 //                HStack {
 //                    CheckBoxView(checked: $checked)
 //                    Text("Remember me")
