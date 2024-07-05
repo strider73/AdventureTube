@@ -22,7 +22,7 @@ class DeveloperPreview{
     var userLogin : Bool = true
     
     static let instance = DeveloperPreview()
-    let loginManager = LoginManager()
+    let loginManager = LoginManager.shared
     
     var youtubeContentResource : YoutubeContentResource
     var youtubeContentItems : [YoutubeContentItem] = []
@@ -40,7 +40,7 @@ class DeveloperPreview{
                                                givenName: "Test",
                                                familyName: "Lee",
                                                profilePicUrl: "https://lh3.googleusercontent.com/a-/AFdZucomQYbiADF3x-oBZj0yYyvijMhDsrtdpZQozVqf5Q=s135")
-            loginManager.loginState = .signedIn(GIDGoogleUser())
+            loginManager.loginState = .signedIn
             
             
         }else{
@@ -128,7 +128,7 @@ class DeveloperPreview{
         myStoryVM.youtubeContentItems = youtubeContentItems
         
         
-        customTabBarVM = CustomTabBarViewVM()
+        customTabBarVM = CustomTabBarViewVM.shared
         //        print("=============youtubeContent==============")
         //        print(youtubeContentResource)
         //        print("=============youtubeContentItem==============")

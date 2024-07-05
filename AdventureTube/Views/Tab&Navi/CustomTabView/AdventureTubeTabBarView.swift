@@ -42,7 +42,7 @@ struct AdventureTubeTabBarView_Previews: PreviewProvider {
     static var previews: some View {
         AdventureTubeTabBarView()
             .environmentObject(dev.loginManager)
-            .environmentObject(CustomTabBarViewVM())
+            .environmentObject(CustomTabBarViewVM.shared)
     }
 }
 
