@@ -18,8 +18,8 @@ struct AdventureTubeApp: App {
     
     // initializae SettingViewModel and store as environmentObject
     //TODO: loginManager has to be ready for other social Login Service
-    @StateObject private var loginManager : LoginManager = LoginManager()
-    @StateObject private var customTabVM : CustomTabBarViewVM = CustomTabBarViewVM()
+    @StateObject private var loginManager : LoginManager = LoginManager.shared
+    @StateObject private var customTabVM : CustomTabBarViewVM = CustomTabBarViewVM.shared
 
     
     /*
@@ -40,7 +40,6 @@ struct AdventureTubeApp: App {
 //                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     .environmentObject(loginManager)
                     .environmentObject(customTabVM)
-            
         }
     }
     

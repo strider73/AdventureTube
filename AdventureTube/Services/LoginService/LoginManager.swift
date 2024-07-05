@@ -19,6 +19,7 @@ import Foundation
 import GoogleSignIn
 
 class LoginManager : ObservableObject  {
+    static let shared = LoginManager()
     @Published  var userData : UserModel = UserModel()
     @Published  var loginState : State = .initial{
           willSet(loginState){
@@ -38,7 +39,7 @@ class LoginManager : ObservableObject  {
     //TODO:Google Login only at ths moment so loginService property setting need to change later
     private var loginService : LoginServiceProtocol?
     
-    init(){
+    private init(){
         //check the UserDefault
         print("init LoginManager")
         do{
@@ -54,6 +55,8 @@ class LoginManager : ObservableObject  {
                     GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
                         if let user = user {
                             self.loginState = .signedIn(user)
+                            print("adventuretube_id :\(adventureUser.adventureTube_id?.uuidString ?? "nil" ) ")
+                            print("adventuretube_accessToken : \(adventureUser.adventuretubeJWTToken as String?)")
                             print("email : \(adventureUser.emailAddress as String?)")
                             print("fullName  : \(adventureUser.fullName as String?)")
                             print("profilePicUrl  : \(adventureUser.profilePicUrl as String?)")
