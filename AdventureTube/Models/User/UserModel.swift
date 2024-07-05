@@ -31,7 +31,7 @@ struct UserModel : Codable{
     var idToken : String?
     var googleUserId  : String?
     //for Adventuretube
-    var adventureTube_id : String?
+    var adventureTube_id : UUID?
     var adventuretubeJWTToken: String?
     var adventuretubeRefreshJWTToken: String?
     var loginSource : LoginSource?
