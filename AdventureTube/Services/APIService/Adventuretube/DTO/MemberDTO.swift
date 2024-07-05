@@ -7,7 +7,7 @@
 
 import Foundation
 struct MemberDTO: Codable {
-    let id: Int?
+    let id: UUID?
     let email: String?
     let password: String?
     let username: String?
