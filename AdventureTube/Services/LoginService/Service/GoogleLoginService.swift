@@ -46,7 +46,7 @@ final class GoogleLoginService: LoginServiceProtocol {
     private var loginManager: LoginManager
     private var adventuretubeAPI: AdventureTubeAPIPrototol
     private var cancellables = Set<AnyCancellable>()
-
+    
     
     /// Creates an instance of this authenticator.
     /// - parameter authViewModel: The view model this authenticator will set logged in status on.
@@ -57,8 +57,14 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     /// Signs in the user based upon the selected account.'
     /// - note: Successful calls to this will set the `authViewModel`'s `state` property.
+    /// update Signin  to accept a completion handler that can pass back an error :
+    /// wrap the UserModel and Error with Result to use .success and .failure
+    ///
+    /// Update the signIn method to ensure completion is only called after the registerUser call completes:
     
-    func signIn(completion: @escaping (UserModel) -> Void) {
+    
+    //func signIn(completion: @escaping (UserModel) -> Void) {
+    func signIn(completion:@escaping(Result<UserModel,Error>) -> Void){
         
         guard let rootViewController =  UIApplication.shared.windows.first?.rootViewController else {
             print("There is no root view controller!")
@@ -69,8 +75,8 @@ final class GoogleLoginService: LoginServiceProtocol {
         GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { signInResult, error in
             
             //step1  make sure there is no error in signIn process
-            guard error == nil else {
-                print("Error! \(String(describing: error))")
+            if let error = error {
+                completion(.failure(error))
                 return
             }
             //step2 get the signInResult
@@ -78,37 +84,32 @@ final class GoogleLoginService: LoginServiceProtocol {
             let user = signInResult.user
             print("Initial Google Signed in Success")
             
-            
-            let emailAddress = user.profile?.email ?? "NoEamil"
-            let fullName = user.profile?.name ?? "No Name"
-            let givenName = user.profile?.givenName ?? "No Given Name"
-            let familyName = user.profile?.familyName ?? "No Family Name"
-            let profilePicUrl = user.profile?.imageURL(withDimension: 320) ?? URL(string: "No image URL")
-            
-            //create adventuretube userModel base on information from google user object 
+            //step3 create adventuretube userModel base on information from google user object
+            //and user set as  logged in but there will be update as logged out if any follow process
+            //has a issue
             var adventureUser  = self.createAdventureUser(from: user);
-
             
+            //step4 try to refresh token
+            //https://developers.google.com/identity/sign-in/ios/backend-auth
             signInResult.user.refreshTokensIfNeeded {[weak self] user, error in
-                guard let self = self , let user = user , error  == nil else{return}
-
+                guard let self = self , let user = user , error  == nil else {
+                    if let error = error {
+                        completion(.failure(error))
+                    }
+                    return
+                }
                 
+                //step5 get the update user info from the google
                 if let idToken = user.idToken , let userId = user.userID  {
                     //not quite sure to cast to String type
                     adventureUser.idToken = idToken.tokenString
                     adventureUser.googleUserId = userId
                 }else{
                     print("idToken for Backend Server retrieve failed!!!!");
+                    completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "idToken for Backend Server retrieve failed"])))
                 }
-                // Store Data in UserDefault
-                let userDefaults = UserDefaults.standard
-                do {
-                    try userDefaults.setObject(adventureUser, forKey: "user")
-                    print("user data has been setting in user default ")
-                } catch {
-                    print(error.localizedDescription)
-                }
-                //check the JWT  token
+                
+                //step6 check the JWT  token
                 //if user doesn't have a adventuretube UserID  => user need to register
                 //if user doesn't have token but have a UserID => user need to login and get token
                 
@@ -127,49 +128,58 @@ final class GoogleLoginService: LoginServiceProtocol {
                     adventuretubeAPI.registerUser(adventureUser: adventureUser)
                         .sink(receiveCompletion: { completionSink in
                             switch completionSink {
-                            case .finished:
-                                print("Request finished successfully")
-                            case .failure(let error):
-                                print("Error: \(error.localizedDescription)")
-                                //TODO need to show up error message and ask to retry again later
-                                adventureUser.signed_in = false;
-                                completion(adventureUser)
+                                case .finished:
+                                    print("Request finished successfully")
+                                case .failure(let error):
+                                    print("Error: \(error.localizedDescription)")
+                                    //TODO need to show up error message and ask to retry again later
+                                    adventureUser.signed_in = false;
+                                    completion(.failure(error))
+                                    //TODO  need to show the error to user
                             }
                         }, receiveValue: { authResponse in
                             // Process the received authResponse
                             guard let accessToken = authResponse.accessToken ,
-                                  let refreshToken = authResponse.refreshToken else{
+                                  let refreshToken = authResponse.refreshToken ,
+                            let userDetail  = authResponse.userDetails
+                            else{
                                 print("Failed to retreive token from backend")
                                 adventureUser.signed_in = false;
-                                completion(adventureUser)
+                                let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
+                                completion(.failure(error))
+                                //TODO  need to show the error to user
                                 return
                             }
                             //TODO need to validate a token later
                             adventureUser.adventuretubeJWTToken = accessToken
                             adventureUser.adventuretubeRefreshJWTToken = refreshToken
+                            adventureUser.adventureTube_id = userDetail.id
+                            // Store Data in UserDefault
+                            let userDefaults = UserDefaults.standard
+                            do {
+                                try userDefaults.setObject(adventureUser, forKey: "user")
+                                print("user data has been setting in user default ")
+                            } catch {
+                                print(error.localizedDescription)
+                            }
                             print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
+                            completion(.success(adventureUser))
                         })
                         .store(in: &cancellables)
                 }
                 
-                
-    
-                self.loginManager.loginState = .signedIn(user)
-                //user need to register or login to the adventuretube
-                
-                // return the data to call back method
-                completion(adventureUser)
+//                completion(.success(adventureUser))
                 
             }
             
-
+            
             
         }
     }
     
     
     
-  
+    
     /// Signs out the current user.
     func signOut() {
         GIDSignIn.sharedInstance.signOut()
@@ -178,11 +188,11 @@ final class GoogleLoginService: LoginServiceProtocol {
         adventuretubeAPI.signOut()
             .sink(receiveCompletion: { completionSink in
                 switch completionSink {
-                case .finished:
-                    print("Request finished successfully")
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription)")
-                    //TODO need to show up error message and ask to retry again later
+                    case .finished:
+                        print("Request finished successfully")
+                    case .failure(let error):
+                        print("Error: \(error.localizedDescription)")
+                        //TODO need to show up error message and ask to retry again later
                 }
             }, receiveValue: { response in
                 // Process the received authResponse
@@ -207,20 +217,20 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     private func createAdventureUser(from user: GIDGoogleUser) -> UserModel {
-           let emailAddress = user.profile?.email ?? "No Email"
-           let fullName = user.profile?.name ?? "No Name"
-           let givenName = user.profile?.givenName ?? "No Given Name"
-           let familyName = user.profile?.familyName ?? "No Family Name"
-           let profilePicUrl = user.profile?.imageURL(withDimension: 320)
-           
-           return UserModel(signed_in: true,
-                            emailAddress: emailAddress,
-                            fullName: fullName,
-                            givenName: givenName,
-                            familyName: familyName,
-                            profilePicUrl: profilePicUrl?.absoluteString,
-                            loginSource: .google)
-       }
+        let emailAddress = user.profile?.email ?? "No Email"
+        let fullName = user.profile?.name ?? "No Name"
+        let givenName = user.profile?.givenName ?? "No Given Name"
+        let familyName = user.profile?.familyName ?? "No Family Name"
+        let profilePicUrl = user.profile?.imageURL(withDimension: 320)
+        
+        return UserModel(signed_in: true,
+                         emailAddress: emailAddress,
+                         fullName: fullName,
+                         givenName: givenName,
+                         familyName: familyName,
+                         profilePicUrl: profilePicUrl?.absoluteString,
+                         loginSource: .google)
+    }
     
     
     
@@ -254,7 +264,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                 return
             }
             guard let signInResult = signInResult else { return }
-            self.loginManager.loginState = .signedIn(currentUser)
+            self.loginManager.loginState = .signedIn
             //TODO:  Check if the user granted access to the scopes you requested.
             
             completion()

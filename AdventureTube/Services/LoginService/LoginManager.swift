@@ -22,15 +22,15 @@ class LoginManager : ObservableObject  {
     static let shared = LoginManager()
     @Published  var userData : UserModel = UserModel()
     @Published  var loginState : State = .initial{
-          willSet(loginState){
+        willSet(loginState){
             switch loginState  {
-            case .signedIn:
-                   print("loginState :===signedIn===")
-            case .signedOut:
-                   print("loginState :===signedOut===")
-            case .initial :
+                case .signedIn:
+                    print("loginState :===signedIn===")
+                case .signedOut:
+                    print("loginState :===signedOut===")
+                case .initial :
                     print("loginState :===initial===")
-       
+                    
             }
             
         }
@@ -51,16 +51,19 @@ class LoginManager : ObservableObject  {
             switch(adventureUser.loginSource){
                 case .google:
                     loginService = GoogleLoginService(loginManager: self)
-
-                    GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                    
+                    GIDSignIn.sharedInstance.restorePreviousSignIn {[weak self] user, error in
+                        guard let self = self else {return}
+                        
                         if let user = user {
-                            self.loginState = .signedIn(user)
+                            self.loginState = .signedIn
                             print("adventuretube_id :\(adventureUser.adventureTube_id?.uuidString ?? "nil" ) ")
                             print("adventuretube_accessToken : \(adventureUser.adventuretubeJWTToken as String?)")
                             print("email : \(adventureUser.emailAddress as String?)")
                             print("fullName  : \(adventureUser.fullName as String?)")
                             print("profilePicUrl  : \(adventureUser.profilePicUrl as String?)")
                             self.userData = adventureUser
+                            AdventureTubeAPIService.shared.userData = self.userData
                             print("user setting has been stored in enviromentObject")
                         } else if let error = error {
                             self.loginState = .signedOut
@@ -90,34 +93,39 @@ class LoginManager : ObservableObject  {
             
         }
     }
-
     
-    /* call the loginService Sign - In (currently GoogleLoginService)
-     
-     but since it is protocol it can be different sign - in service like FacebookLogin
-     and that  different service can be assigned using a dependencey injection
-     
-     */
-    func googleSignIn(completion:@escaping () -> Void){
+    ///call the loginService Sign - In (currently GoogleLoginService)
+    ///but since it is protocol it can be different sign - in service like FacebookLogin
+    ///and that  different service can be assigned using a dependencey injection
+    ///
+    ///update completion handller that can pass back an error
+    ///wrap the UserModel and Error with Result to use .success and .failure 
+    func googleSignIn(completion:@escaping (Result<UserModel, Error>) -> Void){
         //TODO can be assigned different Login Service so  loginService property need to be assigned accordingly
-
+        
         loginService = GoogleLoginService(loginManager: self)
         
         if let loginService = loginService{
-            loginService.signIn{ [weak self] adventureUser in
-                //check the user data
-                print("loginService.login completionHandlder =======>")
-                print(adventureUser.signed_in)
-                print("user fullName \(adventureUser.fullName ?? "No FallName")")
-                print("user email \(adventureUser.emailAddress ?? "No Email")")
-                print("user token  \(adventureUser.idToken?.count ?? 0)")
-                
-                // update user object
-                self?.userData = adventureUser
-                completion()
+            loginService.signIn{ [weak self] result in
+                guard let self = self else {return}
+                switch result {
+                    case .success(let adventureUser):
+                        //check the user data
+                        print("loginService.login completionHandlder =======>")
+                        print(adventureUser.signed_in)
+                        print("user fullName \(adventureUser.fullName ?? "No FallName")")
+                        print("user email \(adventureUser.emailAddress ?? "No Email")")
+                        print("user token  \(adventureUser.idToken?.count ?? 0)")
+                        // Update user object
+                        self.userData = adventureUser
+                        completion(.success(adventureUser))
+                        
+                    case .failure(let error):
+                        completion(.failure(error))
+                }
             }
         }
-
+        
     }
     func facebookSignIn(){
         print("No Facebook SignIn Support Yet")
@@ -156,7 +164,7 @@ class LoginManager : ObservableObject  {
         /// MyStoryView hsa been initialise it will be initialize as well
         /// so moment just before call the  YoutubeService and update loginState will causing
         /// reinitalize MyStoriesView and also create New YoutubeService with New MyStoryListViewModel
-        /// will be the reason of deinitialize of origianal both object 
+        /// will be the reason of deinitialize of origianal both object
         //loginState = .youtubeAccessRequest
         if let loginService = loginService {
             loginService.addMoreScope(completion:completion)
@@ -164,23 +172,23 @@ class LoginManager : ObservableObject  {
     }
     
     
-//    func disconnectPrivilegeAndSignedOut(){
-//        loginService.disconnectAdditionalScope()
-//    }
+    //    func disconnectPrivilegeAndSignedOut(){
+    //        loginService.disconnectAdditionalScope()
+    //    }
     
     /// The user-authorized scopes.
     /// - note: If the user is logged out, then this will default to empty.
     var authorizedScopes: [String] {
-      switch loginState {
-      case .signedIn(let user):
-        return user.grantedScopes ?? []
-      case .signedOut:
-        return []
-      case .initial:
-        return []
-      }
+        switch loginState {
+            case .signedIn:
+                return  []
+            case .signedOut:
+                return []
+            case .initial:
+                return []
+        }
     }
-
+    
     
     deinit{
         print("Deinitialize Login Manager")
@@ -194,7 +202,7 @@ class LoginManager : ObservableObject  {
 
 extension LoginManager  {
     enum State : Equatable{
-        case signedIn(GIDGoogleUser)
+        case signedIn
         case signedOut
         case initial
     }
