@@ -73,7 +73,7 @@ class MapViewVM : ObservableObject {
     func generateEndpoint2( maxDistance: Double = 0.2) -> String {
         return "\(APIService.rasberryTestServer.address)/restaurants/locations-in-bounding-box?swLon=\(southWestCoordinate.longitude)&swLat=\(southWestCoordinate.latitude)&neLon=\(northEastCoordinate.longitude)&neLat=\(northEastCoordinate.latitude)"
     }
-    
+    // TODO:  implement correctly 
     func fetchRestaurants(){
         print("This is mockup call for fetchRestaurants()");
     }
