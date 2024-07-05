@@ -143,6 +143,6 @@ struct MyStoryListView_Previews: PreviewProvider {
         MyStoryListView()
             .environmentObject(dev.loginManager)
             .environmentObject(dev.myStoryVM)
-            .environmentObject(CustomTabBarViewVM())
+            .environmentObject(CustomTabBarViewVM.shared)
     }
 }
