@@ -10,6 +10,8 @@ protocol LoginServiceProtocol {
     
     func signIn(completion:@escaping(_ userData :(Result<UserModel,Error>)) -> ())
     
+//    func restorePreviousSignIn()
+    
     func signOut()
     
     func addMoreScope(completion : @escaping () -> Void)

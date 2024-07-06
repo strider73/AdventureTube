@@ -131,11 +131,11 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 case .finished:
                                     print("Request finished successfully")
                                 case .failure(let error):
-                                    print("Error: \(error.localizedDescription)")
-                                    //TODO need to show up error message and ask to retry again later
+                                    print("BackEnd Connection Error: \(error.localizedDescription)")
+                                    //TODO: need to show up error message and ask to retry again later
                                     adventureUser.signed_in = false;
                                     completion(.failure(error))
-                                    //TODO  need to show the error to user
+                                    //TODO:  need to show the error to user
                             }
                         }, receiveValue: { authResponse in
                             // Process the received authResponse
@@ -147,14 +147,14 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 adventureUser.signed_in = false;
                                 let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
                                 completion(.failure(error))
-                                //TODO  need to show the error to user
+                                //TODO:  need to show the error to user
                                 return
                             }
-                            //TODO need to validate a token later
+                            //TODO: need to validate a token later
                             adventureUser.adventuretubeJWTToken = accessToken
                             adventureUser.adventuretubeRefreshJWTToken = refreshToken
                             adventureUser.adventureTube_id = userDetail.id
-                            // Store Data in UserDefault
+                            //MARK: Store Data in UserDefault
                             let userDefaults = UserDefaults.standard
                             do {
                                 try userDefaults.setObject(adventureUser, forKey: "user")
