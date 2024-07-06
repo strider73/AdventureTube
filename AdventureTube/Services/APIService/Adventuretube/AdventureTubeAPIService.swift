@@ -65,8 +65,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
                 .store(in: &self.cancellables)  // (11)
         }
     }
-    
-    func registerUser(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+ 
+        func registerUser(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/register") else {
             fatalError("Invalid URL")
         }
@@ -101,7 +101,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
                     return result.data
                 } else {
                     let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                    let errorMessage = errorResponse?.errorMessage ?? "Unknown server error"
+                    let errorMessage = errorResponse?.errorMessage ?? "Server is not reachable!!!"
                     throw BackendError.serverError(message: errorMessage)
                 }
             }
@@ -130,7 +130,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
             fatalError("Invalid URL")
         }
         
-        guard let refreshToken = userData?.adventuretubeRefreshJWTToken else {
+        guard let refreshToken = LoginManager.shared.userData.adventuretubeRefreshJWTToken else {
             return Fail(error: NetworkError.invalidURL)
                 .eraseToAnyPublisher()
         }
