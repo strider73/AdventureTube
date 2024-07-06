@@ -36,23 +36,31 @@ class LoginManager : ObservableObject  {
         }
     }
     
-    //TODO:Google Login only at ths moment so loginService property setting need to change later
+    // TODO: Google Login only at ths moment so loginService property setting need to change later
     private var loginService : LoginServiceProtocol?
     
     private init(){
-        //check the UserDefault
+        // MARK: check the UserDefault
         print("init LoginManager")
         do{
-            //step1 bring the userModel from the UserDefault Object
+            // MARK: step1 bring the userModel from the UserDefault Object
+            /// if user logout previoulsy there will be no adventureUser that can be extracted from UserDefaut
+            /// so process will go to catch stratight away
             let adventureUser = try UserDefaults.standard.getObject(forKey: "user", castTo: UserModel.self)
             
             
-            //step2 check the loginSource and initiate loginService instance accordinly
+            // MARK: step2 check the loginSource and initiate loginService instance accordinly
             switch(adventureUser.loginSource){
                 case .google:
+                    // MARK:  in here AdventureTubeAPI called and intialize first time
                     loginService = GoogleLoginService(loginManager: self)
                     
                     GIDSignIn.sharedInstance.restorePreviousSignIn {[weak self] user, error in
+                        //MARK: Google sign in restore success and know need to check the AdventureTubeServerAPI
+                        
+                        
+                        
+                        
                         guard let self = self else {return}
                         
                         if let user = user {
@@ -63,6 +71,7 @@ class LoginManager : ObservableObject  {
                             print("fullName  : \(adventureUser.fullName as String?)")
                             print("profilePicUrl  : \(adventureUser.profilePicUrl as String?)")
                             self.userData = adventureUser
+                            // MARK: set the userData for AdventureTubeAPIService , which is ready for use
                             AdventureTubeAPIService.shared.userData = self.userData
                             print("user setting has been stored in enviromentObject")
                         } else if let error = error {
@@ -85,7 +94,7 @@ class LoginManager : ObservableObject  {
                     print("user never been signed in !!!")
             }
             
-        }catch{
+         }catch{
             //here is the case user is not signed in or signed out
             print(error.localizedDescription)
             print("user never been singed in before ")
@@ -101,7 +110,7 @@ class LoginManager : ObservableObject  {
     ///update completion handller that can pass back an error
     ///wrap the UserModel and Error with Result to use .success and .failure 
     func googleSignIn(completion:@escaping (Result<UserModel, Error>) -> Void){
-        //TODO can be assigned different Login Service so  loginService property need to be assigned accordingly
+        //TODO: can be assigned different Login Service so  loginService property need to be assigned accordingly
         
         loginService = GoogleLoginService(loginManager: self)
         
@@ -140,8 +149,8 @@ class LoginManager : ObservableObject  {
     func signOut(){
         if let loginService = loginService{
             //delete User deafult
-            UserDefaults.resetStandardUserDefaults()
-            //disconnect youtube access
+            UserDefaults.standard.removeObject(forKey: "user")
+            UserDefaults.standard.synchronize()             //disconnect youtube access
             loginService.disconnectAdditionalScope()
             //sign out from google
             loginService.signOut()
