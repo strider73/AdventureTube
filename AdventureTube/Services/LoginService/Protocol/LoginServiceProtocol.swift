@@ -6,14 +6,15 @@
 //
 
 import Foundation
+import GoogleSignIn
 protocol LoginServiceProtocol {
     
     func signIn(completion:@escaping(_ userData :(Result<UserModel,Error>)) -> ())
     
-//    func restorePreviousSignIn()
+    func restorePreviousSignIn(completion:@escaping(_ reesult:(Result<GIDGoogleUser,Error>)) -> ())
     
-    func signOut()
-    
+    func signOut(completion: @escaping (_ result: Result<Void, Error>) -> Void)
+
     func addMoreScope(completion : @escaping () -> Void)
     
     func disconnectAdditionalScope()

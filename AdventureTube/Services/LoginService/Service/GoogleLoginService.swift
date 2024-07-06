@@ -43,15 +43,13 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     
-    private var loginManager: LoginManager
     private var adventuretubeAPI: AdventureTubeAPIPrototol
     private var cancellables = Set<AnyCancellable>()
     
     
     /// Creates an instance of this authenticator.
     /// - parameter authViewModel: The view model this authenticator will set logged in status on.
-    init(loginManager: LoginManager , apiService:AdventureTubeAPIPrototol = AdventureTubeAPIService.shared) {
-        self.loginManager = loginManager
+    init(apiService:AdventureTubeAPIPrototol = AdventureTubeAPIService.shared) {
         self.adventuretubeAPI = apiService
     }
     
@@ -141,7 +139,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                             // Process the received authResponse
                             guard let accessToken = authResponse.accessToken ,
                                   let refreshToken = authResponse.refreshToken ,
-                            let userDetail  = authResponse.userDetails
+                                  let userDetail  = authResponse.userDetails
                             else{
                                 print("Failed to retreive token from backend")
                                 adventureUser.signed_in = false;
@@ -168,7 +166,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                         .store(in: &cancellables)
                 }
                 
-//                completion(.success(adventureUser))
+                //                completion(.success(adventureUser))
                 
             }
             
@@ -179,20 +177,33 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     
+    func restorePreviousSignIn(completion:@escaping(Result<GIDGoogleUser,Error>) -> Void) {
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user , error in
+            //TODO: need to AdventuretubeAPIService
+            if let user = user {
+                completion(.success(user))
+                print("user setting has been stored in enviromentObject")
+            } else if let error = error {
+                print("There was an error restoring the previous sign-in: \(error)")
+                completion(.failure(error))
+            }
+        }
+    }
+    
     
     /// Signs out the current user.
-    func signOut() {
+    func signOut(completion: @escaping (_ result: Result<Void, Error>) -> Void) {
         GIDSignIn.sharedInstance.signOut()
-        loginManager.loginState = .signedOut
         //sign Out from backend server
         adventuretubeAPI.signOut()
             .sink(receiveCompletion: { completionSink in
                 switch completionSink {
                     case .finished:
-                        print("Request finished successfully")
+                        print("logout finished successfully")
+                        completion(.success(()))
                     case .failure(let error):
                         print("Error: \(error.localizedDescription)")
-                        //TODO need to show up error message and ask to retry again later
+                        completion(.failure(error))
                 }
             }, receiveValue: { response in
                 // Process the received authResponse
@@ -207,12 +218,6 @@ final class GoogleLoginService: LoginServiceProtocol {
                 //self.loginManager.loginState = .signedIn(refreshedUSer)
             })
             .store(in: &cancellables)
-        
-        
-        
-        
-        
-        
     }
     
     
@@ -264,9 +269,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                 return
             }
             guard let signInResult = signInResult else { return }
-            self.loginManager.loginState = .signedIn
             //TODO:  Check if the user granted access to the scopes you requested.
-            
             completion()
         }
     }
