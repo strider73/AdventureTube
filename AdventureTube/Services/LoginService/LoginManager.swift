@@ -44,57 +44,54 @@ class LoginManager : ObservableObject  {
         print("init LoginManager")
         do{
             // MARK: step1 bring the userModel from the UserDefault Object
-            /// if user logout previoulsy there will be no adventureUser that can be extracted from UserDefaut
+            /// if user never logged in before   there will be no adventureUser that can be extracted from UserDefaut
             /// so process will go to catch stratight away
             let adventureUser = try UserDefaults.standard.getObject(forKey: "user", castTo: UserModel.self)
             
-            
-            // MARK: step2 check the loginSource and initiate loginService instance accordinly
-            switch(adventureUser.loginSource){
-                case .google:
-                    // MARK:  in here AdventureTubeAPI called and intialize first time
-                    loginService = GoogleLoginService(loginManager: self)
-                    
-                    GIDSignIn.sharedInstance.restorePreviousSignIn {[weak self] user, error in
-                        //MARK: Google sign in restore success and know need to check the AdventureTubeServerAPI
-                        
-                        
-                        
-                        
-                        guard let self = self else {return}
-                        
-                        if let user = user {
-                            self.loginState = .signedIn
-                            print("adventuretube_id :\(adventureUser.adventureTube_id?.uuidString ?? "nil" ) ")
-                            print("adventuretube_accessToken : \(adventureUser.adventuretubeJWTToken as String?)")
-                            print("email : \(adventureUser.emailAddress as String?)")
-                            print("fullName  : \(adventureUser.fullName as String?)")
-                            print("profilePicUrl  : \(adventureUser.profilePicUrl as String?)")
-                            self.userData = adventureUser
-                            // MARK: set the userData for AdventureTubeAPIService , which is ready for use
-                            AdventureTubeAPIService.shared.userData = self.userData
-                            print("user setting has been stored in enviromentObject")
-                        } else if let error = error {
-                            self.loginState = .signedOut
-                            print("There was an error restoring the previous sign-in: \(error)")
-                        } else {
-                            self.loginState = .signedOut
-                            print("user state signed out ")
+            if adventureUser.signed_in == true {
+                // MARK: step2 check the loginSource and initiate loginService instance accordinly
+                switch(adventureUser.loginSource){
+                    case .google:
+                        // MARK:  in here AdventureTubeAPI called and intialize first time
+                        loginService = GoogleLoginService()
+                        if let  loginService = loginService{
+                            loginService.restorePreviousSignIn(completion: { result in
+                                // MARK: in here returned googleUser may have updated information for tokenId!
+                                switch result {
+                                    case .success(let googleUser):
+                                        //MARK: not use any data from googleUser
+                                        //check the user data
+                                        print("loginService.restorePreviousSignIn completionHandlder =======>")
+                                        print("googleUser.idToken :\(googleUser.idToken)")
+                                        print("user fullName \(adventureUser.fullName ?? "No FallName")")
+                                        print("user email \(adventureUser.emailAddress ?? "No Email")")
+                                        print("user token  \(adventureUser.idToken?.count ?? 0)")
+                                        // Update user object
+                                        self.userData = adventureUser
+                                        self.loginState = .signedIn
+                                    case .failure(let error):
+                                        print("error : \(error.localizedDescription)")
+                                        self.loginState = .signedOut
+                                        
+                                }
+                            })
                         }
-                    }
-                case .apple:
-                    print("apple login is not implemented yet")
-                case .facebook:
-                    print("facebook login is not implemented yet")
-                case .instagram:
-                    print("instagram login is not implemented yet")
-                case .twitter:
-                    print("twitter login  is not implemented yet")
-                case .none:
-                    print("user never been signed in !!!")
+                    case .apple:
+                        print("apple login is not implemented yet")
+                    case .facebook:
+                        print("facebook login is not implemented yet")
+                    case .instagram:
+                        print("instagram login is not implemented yet")
+                    case .twitter:
+                        print("twitter login  is not implemented yet")
+                    case .none:
+                        print("user never been signed in !!!")
+                }
+            }else{
+                loginState = .signedOut
             }
             
-         }catch{
+        }catch{
             //here is the case user is not signed in or signed out
             print(error.localizedDescription)
             print("user never been singed in before ")
@@ -108,11 +105,11 @@ class LoginManager : ObservableObject  {
     ///and that  different service can be assigned using a dependencey injection
     ///
     ///update completion handller that can pass back an error
-    ///wrap the UserModel and Error with Result to use .success and .failure 
+    ///wrap the UserModel and Error with Result to use .success and .failure
     func googleSignIn(completion:@escaping (Result<UserModel, Error>) -> Void){
         //TODO: can be assigned different Login Service so  loginService property need to be assigned accordingly
         
-        loginService = GoogleLoginService(loginManager: self)
+        loginService = GoogleLoginService()
         
         if let loginService = loginService{
             loginService.signIn{ [weak self] result in
@@ -148,12 +145,33 @@ class LoginManager : ObservableObject  {
     
     func signOut(){
         if let loginService = loginService{
-            //delete User deafult
-            UserDefaults.standard.removeObject(forKey: "user")
-            UserDefaults.standard.synchronize()             //disconnect youtube access
-            loginService.disconnectAdditionalScope()
             //sign out from google
-            loginService.signOut()
+            loginService.signOut {[weak self] result in
+                guard let self = self else {return}
+                
+                switch result {
+                    case .success:
+                        print("Sign out successful")
+                        //delete User deafult
+                        do {
+                            var adventureUser = try UserDefaults.standard.getObject(forKey: "user", castTo: UserModel.self)
+                            adventureUser.adventuretubeJWTToken = nil
+                            adventureUser.adventuretubeRefreshJWTToken = nil
+                            adventureUser.idToken = nil
+                            adventureUser.signed_in = false
+                            try UserDefaults.standard.setObject(adventureUser, forKey: "user")
+                        } catch {
+                            print("Failed to update user in UserDefaults: \(error.localizedDescription)")
+                        }
+                        
+                        loginService.disconnectAdditionalScope()
+                        loginState = .signedOut
+                        
+                    case .failure(let error):
+                        print("Sign out failed: \(error.localizedDescription)")
+                        // Handle sign out failure
+                }
+            }
         }
         
         
