@@ -680,7 +680,6 @@
 				B4003B4F288525E5002926F1 /* APIService */,
 				B4003B53288525E5002926F1 /* NetworkService */,
 				B4003B55288525E5002926F1 /* LoginService */,
-				B4003B58288525E5002926F1 /* LoginManager.swift */,
 				B4003B5D288525E5002926F1 /* FileService */,
 			);
 			path = Services;
@@ -735,6 +734,7 @@
 		B4003B55288525E5002926F1 /* LoginService */ = {
 			isa = PBXGroup;
 			children = (
+				B4003B58288525E5002926F1 /* LoginManager.swift */,
 				B4003B56288525E5002926F1 /* Protocol */,
 				B4003B59288525E5002926F1 /* Service */,
 			);
