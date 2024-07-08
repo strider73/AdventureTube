@@ -14,8 +14,8 @@
             filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "signIn(completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -39,38 +39,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "43CD50CB-23CF-4680-93F2-86513C09B9EC"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/LoginService/LoginManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
-            landmarkName = "init()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1939899E-DCD2-44AD-A68B-34E8704B81DB"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
-            landmarkName = "signIn(completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "C4400C56-3A3A-48C9-A073-5242DF42CDA9"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -78,56 +46,8 @@
             filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
-            landmarkName = "signIn(completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F4ED75E1-A10B-4139-9C16-E6D97669C84E"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/APIService/Adventuretube/AdventureTubeAPIService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
-            landmarkName = "AdventureTubeAPIService"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D4AC4546-33A4-40CD-B24E-4D1C6753ADF9"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/LoginService/LoginManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
-            landmarkName = "signOut()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "25EF69CF-1418-417F-B8C4-8C2249115622"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
             landmarkName = "signIn(completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -167,54 +87,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C8114ED4-DF37-4174-BA6C-E4573835FA6E"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
-            landmarkName = "signIn(completion:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "C8114ED4-DF37-4174-BA6C-E4573835FA6E - 8791afdb614325f9"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "AdventureTube.GoogleLoginService.signIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
-                  moduleName = "AdventureTube"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "75"
-                  endingLineNumber = "75"
-                  offsetFromSymbolStart = "412">
-               </Location>
-               <Location
-                  uuid = "C8114ED4-DF37-4174-BA6C-E4573835FA6E - 943c080ef811b237"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;__C.GIDSignInResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in AdventureTube.GoogleLoginService.signIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
-                  moduleName = "AdventureTube"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "78"
-                  endingLineNumber = "78"
-                  offsetFromSymbolStart = "204">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "DED69631-1FE6-4573-A092-9C94520ACDB9"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -231,38 +103,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5940E70B-3728-4808-870B-7CEB13418027"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
-            landmarkName = "signIn(completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "E029839E-F730-45F4-97E1-929DCE0E2AC4"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/APIService/Adventuretube/AdventureTubeAPIService.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
-            landmarkName = "signOut()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "E8087EBC-9C9E-4D01-BF29-DECF923D3187"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -270,8 +110,88 @@
             filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
+            landmarkName = "signIn(completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "E8087EBC-9C9E-4D01-BF29-DECF923D3187 - be277d0d677bcd07"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (AdventureTube.AuthResponse) -&gt; () in closure #1 (Swift.Optional&lt;__C.GIDGoogleUser&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in closure #1 (Swift.Optional&lt;__C.GIDSignInResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in AdventureTube.GoogleLoginService.signIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "146"
+                  endingLineNumber = "146"
+                  offsetFromSymbolStart = "2076">
+               </Location>
+               <Location
+                  uuid = "E8087EBC-9C9E-4D01-BF29-DECF923D3187 - be277d0d677bcdc5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (AdventureTube.AuthResponse) -&gt; () in closure #1 (Swift.Optional&lt;__C.GIDGoogleUser&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in closure #1 (Swift.Optional&lt;__C.GIDSignInResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in AdventureTube.GoogleLoginService.signIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "144"
+                  endingLineNumber = "144"
+                  offsetFromSymbolStart = "2076">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AC3176DD-8DBF-424F-A657-7C22DD7C05E2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AdventureTube/Services/LoginService/LoginManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "init()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4F11E422-47B0-4E40-BED7-F1839E8EE74C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AdventureTube/Services/LoginService/LoginManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
+            landmarkName = "init()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E003A7D6-D16E-4D3B-94ED-8FF1EF9C0B2B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
             landmarkName = "signIn(completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -279,33 +199,225 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "50D95A54-0B60-45DC-A029-A5CF84675683"
+            uuid = "7499D9C1-4F66-4496-8EC0-D6D6C2BFADEE"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/APIService/Adventuretube/AdventureTubeAPIService.swift"
+            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
-            landmarkName = "AdventureTubeAPIService"
-            landmarkType = "3">
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "signIn(completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "7499D9C1-4F66-4496-8EC0-D6D6C2BFADEE - b7a39d8f78017ffc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.GIDGoogleUser&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in closure #1 (Swift.Optional&lt;__C.GIDSignInResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in AdventureTube.GoogleLoginService.signIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101"
+                  offsetFromSymbolStart = "756">
+               </Location>
+               <Location
+                  uuid = "7499D9C1-4F66-4496-8EC0-D6D6C2BFADEE - b7a39d8f78017ffc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.GIDGoogleUser&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in closure #1 (Swift.Optional&lt;__C.GIDSignInResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in AdventureTube.GoogleLoginService.signIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101"
+                  offsetFromSymbolStart = "828">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7FB47352-77F9-416A-8F0C-C2223F4E1C8F"
+            uuid = "BF51D1E3-F233-44B4-81D6-67353AC192BD"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AdventureTube/Services/APIService/Adventuretube/AdventureTubeAPIService.swift"
+            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
-            landmarkName = "AdventureTubeAPIService"
-            landmarkType = "3">
+            startingLineNumber = "92"
+            endingLineNumber = "92"
+            landmarkName = "signIn(completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "BF51D1E3-F233-44B4-81D6-67353AC192BD - 943c080ef811b005"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.GIDSignInResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in AdventureTube.GoogleLoginService.signIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92"
+                  offsetFromSymbolStart = "708">
+               </Location>
+               <Location
+                  uuid = "BF51D1E3-F233-44B4-81D6-67353AC192BD - b7a39d8f78017ec7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.GIDGoogleUser&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in closure #1 (Swift.Optional&lt;__C.GIDSignInResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in AdventureTube.GoogleLoginService.signIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "92"
+                  endingLineNumber = "92"
+                  offsetFromSymbolStart = "464">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9BE0E937-6979-4805-894D-86C291DAB3C1"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AdventureTube/Services/LoginService/LoginManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
+            landmarkName = "googleSignIn(completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9BE0E937-6979-4805-894D-86C291DAB3C1 - 6dc6ed1a4fe53587"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "AdventureTube.LoginManager.googleSignIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/LoginManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "116"
+                  endingLineNumber = "116"
+                  offsetFromSymbolStart = "396">
+               </Location>
+               <Location
+                  uuid = "9BE0E937-6979-4805-894D-86C291DAB3C1 - a263e3f97b820602"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; () in AdventureTube.LoginManager.googleSignIn(completion: (Swift.Result&lt;AdventureTube.UserModel, Swift.Error&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/LoginManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "116"
+                  endingLineNumber = "116"
+                  offsetFromSymbolStart = "360">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CCA0E432-AE5B-41A1-90FC-F003524ECBCB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "233"
+            endingLineNumber = "233"
+            landmarkName = "createAdventureUser(from:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CCA0E432-AE5B-41A1-90FC-F003524ECBCB - 88f9e031175dcb11"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "AdventureTube.GoogleLoginService.createAdventureUser(from: __C.GIDGoogleUser) -&gt; AdventureTube.UserModel"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "233"
+                  endingLineNumber = "233"
+                  offsetFromSymbolStart = "2356">
+               </Location>
+               <Location
+                  uuid = "CCA0E432-AE5B-41A1-90FC-F003524ECBCB - 88f9e031175dcb11"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "AdventureTube.GoogleLoginService.createAdventureUser(from: __C.GIDGoogleUser) -&gt; AdventureTube.UserModel"
+                  moduleName = "AdventureTube"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Volumes/Programming%20HD/AdventureTube/iOS/AdventureTube/AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "233"
+                  endingLineNumber = "233"
+                  offsetFromSymbolStart = "2308">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4F22C2DA-5B58-4C18-8DB1-97B2C0453B4B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
+            landmarkName = "signIn(completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D6FA8EA1-DC0B-4237-84E0-6DB0F7307C9B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AdventureTube/Services/LoginService/Service/GoogleLoginService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
+            landmarkName = "signIn(completion:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
