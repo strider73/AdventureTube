@@ -118,7 +118,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                         print("user has a refresh token")
                     }else{
                         //user need to login again since logout has been done
-                        print("user need to login again since logout has been don")
+                        print("user need to login again since logout has been done")
                     }
                 }else{
                     //user need to register
@@ -227,14 +227,18 @@ final class GoogleLoginService: LoginServiceProtocol {
         let givenName = user.profile?.givenName ?? "No Given Name"
         let familyName = user.profile?.familyName ?? "No Family Name"
         let profilePicUrl = user.profile?.imageURL(withDimension: 320)
+        let idToken = user.idToken?.tokenString ?? ""
         
-        return UserModel(signed_in: true,
-                         emailAddress: emailAddress,
-                         fullName: fullName,
-                         givenName: givenName,
-                         familyName: familyName,
-                         profilePicUrl: profilePicUrl?.absoluteString,
-                         loginSource: .google)
+        //TODO: this doesn't copy the value why ? check the LoginManager.shared.userData first
+        var userData : UserModel = LoginManager.shared.userData
+        userData.idToken = idToken
+        userData.emailAddress = emailAddress
+        userData.fullName = fullName
+        userData.familyName = familyName
+        userData.profilePicUrl = profilePicUrl?.absoluteString
+        userData.loginSource = .google
+        
+        return userData
     }
     
     
