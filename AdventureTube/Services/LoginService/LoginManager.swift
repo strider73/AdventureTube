@@ -47,7 +47,8 @@ class LoginManager : ObservableObject  {
             /// if user never logged in before   there will be no adventureUser that can be extracted from UserDefaut
             /// so process will go to catch stratight away
             let adventureUser = try UserDefaults.standard.getObject(forKey: "user", castTo: UserModel.self)
-            
+            self.userData = adventureUser
+
             if adventureUser.signed_in == true {
                 // MARK: step2 check the loginSource and initiate loginService instance accordinly
                 switch(adventureUser.loginSource){
@@ -112,7 +113,7 @@ class LoginManager : ObservableObject  {
         loginService = GoogleLoginService()
         
         if let loginService = loginService{
-            loginService.signIn{ [weak self] result in
+           loginService.signIn{ [weak self] result in
                 guard let self = self else {return}
                 switch result {
                     case .success(let adventureUser):
