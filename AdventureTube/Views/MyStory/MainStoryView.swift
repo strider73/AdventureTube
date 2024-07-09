@@ -28,7 +28,7 @@ struct MainStoryView: View {
     var body: some View {
         ZStack {
             ColorConstant.background.color.edgesIgnoringSafeArea(.all)
-            switch(loginManager.loginState){
+            switch(loginManager.publicLoginState){
             case .signedOut:
                 Button("Sign In"){
                     isShowingLogin.toggle()

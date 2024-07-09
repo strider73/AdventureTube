@@ -115,11 +115,45 @@ final class GoogleLoginService: LoginServiceProtocol {
                     //user already have a adventureTube_id  check the  JWT Token
                     if let adventureTube_token = adventureUser.adventuretubeRefreshJWTToken{
                         //user has a refresh token
-                        print("user has a refresh token")
+                        print("user need to login with refresh token")
                     }else{
                         //user need to login again since logout has been done
-                        print("user need to login again since logout has been done")
+                        print("user need to login with password")
+                        adventuretubeAPI.login(adventureUser: adventureUser)
+                            .sink(receiveCompletion: { completionSink in
+                                switch completionSink {
+                                    case .finished:
+                                        print("Request finished successfully")
+                                    case .failure(let error):
+                                        print("BackEnd Connection Error: \(error.localizedDescription)")
+                                        adventureUser.signed_in = false;
+                                        completion(.failure(error))
+                                        //TODO: need to show up error message and ask to retry again later
+                                }
+                            }, receiveValue: { authResponse in
+                                // Process the received authResponse
+                                guard let accessToken = authResponse.accessToken ,
+                                      let refreshToken = authResponse.refreshToken ,
+                                      let userDetail  = authResponse.userDetails
+                                else{
+                                    print("Failed to retreive token from backend")
+                                    adventureUser.signed_in = false;
+                                    let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
+                                    completion(.failure(error))
+                                    //TODO:  need to show the error to user
+                                    return
+                                }
+                                //TODO: need to validate a token later
+                                adventureUser.adventuretubeJWTToken = accessToken
+                                adventureUser.adventuretubeRefreshJWTToken = refreshToken
+                                adventureUser.signed_in = true
+                                //MARK: Store Data in UserDefault
+                                print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
+                                completion(.success(adventureUser))
+                            })
+                            .store(in: &cancellables)
                     }
+                    
                 }else{
                     //user need to register
                     print("user need to register")
@@ -130,10 +164,9 @@ final class GoogleLoginService: LoginServiceProtocol {
                                     print("Request finished successfully")
                                 case .failure(let error):
                                     print("BackEnd Connection Error: \(error.localizedDescription)")
-                                    //TODO: need to show up error message and ask to retry again later
                                     adventureUser.signed_in = false;
                                     completion(.failure(error))
-                                    //TODO:  need to show the error to user
+                                    //TODO: need to show up error message and ask to retry again later
                             }
                         }, receiveValue: { authResponse in
                             // Process the received authResponse
@@ -152,30 +185,15 @@ final class GoogleLoginService: LoginServiceProtocol {
                             adventureUser.adventuretubeJWTToken = accessToken
                             adventureUser.adventuretubeRefreshJWTToken = refreshToken
                             adventureUser.adventureTube_id = userDetail.id
-                            //MARK: Store Data in UserDefault
-                            let userDefaults = UserDefaults.standard
-                            do {
-                                try userDefaults.setObject(adventureUser, forKey: "user")
-                                print("user data has been setting in user default ")
-                            } catch {
-                                print(error.localizedDescription)
-                            }
+                            adventureUser.signed_in = true
                             print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
                             completion(.success(adventureUser))
                         })
                         .store(in: &cancellables)
-                }
-                
-                //                completion(.success(adventureUser))
-                
-            }
-            
-            
-            
-        }
+                }//end of user register
+            }//end of google refresh token
+        }//end of google login
     }
-    
-    
     
     func restorePreviousSignIn(completion:@escaping(Result<GIDGoogleUser,Error>) -> Void) {
         GIDSignIn.sharedInstance.restorePreviousSignIn { user , error in
@@ -189,7 +207,6 @@ final class GoogleLoginService: LoginServiceProtocol {
             }
         }
     }
-    
     
     /// Signs out the current user.
     func signOut(completion: @escaping (_ result: Result<Void, Error>) -> Void) {
@@ -214,8 +231,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                     return
                 }
                 //TODO need to validate a token later
-                let userDefaults = UserDefaults.standard
-                //self.loginManager.loginState = .signedIn(refreshedUSer)
+                
             })
             .store(in: &cancellables)
     }
@@ -230,7 +246,7 @@ final class GoogleLoginService: LoginServiceProtocol {
         let idToken = user.idToken?.tokenString ?? ""
         
         //TODO: this doesn't copy the value why ? check the LoginManager.shared.userData first
-        var userData : UserModel = LoginManager.shared.userData
+        var userData : UserModel = LoginManager.shared.publicUserData
         userData.idToken = idToken
         userData.emailAddress = emailAddress
         userData.fullName = fullName

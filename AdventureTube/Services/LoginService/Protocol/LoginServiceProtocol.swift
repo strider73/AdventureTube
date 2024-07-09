@@ -11,6 +11,8 @@ protocol LoginServiceProtocol {
     
     func signIn(completion:@escaping(_ userData :(Result<UserModel,Error>)) -> ())
     
+//    func logIn(completion:@escaping(_ result:(Result<UserModel,Error>)) -> Void)
+    
     func restorePreviousSignIn(completion:@escaping(_ reesult:(Result<GIDGoogleUser,Error>)) -> ())
     
     func signOut(completion: @escaping (_ result: Result<Void, Error>) -> Void)

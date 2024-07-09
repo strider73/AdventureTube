@@ -11,6 +11,7 @@ import Combine
 protocol AdventureTubeAPIPrototol:AdventureTubeAPIService{
     func getData<T: Decodable>(endpoint: String, id: Int?, returnData: T.Type) -> Future<T, Error>
     func registerUser (adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error>
+    func login(adventureUser:UserModel) ->AnyPublisher<AuthResponse,Error>
     func signOut() -> AnyPublisher<RestAPIResponse, Error>
 
 }
