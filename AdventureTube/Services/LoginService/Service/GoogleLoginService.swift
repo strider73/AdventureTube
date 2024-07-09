@@ -112,48 +112,42 @@ final class GoogleLoginService: LoginServiceProtocol {
                 //if user doesn't have token but have a UserID => user need to login and get token
                 
                 if let adventureTube_id =  adventureUser.adventureTube_id{
-                    //user already have a adventureTube_id  check the  JWT Token
-                    if let adventureTube_token = adventureUser.adventuretubeRefreshJWTToken{
-                        //user has a refresh token
-                        print("user need to login with refresh token")
-                    }else{
-                        //user need to login again since logout has been done
-                        print("user need to login with password")
-                        adventuretubeAPI.login(adventureUser: adventureUser)
-                            .sink(receiveCompletion: { completionSink in
-                                switch completionSink {
-                                    case .finished:
-                                        print("Request finished successfully")
-                                    case .failure(let error):
-                                        print("BackEnd Connection Error: \(error.localizedDescription)")
-                                        adventureUser.signed_in = false;
-                                        completion(.failure(error))
-                                        //TODO: need to show up error message and ask to retry again later
-                                }
-                            }, receiveValue: { authResponse in
-                                // Process the received authResponse
-                                guard let accessToken = authResponse.accessToken ,
-                                      let refreshToken = authResponse.refreshToken ,
-                                      let userDetail  = authResponse.userDetails
-                                else{
-                                    print("Failed to retreive token from backend")
-                                    adventureUser.signed_in = false;
-                                    let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
-                                    completion(.failure(error))
-                                    //TODO:  need to show the error to user
-                                    return
-                                }
-                                //TODO: need to validate a token later
-                                adventureUser.adventuretubeJWTToken = accessToken
-                                adventureUser.adventuretubeRefreshJWTToken = refreshToken
-                                adventureUser.signed_in = true
-                                //MARK: Store Data in UserDefault
-                                print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
-                                completion(.success(adventureUser))
-                            })
-                            .store(in: &cancellables)
-                    }
                     
+                    //user need to login again since logout has been done
+                    print("user need to login with password")
+                    adventuretubeAPI.login(adventureUser: adventureUser)
+                        .sink(receiveCompletion: { completionSink in
+                            switch completionSink {
+                                case .finished:
+                                    print("Request finished successfully")
+                                case .failure(let error):
+                                    print("BackEnd Connection Error: \(error.localizedDescription)")
+                                    adventureUser.signed_in = false;
+                                    completion(.failure(error))
+                                    //TODO: need to show up error message and ask to retry again later
+                            }
+                        }, receiveValue: { authResponse in
+                            // Process the received authResponse
+                            guard let accessToken = authResponse.accessToken ,
+                                  let refreshToken = authResponse.refreshToken ,
+                                  let userDetail  = authResponse.userDetails
+                            else{
+                                print("Failed to retreive token from backend")
+                                adventureUser.signed_in = false;
+                                let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
+                                completion(.failure(error))
+                                //TODO:  need to show the error to user
+                                return
+                            }
+                            //TODO: need to validate a token later
+                            adventureUser.adventuretubeJWTToken = accessToken
+                            adventureUser.adventuretubeRefreshJWTToken = refreshToken
+                            adventureUser.signed_in = true
+                            //MARK: Store Data in UserDefault
+                            print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
+                            completion(.success(adventureUser))
+                        })
+                        .store(in: &cancellables)
                 }else{
                     //user need to register
                     print("user need to register")
