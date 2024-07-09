@@ -14,7 +14,7 @@ struct HomeView: View {
     var body: some View {
         // if user signed in send user tio contentView
         
-        switch loginManager.loginState{
+        switch loginManager.publicLoginState{
         case .signedIn , .signedOut :
               AdventureTubeTabBarView()
         case .initial :
