@@ -74,7 +74,6 @@ struct LoginView: View {
                             switch result {
                                 case  .success(let user):
                                     print("user signed in successfully")
-                                    loginManager.loginState = .signedIn
                                 case .failure(let error):
                                     errorMessag = error.localizedDescription
                                     print("Login error :\(error.localizedDescription)")

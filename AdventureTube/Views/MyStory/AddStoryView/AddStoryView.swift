@@ -484,7 +484,7 @@ struct AddStoryView: View {
     
     //This one is common
     private func getListTitle() -> String {
-        guard let userName = loginManager.userData.givenName else{
+        guard let userName = loginManager.publicUserData.givenName else{
             return "Adventure Story"
         }
         return userName + "'s Adventure Story"

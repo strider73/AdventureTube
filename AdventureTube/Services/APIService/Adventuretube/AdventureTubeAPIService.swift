@@ -19,7 +19,6 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
     
     //This is SingleTon Parttern
     static let shared = AdventureTubeAPIService()
-    var userData : UserModel?
     private var cancellables = Set<AnyCancellable>() // (3)
     //    private var accessToken : String?
     //    private var refreshToken : String?
@@ -65,8 +64,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
                 .store(in: &self.cancellables)  // (11)
         }
     }
- 
-        func registerUser(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+    
+    func registerUser(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/register") else {
             fatalError("Invalid URL")
         }
@@ -87,7 +86,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
             "username": fullName,
             "email": emailAddress,
             "role": "USER",
-            "password": "1111111"
+            "password": password
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("googleIdToken : \(idToken)")
@@ -97,12 +96,101 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
                     throw BackendError.unknownError
                 }
                 
-                if (200...299).contains(httpResponse.statusCode) {
-                    return result.data
+                
+                switch httpResponse.statusCode{
+                    case 200...299:
+                        return  result.data
+                    case 401:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unauthorized access.", comment: "")
+                        throw BackendError.unauthorized(message: errorMessage)
+                    case 404:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource not found.", comment: "")
+                        throw BackendError.notFound(message: errorMessage)
+                    case 409:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource conflict", comment: "")
+                        throw BackendError.notFound(message: errorMessage)
+                    case 500:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Internal server error.", comment: "")
+                        throw BackendError.internalServerError(message: errorMessage)
+                    default:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unknown Error", comment: "")
+                        throw BackendError.serverError(message: errorMessage)
+                }
+                
+            }
+            .decode(type: AuthResponse.self, decoder: JSONDecoder())
+            .mapError { error -> BackendError in
+                if let backendError = error as? BackendError {
+                    return backendError
+                } else if let decodingError = error as? DecodingError {
+                    return BackendError.decodingError(message: decodingError.localizedDescription)
                 } else {
-                    let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                    let errorMessage = errorResponse?.errorMessage ?? "Server is not reachable!!!"
-                    throw BackendError.serverError(message: errorMessage)
+                    return BackendError.unknownError
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+    
+    func login(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+        guard let url = URL(string: "\(targetServerAddress)/auth/login") else {
+            fatalError("Invalid URL")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // Safely unwrap optional properties
+        guard let idToken = adventureUser.idToken,
+              let fullName = adventureUser.fullName,
+              let emailAddress = adventureUser.emailAddress,
+              let password = adventureUser.googleUserId
+        else {
+            fatalError("Missing user information")
+        }
+        let body: [String: Any] = [
+            "googleIdToken": idToken,
+            "username": fullName,
+            "email": emailAddress,
+            "role": "USER",
+            "password": password
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
+        print("googleIdToken : \(idToken)")
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .tryMap { result -> Data in
+                guard let httpResponse = result.response as? HTTPURLResponse else {
+                    throw BackendError.unknownError
+                }
+                
+                switch httpResponse.statusCode{
+                    case 200...299:
+                        return  result.data
+                    case 401:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unauthorized access.", comment: "")
+                        throw BackendError.unauthorized(message: errorMessage)
+                    case 404:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource not found.", comment: "")
+                        throw BackendError.notFound(message: errorMessage)
+                    case 409:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource conflict", comment: "")
+                        throw BackendError.notFound(message: errorMessage)
+                    case 500:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Internal server error.", comment: "")
+                        throw BackendError.internalServerError(message: errorMessage)
+                    default:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unknown Error", comment: "")
+                        throw BackendError.serverError(message: errorMessage)
                 }
             }
             .decode(type: AuthResponse.self, decoder: JSONDecoder())
@@ -116,12 +204,6 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
                 }
             }
             .receive(on: DispatchQueue.main)
-            .handleEvents(receiveOutput: { [weak self] authResponse in
-                guard let self = self else {return}
-                self.userData?.adventuretubeJWTToken = authResponse.accessToken
-                self.userData?.adventuretubeRefreshJWTToken = authResponse.refreshToken
-                self.userData?.adventureTube_id = authResponse.userDetails?.id
-            })
             .eraseToAnyPublisher()
     }
     
@@ -130,7 +212,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
             fatalError("Invalid URL")
         }
         
-        guard let refreshToken = LoginManager.shared.userData.adventuretubeRefreshJWTToken else {
+        guard let refreshToken = LoginManager.shared.publicUserData.adventuretubeRefreshJWTToken else {
             return Fail(error: NetworkError.invalidURL)
                 .eraseToAnyPublisher()
         }
@@ -146,12 +228,30 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
                     throw BackendError.unknownError
                 }
                 
-                if (200...299).contains(httpResponse.statusCode) {
-                    return result.data
-                } else {
-                    let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                    let errorMessage = errorResponse?.errorMessage ?? "Unknown server error"
-                    throw BackendError.serverError(message: errorMessage)
+                
+                switch httpResponse.statusCode{
+                    case 200...299:
+                        return  result.data
+                    case 401:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unauthorized access.", comment: "")
+                        throw BackendError.unauthorized(message: errorMessage)
+                    case 404:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource not found.", comment: "")
+                        throw BackendError.notFound(message: errorMessage)
+                    case 409:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource conflict", comment: "")
+                        throw BackendError.notFound(message: errorMessage)
+                    case 500:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Internal server error.", comment: "")
+                        throw BackendError.internalServerError(message: errorMessage)
+                    default:
+                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unknown Error", comment: "")
+                        throw BackendError.serverError(message: errorMessage)
                 }
             }
             .decode(type: RestAPIResponse.self, decoder: JSONDecoder())
@@ -170,18 +270,23 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
     }
 }
 enum BackendError: LocalizedError {
+    case unauthorized(message: String)
+    case notFound(message: String)
+    case internalServerError(message: String)
     case serverError(message: String)
     case decodingError(message: String)
     case unknownError
     
     var errorDescription: String? {
         switch self {
-            case .serverError(let message):
-                return message
-            case .decodingError(let message):
+            case .unauthorized(let message),
+                    .notFound(let message),
+                    .internalServerError(let message),
+                    .serverError(let message),
+                    .decodingError(let message):
                 return message
             case .unknownError:
-                return "An unknown error occurred"
+                return NSLocalizedString("An unknown error occurred", comment: "")
         }
     }
 }

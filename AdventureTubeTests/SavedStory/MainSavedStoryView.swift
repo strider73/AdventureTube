@@ -21,7 +21,7 @@ struct MainSavedStoryView: View {
             ZStack{
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 VStack{
-                    switch(loginManager.loginState){
+                    switch(loginManager.publicLoginState){
                     case .signedOut:
                         Button("Sign In"){
                             isShowingLogintoggle.toggle()

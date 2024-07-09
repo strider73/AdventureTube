@@ -29,7 +29,7 @@ struct SettingView: View {
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 VStack{
                     
-                    switch(loginManager.loginState){
+                    switch(loginManager.publicLoginState){
                     case .signedOut:
                         Button("Sign In"){
                             isShowingLogintoggle.toggle()
@@ -52,10 +52,10 @@ struct SettingView: View {
                                 }
                                 Spacer()
                             }
-                            Text( loginManager.userData.emailAddress ?? "No_Email")
-                            Text( loginManager.userData.fullName ?? "No_FullName")
-                            Text( loginManager.userData.givenName ?? "No_GivenName")
-                            Text( loginManager.userData.familyName ?? "No_FamilyName")
+                            Text( loginManager.publicUserData.emailAddress ?? "No_Email")
+                            Text( loginManager.publicUserData.fullName ?? "No_FullName")
+                            Text( loginManager.publicUserData.givenName ?? "No_GivenName")
+                            Text( loginManager.publicUserData.familyName ?? "No_FamilyName")
                         }
                         
                         

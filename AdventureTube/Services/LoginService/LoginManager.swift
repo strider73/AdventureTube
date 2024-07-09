@@ -16,12 +16,19 @@
  */
 
 import Foundation
-import GoogleSignIn
 
 class LoginManager : ObservableObject  {
     static let shared = LoginManager()
-    @Published  var userData : UserModel = UserModel()
-    @Published  var loginState : State = .initial{
+    @Published private var userData : UserModel = UserModel()
+    var userDataPublisher: Published<UserModel>.Publisher{
+        $userData
+    }
+    
+    var publicUserData : UserModel {
+        return userData
+    }
+    
+    @Published private var loginState : State = .initial{
         willSet(loginState){
             switch loginState  {
                 case .signedIn:
@@ -36,8 +43,26 @@ class LoginManager : ObservableObject  {
         }
     }
     
+    var loginStatePublisher: Published<State>.Publisher{
+        $loginState
+    }
+    var publicLoginState: State {
+        return loginState
+    }
+    
+    
+    
     // TODO: Google Login only at ths moment so loginService property setting need to change later
     private var loginService : LoginServiceProtocol?
+    
+    
+    func updateUserData(_  updateUserData: UserModel) {
+           self.userData = updateUserData
+    }
+    
+    func updateLoginState( _ updateState: State) {
+           self.loginState = updateState
+    }
     
     private init(){
         // MARK: check the UserDefault
@@ -48,7 +73,7 @@ class LoginManager : ObservableObject  {
             /// so process will go to catch stratight away
             let adventureUser = try UserDefaults.standard.getObject(forKey: "user", castTo: UserModel.self)
             self.userData = adventureUser
-
+            /// if user is log
             if adventureUser.signed_in == true {
                 // MARK: step2 check the loginSource and initiate loginService instance accordinly
                 switch(adventureUser.loginSource){
@@ -113,7 +138,7 @@ class LoginManager : ObservableObject  {
         loginService = GoogleLoginService()
         
         if let loginService = loginService{
-           loginService.signIn{ [weak self] result in
+            loginService.signIn{ [weak self] result in
                 guard let self = self else {return}
                 switch result {
                     case .success(let adventureUser):
@@ -123,10 +148,12 @@ class LoginManager : ObservableObject  {
                         print("user fullName \(adventureUser.fullName ?? "No FallName")")
                         print("user email \(adventureUser.emailAddress ?? "No Email")")
                         print("user token  \(adventureUser.idToken?.count ?? 0)")
-                        // Update user object
+                        // Update user object and loginState
                         self.userData = adventureUser
+                        self.loginState = .signedIn
+                        //MARK: Store Data in UserDefault
+                        saveUserStateToUserDefault()
                         completion(.success(adventureUser))
-                        
                     case .failure(let error):
                         completion(.failure(error))
                 }
@@ -153,20 +180,15 @@ class LoginManager : ObservableObject  {
                 switch result {
                     case .success:
                         print("Sign out successful")
-                        //delete User deafult
-                        do {
-                            var adventureUser = try UserDefaults.standard.getObject(forKey: "user", castTo: UserModel.self)
-                            adventureUser.adventuretubeJWTToken = nil
-                            adventureUser.adventuretubeRefreshJWTToken = nil
-                            adventureUser.idToken = nil
-                            adventureUser.signed_in = false
-                            try UserDefaults.standard.setObject(adventureUser, forKey: "user")
-                        } catch {
-                            print("Failed to update user in UserDefaults: \(error.localizedDescription)")
-                        }
                         
+                        userData.adventuretubeJWTToken = nil
+                        userData.adventuretubeRefreshJWTToken = nil
+                        userData.idToken = nil
+                        userData.signed_in = false
                         loginService.disconnectAdditionalScope()
                         loginState = .signedOut
+                        
+                        saveUserStateToUserDefault()
                         
                     case .failure(let error):
                         print("Sign out failed: \(error.localizedDescription)")
@@ -197,6 +219,10 @@ class LoginManager : ObservableObject  {
         if let loginService = loginService {
             loginService.addMoreScope(completion:completion)
         }
+        //TODO: update userData
+        
+        //MARK: Store Data in UserDefault
+        saveUserStateToUserDefault()
     }
     
     
@@ -225,7 +251,20 @@ class LoginManager : ObservableObject  {
     var hasYoutubeAccessScope:Bool{
         return authorizedScopes.contains(YoutubeAPIService.youtubeContentReadScope)
     }
+    
+    private func saveUserStateToUserDefault(){
+        
+        let userDefaults = UserDefaults.standard
+        
+        do {
+            try userDefaults.setObject( userData, forKey: "user")
+            print("User data has been saved to UserDefault")
+        }catch{
+            print(error.localizedDescription)
+        }
+    }
 }
+
 
 
 extension LoginManager  {
