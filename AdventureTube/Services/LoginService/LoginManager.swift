@@ -77,24 +77,20 @@ class LoginManager : ObservableObject  {
             if adventureUser.signed_in == true {
                 // MARK: step2 check the loginSource and initiate loginService instance accordinly
                 switch(adventureUser.loginSource){
-                    case .google:
+                     case .google:
                         // MARK:  in here AdventureTubeAPI called and intialize first time
                         loginService = GoogleLoginService()
                         if let  loginService = loginService{
-                            loginService.restorePreviousSignIn(completion: { result in
+                            loginService.restorePreviousSignIn(completion: {[weak self] result in
+                                guard let self = self else {return}
+
                                 // MARK: in here returned googleUser may have updated information for tokenId!
                                 switch result {
-                                    case .success(let googleUser):
-                                        //MARK: not use any data from googleUser
-                                        //check the user data
-                                        print("loginService.restorePreviousSignIn completionHandlder =======>")
-                                        print("googleUser.idToken :\(googleUser.idToken)")
-                                        print("user fullName \(adventureUser.fullName ?? "No FallName")")
-                                        print("user email \(adventureUser.emailAddress ?? "No Email")")
-                                        print("user token  \(adventureUser.idToken?.count ?? 0)")
+                                    case .success(let adventureUser):
                                         // Update user object
                                         self.userData = adventureUser
                                         self.loginState = .signedIn
+                                        saveUserStateToUserDefault()
                                     case .failure(let error):
                                         print("error : \(error.localizedDescription)")
                                         self.loginState = .signedOut

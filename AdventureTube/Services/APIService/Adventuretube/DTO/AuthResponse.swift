@@ -7,7 +7,7 @@
 
 import Foundation
 struct AuthResponse: Codable {
-    let userDetails: MemberDTO?
+    let userId: UUID?
     let accessToken: String?
     let refreshToken: String?
     let errorMessage: String?

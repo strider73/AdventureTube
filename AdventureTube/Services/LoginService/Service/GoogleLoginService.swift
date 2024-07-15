@@ -111,11 +111,11 @@ final class GoogleLoginService: LoginServiceProtocol {
                 //if user doesn't have a adventuretube UserID  => user need to register
                 //if user doesn't have token but have a UserID => user need to login and get token
                 
-                if let adventureTube_id =  adventureUser.adventureTube_id{
+                if adventureUser.adventureTube_id != nil{
                     
                     //user need to login again since logout has been done
                     print("user need to login with password")
-                    adventuretubeAPI.login(adventureUser: adventureUser)
+                    adventuretubeAPI.loginWithPassword(adventureUser: adventureUser)
                         .sink(receiveCompletion: { completionSink in
                             switch completionSink {
                                 case .finished:
@@ -129,8 +129,8 @@ final class GoogleLoginService: LoginServiceProtocol {
                         }, receiveValue: { authResponse in
                             // Process the received authResponse
                             guard let accessToken = authResponse.accessToken ,
-                                  let refreshToken = authResponse.refreshToken ,
-                                  let userDetail  = authResponse.userDetails
+                                  let refreshToken = authResponse.refreshToken 
+                                  //let userDetail  = authResponse.userDetails
                             else{
                                 print("Failed to retreive token from backend")
                                 adventureUser.signed_in = false;
@@ -166,7 +166,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                             // Process the received authResponse
                             guard let accessToken = authResponse.accessToken ,
                                   let refreshToken = authResponse.refreshToken ,
-                                  let userDetail  = authResponse.userDetails
+                                  let userId = authResponse.userId
                             else{
                                 print("Failed to retreive token from backend")
                                 adventureUser.signed_in = false;
@@ -178,7 +178,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                             //TODO: need to validate a token later
                             adventureUser.adventuretubeJWTToken = accessToken
                             adventureUser.adventuretubeRefreshJWTToken = refreshToken
-                            adventureUser.adventureTube_id = userDetail.id
+                            adventureUser.adventureTube_id = userId
                             adventureUser.signed_in = true
                             print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
                             completion(.success(adventureUser))
@@ -189,11 +189,50 @@ final class GoogleLoginService: LoginServiceProtocol {
         }//end of google login
     }
     
-    func restorePreviousSignIn(completion:@escaping(Result<GIDGoogleUser,Error>) -> Void) {
-        GIDSignIn.sharedInstance.restorePreviousSignIn { user , error in
+    func restorePreviousSignIn(completion:@escaping(Result<UserModel,Error>) -> Void) {
+        GIDSignIn.sharedInstance.restorePreviousSignIn {[weak self] user , error in
+            guard let self = self else {return}
             //TODO: need to AdventuretubeAPIService
             if let user = user {
-                completion(.success(user))
+                var adventureUser  = self.createAdventureUser(from: user);
+
+                
+                //TODO: refresh token
+                adventuretubeAPI.refreshToken(adventureUser: adventureUser)
+                    .sink(receiveCompletion: { completionSink in
+                        switch completionSink {
+                            case .finished:
+                                print("Request finished successfully")
+                            case .failure(let error):
+                                print("BackEnd Connection Error: \(error.localizedDescription)")
+                                adventureUser.signed_in = false;
+                                completion(.failure(error))
+                                //TODO: need to show up error message and ask to retry again later
+                        }
+                    }, receiveValue: { authResponse in
+                        // Process the received authResponse
+                        guard let accessToken = authResponse.accessToken ,
+                              let refreshToken = authResponse.refreshToken
+                              //let userDetail  = authResponse.userDetails
+                        else{
+                            print("Failed to retreive token from backend")
+                            adventureUser.signed_in = false;
+                            let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
+                            completion(.failure(error))
+                            //TODO:  need to show the error to user
+                            return
+                        }
+                        //TODO: update token
+                        adventureUser.adventuretubeJWTToken = accessToken
+                        adventureUser.adventuretubeRefreshJWTToken = refreshToken
+                        //adventureUser.signed_in = true
+                        print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
+                        completion(.success(adventureUser))
+                    })
+                    .store(in: &cancellables)
+                
+                
+                completion(.success(adventureUser))
                 print("user setting has been stored in enviromentObject")
             } else if let error = error {
                 print("There was an error restoring the previous sign-in: \(error)")

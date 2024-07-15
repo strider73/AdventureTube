@@ -74,19 +74,12 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         // Safely unwrap optional properties
-        guard let idToken = adventureUser.idToken,
-              let fullName = adventureUser.fullName,
-              let emailAddress = adventureUser.emailAddress,
-              let password = adventureUser.googleUserId
+        guard let idToken = adventureUser.idToken
         else {
             fatalError("Missing user information")
         }
         let body: [String: Any] = [
             "googleIdToken": idToken,
-            "username": fullName,
-            "email": emailAddress,
-            "role": "USER",
-            "password": password
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("googleIdToken : \(idToken)")
@@ -137,7 +130,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
             .eraseToAnyPublisher()
     }
     
-    func login(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+    func loginWithPassword(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/login") else {
             fatalError("Invalid URL")
         }
@@ -146,19 +139,12 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         // Safely unwrap optional properties
-        guard let idToken = adventureUser.idToken,
-              let fullName = adventureUser.fullName,
-              let emailAddress = adventureUser.emailAddress,
-              let password = adventureUser.googleUserId
+        guard let idToken = adventureUser.idToken
         else {
             fatalError("Missing user information")
         }
         let body: [String: Any] = [
             "googleIdToken": idToken,
-            "username": fullName,
-            "email": emailAddress,
-            "role": "USER",
-            "password": password
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("googleIdToken : \(idToken)")
@@ -190,6 +176,76 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
                     default:
                         let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
                         let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unknown Error", comment: "")
+                        throw BackendError.serverError(message: errorMessage)
+                }
+            }
+            .decode(type: AuthResponse.self, decoder: JSONDecoder())
+            .mapError { error -> BackendError in
+                if let backendError = error as? BackendError {
+                    return backendError
+                } else if let decodingError = error as? DecodingError {
+                    return BackendError.decodingError(message: decodingError.localizedDescription)
+                } else {
+                    return BackendError.unknownError
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+    
+    func refreshToken(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+        guard let url = URL(string: "\(targetServerAddress)/auth/refreshToken") else {
+            fatalError("Invalid URL")
+        }
+        
+        guard let refreshToken = LoginManager.shared.publicUserData.adventuretubeRefreshJWTToken else {
+            return Fail(error: NetworkError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(refreshToken, forHTTPHeaderField: "Authorization")
+        guard let idToken = adventureUser.idToken
+        else {
+            fatalError("Missing user information")
+        }
+        let body: [String: Any] = [
+            "googleIdToken": idToken
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
+        print("Sending refreshToken request to \(url.absoluteString) with refreshToken: \(refreshToken)")
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .tryMap { result -> Data in
+                guard let httpResponse = result.response as? HTTPURLResponse else {
+                    throw BackendError.unknownError
+                }
+                
+                
+                switch httpResponse.statusCode{
+                    case 200...299:
+                        return  result.data
+                    case 401:
+                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Unauthorized access.", comment: "")
+                        throw BackendError.unauthorized(message: errorMessage)
+                    case 404:
+                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Resource not found.", comment: "")
+                        throw BackendError.notFound(message: errorMessage)
+                    case 409:
+                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Resource conflict", comment: "")
+                        throw BackendError.notFound(message: errorMessage)
+                    case 500:
+                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Internal server error.", comment: "")
+                        throw BackendError.internalServerError(message: errorMessage)
+                    default:
+                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
+                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Unknown Error", comment: "")
                         throw BackendError.serverError(message: errorMessage)
                 }
             }

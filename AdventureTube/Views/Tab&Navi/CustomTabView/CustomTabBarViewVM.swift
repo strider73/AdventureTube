@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class CustomTabBarViewVM :ObservableObject {
+class `CustomTabBarViewVM` :ObservableObject {
     static let shared = CustomTabBarViewVM()
     @Published var isTabBarViewShow :Bool = true
     
