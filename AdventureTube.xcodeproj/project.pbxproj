@@ -138,6 +138,7 @@
 		B46E34092C3638BF0025DE65 /* MemberDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E34082C3638BF0025DE65 /* MemberDTO.swift */; };
 		B46E340B2C3638DC0025DE65 /* RestAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */; };
 		B46E340D2C3638F30025DE65 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E340C2C3638F30025DE65 /* AuthResponse.swift */; };
+		B47EA4382C3E22F70069C955 /* JWTDecode in Frameworks */ = {isa = PBXBuildFile; productRef = B47EA4372C3E22F70069C955 /* JWTDecode */; };
 		B486DDD228BF0713003F59BC /* StoryEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */; };
 		B486DDD328BF0713003F59BC /* StoryEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */; };
 		B486DDD428BF0713003F59BC /* ChapterEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCE28BF0713003F59BC /* ChapterEntity+CoreDataClass.swift */; };
@@ -336,6 +337,7 @@
 			files = (
 				B4003AC72885241E002926F1 /* GoogleSignIn in Frameworks */,
 				B4003ACA28852431002926F1 /* YouTubePlayerKit in Frameworks */,
+				B47EA4382C3E22F70069C955 /* JWTDecode in Frameworks */,
 				3389D3D2EE2DBC1BA378E072 /* Pods_AdventureTube.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1017,6 +1019,7 @@
 			packageProductDependencies = (
 				B4003AC62885241E002926F1 /* GoogleSignIn */,
 				B4003AC928852431002926F1 /* YouTubePlayerKit */,
+				B47EA4372C3E22F70069C955 /* JWTDecode */,
 			);
 			productName = AdventureTube;
 			productReference = B48C345A28851BB7005AA142 /* AdventureTube.app */;
@@ -1093,6 +1096,7 @@
 			packageReferences = (
 				B4003AC52885241E002926F1 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				B4003AC828852431002926F1 /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */,
+				B47EA4362C3E22F70069C955 /* XCRemoteSwiftPackageReference "JWTDecode" */,
 			);
 			productRefGroup = B48C345B28851BB7005AA142 /* Products */;
 			projectDirPath = "";
@@ -1689,6 +1693,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		B47EA4362C3E22F70069C955 /* XCRemoteSwiftPackageReference "JWTDecode" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/JWTDecode.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1701,6 +1713,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B4003AC828852431002926F1 /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */;
 			productName = YouTubePlayerKit;
+		};
+		B47EA4372C3E22F70069C955 /* JWTDecode */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B47EA4362C3E22F70069C955 /* XCRemoteSwiftPackageReference "JWTDecode" */;
+			productName = JWTDecode;
 		};
 /* End XCSwiftPackageProductDependency section */
 

@@ -17,8 +17,9 @@ target 'AdventureTube' do
      pod 'GoogleMaps', '7.3.0'
      pod 'GooglePlaces', '5.0.0'
      pod 'Google-Maps-iOS-Utils', '4.2.2'
-
      
+     
+
      
       #https://developers.google.com/maps/documentation/ios-sdk/combine
       #This Library currently not in use at this moment and
