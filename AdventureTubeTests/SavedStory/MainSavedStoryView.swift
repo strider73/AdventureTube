@@ -12,7 +12,7 @@ struct MainSavedStoryView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var loginManager : LoginManager
-    @State private var isShowingLogintoggle = false
+    @State private var isShowingLogin = false
     init(){
         print("Init ProfileView ")
     }
@@ -22,24 +22,24 @@ struct MainSavedStoryView: View {
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 VStack{
                     switch(loginManager.publicLoginState){
-                    case .signedOut:
-                        Button("Sign In"){
-                            isShowingLogintoggle.toggle()
-                        }
-                        .fullScreenCover(isPresented: $isShowingLogintoggle) {
-                            LoginView()
-                        }
-                    case .signedIn :
-                        Text("SavedStoryView View")
-                            .foregroundColor(ColorConstant.foreground.color)
-                    default :
-                        SystemErrorView()
-                        
+                        case .signedOut:
+                            Button("Sign In"){
+                                isShowingLogin.toggle()
+                            }
+                            .fullScreenCover(isPresented: $isShowingLogin) {
+                                LoginView()
+                            }
+                        case .signedIn :
+                            Text("SavedStoryView View")
+                                .foregroundColor(ColorConstant.foreground.color)
+                        default :
+                            SystemErrorView()
+                            
                     }
                 }
             }
             .preferredColorScheme(.light)
-            .navigationBarHidden(true)
+            //.navigationBarHidden(true)
         }
     }
     

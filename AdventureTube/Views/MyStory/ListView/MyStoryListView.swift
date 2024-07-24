@@ -19,7 +19,7 @@ struct MyStoryListView: View {
     @State private var scrollPosition: CGFloat = 0
     @State private var currentIndex = 0
     var body: some View {
-        CustomNavView{
+       // CustomNavView{
             ZStack {
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 // NavigationLink Should not in the Foreach cycle
@@ -86,7 +86,7 @@ struct MyStoryListView: View {
                 )
                 
             )
-        }//end of customNavView
+       // }//end of customNavView
         
         
         /// action sheet  before reload Data from youtube

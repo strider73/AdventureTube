@@ -2,6 +2,15 @@
 import Foundation
 import SwiftUI
 
+struct CustomNavBarHiddenPreferenceKey : PreferenceKey {
+    static var defaultValue: Bool = false
+    static func reduce(value: inout Bool, nextValue: () -> Bool) {
+        value = nextValue()
+    }
+}
+
+
+
 struct CustomNavBarTitlePreferenceKey: PreferenceKey {
     
     static var defaultValue: String = ""
@@ -29,6 +38,11 @@ extension View {
     
     func customNavigationBarButtons( buttons : [CustomNavBarButtonItem]) -> some View{
         preference(key: CustomNavBarButtonPreferenceKey.self, value: buttons)
+    }
+    
+    
+    func customNavigationBarHidden(_  isHidden:Bool) -> some View {
+        preference(key: CustomNavBarHiddenPreferenceKey.self, value: isHidden)
     }
 
 

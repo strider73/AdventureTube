@@ -13,6 +13,7 @@ struct CustomNavBarContainerView<Content : View>: View {
     @State private var showBackButton : Bool = false
     @State private var title: String = ""
     @State private var buttons : [CustomNavBarButtonItem] = []
+    @State private var isNavBarHidden : Bool = false
     
     init(@ViewBuilder content: () -> Content){
         self.content = content()
@@ -21,9 +22,10 @@ struct CustomNavBarContainerView<Content : View>: View {
     var body: some View {
         VStack(spacing:0) {
             //need CustomNavBarView here
-            
-            CustomNavBarView(title:title , buttons: $buttons)
-            Divider()
+            if !isNavBarHidden {
+                CustomNavBarView(title:title , buttons: $buttons)
+                Divider()
+            }
             content.frame(maxWidth : .infinity , maxHeight:  .infinity)
             
         }
@@ -35,6 +37,9 @@ struct CustomNavBarContainerView<Content : View>: View {
         })
         .onPreferenceChange(CustomNavBarButtonPreferenceKey.self, perform: { value in
             self.buttons = value
+        })
+        .onPreferenceChange(CustomNavBarHiddenPreferenceKey.self, perform: { value in
+            self.isNavBarHidden = value
         })
        
     }
