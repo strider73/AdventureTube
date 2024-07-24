@@ -64,7 +64,8 @@ final class GoogleLoginService: LoginServiceProtocol {
     //func signIn(completion: @escaping (UserModel) -> Void) {
     func signIn(completion:@escaping(Result<UserModel,Error>) -> Void){
         
-        guard let rootViewController =  UIApplication.shared.windows.first?.rootViewController else {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = windowScene.windows.first?.rootViewController else {
             print("There is no root view controller!")
             return
         }
@@ -129,8 +130,8 @@ final class GoogleLoginService: LoginServiceProtocol {
                         }, receiveValue: { authResponse in
                             // Process the received authResponse
                             guard let accessToken = authResponse.accessToken ,
-                                  let refreshToken = authResponse.refreshToken 
-                                  //let userDetail  = authResponse.userDetails
+                                  let refreshToken = authResponse.refreshToken
+                                    //let userDetail  = authResponse.userDetails
                             else{
                                 print("Failed to retreive token from backend")
                                 adventureUser.signed_in = false;
@@ -195,7 +196,7 @@ final class GoogleLoginService: LoginServiceProtocol {
             //TODO: need to AdventuretubeAPIService
             if let user = user {
                 var adventureUser  = self.createAdventureUser(from: user);
-
+                
                 
                 //TODO: refresh token
                 adventuretubeAPI.refreshToken(adventureUser: adventureUser)
@@ -213,7 +214,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                         // Process the received authResponse
                         guard let accessToken = authResponse.accessToken ,
                               let refreshToken = authResponse.refreshToken
-                              //let userDetail  = authResponse.userDetails
+                                //let userDetail  = authResponse.userDetails
                         else{
                             print("Failed to retreive token from backend")
                             adventureUser.signed_in = false;
@@ -257,8 +258,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                 }
             }, receiveValue: { response in
                 // Process the received authResponse
-                guard let message = response.message ,
-                      let detail = response.details
+                guard response.message != nil && response.details != nil
                 else{
                     print("Failed to logut from backend")
                     return
@@ -297,11 +297,14 @@ final class GoogleLoginService: LoginServiceProtocol {
     /// `addScopes(_:presenting:)` request.
     /// - note: Successful requests will update the `loginManager.state` with a new current user that
     /// has the granted scope.
-    func addMoreScope(completion : @escaping () -> Void) {
+    func addMoreScope(completion : @escaping(Error?) -> Void) {
         
-        guard let rootViewController = UIApplication.shared.windows.first?.rootViewController else {
-            fatalError("No root view controller!")
-        }
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                let rootViewController = windowScene.windows.first?.rootViewController else {
+              print("There is no root view controller!")
+              completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No root view controller found"]))
+              return
+          }
         /*
          migration to Google Sign-In SDK v7.0.0  https://developers.google.com/identity/sign-in/ios/quick-migration-guide
          
@@ -313,17 +316,23 @@ final class GoogleLoginService: LoginServiceProtocol {
          */
         
         guard let currentUser = GIDSignIn.sharedInstance.currentUser else {
-            fatalError("No user signed in!")
-        }
+             print("No user signed in!")
+             completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user signed in"]))
+             return
+         }
         
         currentUser.addScopes([YoutubeAPIService.youtubeContentReadScope], presenting: rootViewController){ signInResult,error in
             guard error == nil else {
-                print("Found error while Youtube read scope: \(error).")
+                print("Found error while Youtube read scope: \(String(describing: error?.localizedDescription)).")
                 return
             }
+            //guard signInResult != nil else { return }
             guard let signInResult = signInResult else { return }
+            signInResult.user.grantedScopes?.map({ scope in
+                print("user has scope of \(scope)")
+            })
             //TODO:  Check if the user granted access to the scopes you requested.
-            completion()
+            completion(nil)
         }
     }
     

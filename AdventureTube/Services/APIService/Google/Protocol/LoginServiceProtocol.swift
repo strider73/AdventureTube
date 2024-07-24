@@ -16,7 +16,7 @@ protocol LoginServiceProtocol {
     
     func signOut(completion: @escaping (_ result: Result<Void, Error>) -> Void)
 
-    func addMoreScope(completion : @escaping () -> Void)
+    func addMoreScope(completion : @escaping (Error?) -> Void)
     
     func disconnectAdditionalScope()
 }

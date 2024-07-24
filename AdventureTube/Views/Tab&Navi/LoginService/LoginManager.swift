@@ -20,12 +20,29 @@ import Foundation
 class LoginManager : ObservableObject  {
     static let shared = LoginManager()
     @Published private var userData : UserModel = UserModel()
-    var userDataPublisher: Published<UserModel>.Publisher{
-        $userData
-    }
+//    var userDataPublisher: Published<UserModel>.Publisher{
+//        $userData
+//    }
     
     var publicUserData : UserModel {
         return userData
+    }
+    
+    /// The user-authorized scopes.
+    /// - note: If the user is logged out, then this will default to empty.
+    var authorizedScopes: [String] {
+        switch loginState {
+            case .signedIn:
+                return  []
+            case .signedOut:
+                return []
+            case .initial:
+                return []
+        }
+    }
+    
+    var hasYoutubeAccessScope:Bool{
+        return authorizedScopes.contains(YoutubeAPIService.youtubeContentReadScope)
     }
     
     @Published private var loginState : State = .initial{
@@ -213,7 +230,13 @@ class LoginManager : ObservableObject  {
         /// will be the reason of deinitialize of origianal both object
         //loginState = .youtubeAccessRequest
         if let loginService = loginService {
-            loginService.addMoreScope(completion:completion)
+            loginService.addMoreScope { error in
+                if let error = error {
+                        print("Error requesting additional scopes: \(error.localizedDescription)")
+                        // Handle error appropriately, possibly by showing an alert to the user
+                        return
+                    }
+            }
         }
         //TODO: update userData
         
@@ -226,27 +249,13 @@ class LoginManager : ObservableObject  {
     //        loginService.disconnectAdditionalScope()
     //    }
     
-    /// The user-authorized scopes.
-    /// - note: If the user is logged out, then this will default to empty.
-    var authorizedScopes: [String] {
-        switch loginState {
-            case .signedIn:
-                return  []
-            case .signedOut:
-                return []
-            case .initial:
-                return []
-        }
-    }
-    
+   
     
     deinit{
         print("Deinitialize Login Manager")
     }
     
-    var hasYoutubeAccessScope:Bool{
-        return authorizedScopes.contains(YoutubeAPIService.youtubeContentReadScope)
-    }
+
     
     private func saveUserStateToUserDefault(){
         

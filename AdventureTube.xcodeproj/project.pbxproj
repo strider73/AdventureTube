@@ -126,6 +126,7 @@
 		B419E1B12885847500F669CA /* AdventureTube.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B419E1AF2885847500F669CA /* AdventureTube.xcdatamodeld */; };
 		B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */; };
 		B4559BFC2C3CE91000247EF3 /* AdventureTubeAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4559BFB2C3CE91000247EF3 /* AdventureTubeAppDelegate.swift */; };
+		B45733FA2C4DDBD30055E53C /* APIRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45733F92C4DDBD30055E53C /* APIRequestBuilder.swift */; };
 		B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */; };
 		B46829C22B749F7700DCE22B /* LoginSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46829C12B749F7700DCE22B /* LoginSource.swift */; };
 		B469E483288E465B003EB360 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E482288E465B003EB360 /* Array.swift */; };
@@ -296,6 +297,7 @@
 		B419E1B02885847500F669CA /* AdventureTube.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventureTube.xcdatamodel; sourceTree = "<group>"; };
 		B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeApp.swift; sourceTree = "<group>"; };
 		B4559BFB2C3CE91000247EF3 /* AdventureTubeAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeAppDelegate.swift; sourceTree = "<group>"; };
+		B45733F92C4DDBD30055E53C /* APIRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestBuilder.swift; sourceTree = "<group>"; };
 		B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
 		B46829C12B749F7700DCE22B /* LoginSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSource.swift; sourceTree = "<group>"; };
 		B469E482288E465B003EB360 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
@@ -714,6 +716,7 @@
 			children = (
 				B46E34042C3631F60025DE65 /* Adventuretube */,
 				B4003B50288525E5002926F1 /* Google */,
+				B45733F92C4DDBD30055E53C /* APIRequestBuilder.swift */,
 			);
 			path = APIService;
 			sourceTree = "<group>";
@@ -721,6 +724,7 @@
 		B4003B50288525E5002926F1 /* Google */ = {
 			isa = PBXGroup;
 			children = (
+				B4003B56288525E5002926F1 /* Protocol */,
 				B4003B51288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift */,
 				B4003B52288525E5002926F1 /* YoutubeAPIService.swift */,
 			);
@@ -739,7 +743,6 @@
 			isa = PBXGroup;
 			children = (
 				B4003B58288525E5002926F1 /* LoginManager.swift */,
-				B4003B56288525E5002926F1 /* Protocol */,
 				B4003B59288525E5002926F1 /* Service */,
 			);
 			path = LoginService;
@@ -1287,6 +1290,7 @@
 				B4003B93288525E5002926F1 /* CustomNavView.swift in Sources */,
 				B4003B8B288525E5002926F1 /* UserModel.swift in Sources */,
 				B4B7DE102B28BE0600582C23 /* StoryMapViewController.swift in Sources */,
+				B45733FA2C4DDBD30055E53C /* APIRequestBuilder.swift in Sources */,
 				B4003B9A288525E5002926F1 /* CustomTabBarView.swift in Sources */,
 				B4003B73288525E5002926F1 /* Binding.swift in Sources */,
 				B4003B91288525E5002926F1 /* YoutubeView.swift in Sources */,
