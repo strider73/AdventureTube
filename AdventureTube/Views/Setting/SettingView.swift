@@ -11,8 +11,7 @@ import GoogleSignIn
 struct SettingView: View {
     //User Profile Data
     @EnvironmentObject private var loginManager : LoginManager
-    @State private var isShowingMapView = false
-    @State private var isShowingLogintoggle = false
+    @State private var isShowingLogin = false
     
     private var user: GIDGoogleUser? {
         return GIDSignIn.sharedInstance.currentUser
@@ -30,52 +29,52 @@ struct SettingView: View {
                 VStack{
                     
                     switch(loginManager.publicLoginState){
-                    case .signedOut:
-                        Button("Sign In"){
-                            isShowingLogintoggle.toggle()
-                        }
-                        .fullScreenCover(isPresented: $isShowingLogintoggle) {
-                            LoginView()
-                        }
-                    case .signedIn :
-                        Spacer()
-                        if let userProfile = user?.profile{
-                            HStack(alignment: .top) {
-                                UserProfileSmallImageView(userProfile: userProfile)
-                                    .padding(.leading)
-                                VStack(alignment: .leading) {
-                                    Text(userProfile.name)
-                                        .accessibilityLabel(Text("User name."))
-                                    Text(userProfile.email)
-                                        .accessibilityLabel(Text("User email."))
-                                        .foregroundColor(.gray)
-                                }
-                                Spacer()
+                        case .signedOut:
+                            Button("Sign In"){
+                                isShowingLogin.toggle()
                             }
-                            Text( loginManager.publicUserData.emailAddress ?? "No_Email")
-                            Text( loginManager.publicUserData.fullName ?? "No_FullName")
-                            Text( loginManager.publicUserData.givenName ?? "No_GivenName")
-                            Text( loginManager.publicUserData.familyName ?? "No_FamilyName")
-                        }
-                        
-                        
-                        Button(action: {
-                            loginManager.signOut()
-                        }) {
-                            Text("Sign Out")
-                        }
-                        
-                        Spacer()
-                        Spacer()
-                        
-                    default :
-                        SystemErrorView()
+                            .fullScreenCover(isPresented: $isShowingLogin) {
+                                LoginView()
+                            }
+                        case .signedIn :
+                            Spacer()
+                            if let userProfile = user?.profile{
+                                HStack(alignment: .top) {
+                                    UserProfileSmallImageView(userProfile: userProfile)
+                                        .padding(.leading)
+                                    VStack(alignment: .leading) {
+                                        Text(userProfile.name)
+                                            .accessibilityLabel(Text("User name."))
+                                        Text(userProfile.email)
+                                            .accessibilityLabel(Text("User email."))
+                                            .foregroundColor(.gray)
+                                    }
+                                    Spacer()
+                                }
+                                Text( loginManager.publicUserData.emailAddress ?? "No_Email")
+                                Text( loginManager.publicUserData.fullName ?? "No_FullName")
+                                Text( loginManager.publicUserData.givenName ?? "No_GivenName")
+                                Text( loginManager.publicUserData.familyName ?? "No_FamilyName")
+                            }
+                            
+                            
+                            Button(action: {
+                                loginManager.signOut()
+                            }) {
+                                Text("Sign Out")
+                            }
+                            
+                            Spacer()
+                            Spacer()
+                            
+                        default :
+                            SystemErrorView()
                     }
                 }//text color in the view
-                .foregroundColor(ColorConstant.foreground.color)
+                //.foregroundColor(ColorConstant.foreground.color)
             }
             .preferredColorScheme(.light)
-            .navigationBarHidden(true)
+            //.navigationBarHidden(true)
         }
     }
 }

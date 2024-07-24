@@ -34,7 +34,6 @@ struct AdventureTubeTabBarView: View {
             SettingView()
                 .tabBarItem(tab: .setting,selection: tabSelection)
         }
-        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -47,7 +46,6 @@ struct AdventureTubeTabBarView_Previews: PreviewProvider {
 }
 
 //and this will call the view modifier with additional tab info and selected info
-//15 OCT 2023
 //So there is question  how modifier inside of tabBarItem able to refer the view that tabBarItem calling on ???
 // it is all about modifer method!!!!!
 //modifier method able to access view that tabBarItem called
