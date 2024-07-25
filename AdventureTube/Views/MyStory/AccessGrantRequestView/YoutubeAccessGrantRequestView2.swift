@@ -12,7 +12,7 @@ struct YoutubeAccessGrantRequestView2: View {
     
     @EnvironmentObject private var loginManager : LoginManager
     @EnvironmentObject var myStoryListVM : MyStoryListViewVM
-
+    
     var body: some View {
         
         ZStack{
@@ -42,8 +42,7 @@ struct YoutubeAccessGrantRequestView2: View {
                     .frame(width: 320, height: 168)
                 
                 
-                NavigationLink(destination: MyStoryListView()
-                                .onAppear(perform: {
+                CustomNavLink(destination: MyStoryListView().onAppear{
                     //delete exsiting data in myStoryListVM
                     myStoryListVM.deleteExistingYoutubeContent()
                     //request additional permission using a loginManager
@@ -51,8 +50,8 @@ struct YoutubeAccessGrantRequestView2: View {
                         //get the content
                         myStoryListVM.downloadYotubeContentsAndMappedWithCoreData()
                     }
-                    
-                })
+                }
+                .navigationBarHidden(true)
                 )
                 {
                     Text("Youtube Channel Grant Reqeust")

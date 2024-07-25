@@ -20,15 +20,12 @@ struct CustomNavView<Content:View>: View {
     var body: some View {
         
         NavigationStack {
-            VStack(spacing:0) {
-                CustomNavBarContainerView{
-                    content
-                }
-                .navigationBarHidden(true)// will remove navigationView on List
+            CustomNavBarContainerView{
+                content
             }
+            .navigationBarHidden(true)// will remove navigationView on List
         }
-        .navigationBarBackButtonHidden(true)//MARK : remove back button 
-        
+        .navigationBarBackButtonHidden(true)//MARK : remove back button
     }
 }
 
