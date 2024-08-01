@@ -17,7 +17,7 @@ struct YoutubeContentResource: Codable {
 }
 
 // MARK: - Item
-struct YoutubeContentItem: Codable ,Identifiable, Equatable {
+struct YoutubeContentItem: Codable ,Identifiable, Equatable , Hashable  {
     let kind, etag, id: String
     var snippet: YoutubeContenSnippet
     let contentDetails: YoutubeContentDetails
@@ -27,6 +27,10 @@ struct YoutubeContentItem: Codable ,Identifiable, Equatable {
         // Implement your equality check here based on the properties you want to compare
         return lhs.id == rhs.id
     }
+    
+    func hash(into hasher: inout Hasher) {
+         hasher.combine(id)
+     }
 }
 
 // MARK: - ContentDetails
