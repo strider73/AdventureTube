@@ -12,6 +12,14 @@ struct YoutubeAccessGrantRequestView2: View {
     
     @EnvironmentObject private var loginManager : LoginManager
     @EnvironmentObject var myStoryListVM : MyStoryListViewVM
+    @State private var isPresentingMyStoryListView = false
+    @State private var isShowingError = false
+    @State private var errorMessage: String? = nil
+    
+    init(){
+        print("init YoutubeAccessGrantRequestView2")
+        
+    }
     
     var body: some View {
         
@@ -41,20 +49,22 @@ struct YoutubeAccessGrantRequestView2: View {
                     .resizable()
                     .frame(width: 320, height: 168)
                 
-                
-                CustomNavLink(destination: MyStoryListView().onAppear{
-                    //delete exsiting data in myStoryListVM
-                    myStoryListVM.deleteExistingYoutubeContent()
-                    //request additional permission using a loginManager
-                    loginManager.requestMoreAccess {
-                        //get the content
-                        myStoryListVM.downloadYotubeContentsAndMappedWithCoreData()
+                Button(action: {
+                    // Request additional permissions and handle navigation
+                    loginManager.requestMoreAccess { error in
+                        if let error = error {
+                            errorMessage = error.localizedDescription
+                            isShowingError = true
+                        } else {
+                            myStoryListVM.deleteExistingYoutubeContent()
+                            myStoryListVM.downloadYotubeContentsAndMappedWithCoreData {
+                                // Navigate to MyStoryListView after data is loaded
+                                isPresentingMyStoryListView = true
+                            }
+                        }
                     }
-                }
-                .navigationBarHidden(true)
-                )
-                {
-                    Text("Youtube Channel Grant Reqeust")
+                }) {
+                    Text("Youtube Channel Grant Request")
                         .font(.headline)
                         .withDefaultButtonFormatting()
                 }
@@ -63,8 +73,22 @@ struct YoutubeAccessGrantRequestView2: View {
                 
                 
             }
-            
+            .sheet(isPresented: $isShowingError) {
+                // Present an error message if there is an error
+                ErrorView(message: errorMessage ?? "An error occurred")
+            }
+            .background(
+                CustomNavLink(
+                    destination: MyStoryListView(),
+                    isActive: $isPresentingMyStoryListView
+                ) {
+                    EmptyView()
+                }
+                
+                
+            )
         }
+        .navigationBarHidden(/*@START_MENU_TOKEN@*/false/*@END_MENU_TOKEN@*/)
     }
 }
 

@@ -13,6 +13,12 @@ struct YoutubeAccessGrantRequestView1: View {
     
     @EnvironmentObject private var loginManager : LoginManager
     @State private var isShowingYoutubeGrantRequest = false
+    @State private var isShowingModal = false
+    
+    init(){
+        print("init YoutubeAccessGrantRequestView1")
+        
+    }
     
     var body: some View {
         ZStack{
@@ -41,19 +47,23 @@ struct YoutubeAccessGrantRequestView1: View {
                     .resizable()
                     .frame(width: 255, height: 168)
                 Button(action: {
-                    print("continune has been pushed")
+                    // Show the modal when the button is tapped
+                    isShowingModal = true
                 }) {
-                    CustomNavLink(destination:YoutubeAccessGrantRequestView2().navigationBarHidden(true)
-                        .customNavigationBarHidden(true)){
-                            Text("Continue")
-                                .font(.headline)
-                                .withDefaultButtonFormatting()
-                        }
+                    Text("Continue")
+                        .font(.headline)
+                        .withDefaultButtonFormatting()
                 }
                 .withPressableStyle(scaledAmount: 0.9)
                 .padding(40)
             }
         }
+        .sheet(isPresented: $isShowingModal) {
+                   // Present YoutubeAccessGrantRequestView2 as a modal
+                   YoutubeAccessGrantRequestView2()
+                       .environmentObject(loginManager) // Ensure loginManager is passed
+                       .environmentObject(MyStoryListViewVM()) // Pass the required environment objects
+               }
     }
 }
 

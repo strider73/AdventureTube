@@ -18,7 +18,6 @@ struct AdventureTubeApp: App {
     
     // initializae SettingViewModel and store as environmentObject
     //TODO: loginManager has to be ready for other social Login Service
-    @UIApplicationDelegateAdaptor(AdventureTubeAppDelegate.self) var appDelegate
     @StateObject private var loginManager : LoginManager = LoginManager.shared
     @StateObject private var customTabVM : CustomTabBarViewVM = CustomTabBarViewVM.shared
 

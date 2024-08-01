@@ -23,13 +23,19 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
     //    private var accessToken : String?
     //    private var refreshToken : String?
     private  var targetServerAddress: String = "http://192.168.1.106:8030"
+    
+    //    private  var targetServerAddress: String = "http://192.168.0.20:8030"
     //private  var targetServerAddress: String = "https://api.adventuretube.net"
     
     
-    //    private init( userData :UserModel){
-    //        self.userData = userData
-    //    }
-    //
+    // URLSession with timeout configuration
+    private let session: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 10 // 30 seconds for request timeout
+        configuration.timeoutIntervalForResource = 10 // 60 seconds for resource timeout
+        return URLSession(configuration: configuration)
+    }()
+    
     
     func getData<T: Decodable>(endpoint: String, id: Int? = nil, returnData: T.Type) -> Future<T, Error> {
         return Future<T, Error> { [weak self] promise in  // (4) -> Future Publisher
@@ -37,7 +43,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
                 return promise(.failure(NetworkError.invalidURL))
             }
             print("URL is \(url.absoluteString)")
-            URLSession.shared.dataTaskPublisher(for: url) // (5) -> Publisher
+            self.session.dataTaskPublisher(for: url) // (5) -> Publisher
                 .tryMap { (data, response) -> Data in  // (6) -> Operator
                     guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
                         throw NetworkError.responseError
@@ -83,7 +89,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("googleIdToken : \(idToken)")
-        return URLSession.shared.dataTaskPublisher(for: request)
+        return self.session.dataTaskPublisher(for: request)
             .tryMap { result -> Data in
                 guard let httpResponse = result.response as? HTTPURLResponse else {
                     throw BackendError.unknownError
@@ -148,7 +154,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("googleIdToken : \(idToken)")
-        return URLSession.shared.dataTaskPublisher(for: request)
+        return self.session.dataTaskPublisher(for: request)
             .tryMap { result -> Data in
                 guard let httpResponse = result.response as? HTTPURLResponse else {
                     throw BackendError.unknownError
@@ -198,7 +204,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
             fatalError("Invalid URL")
         }
         
-        guard let refreshToken = LoginManager.shared.publicUserData.adventuretubeRefreshJWTToken else {
+        guard let refreshToken = LoginManager.shared.userData.adventuretubeRefreshJWTToken else {
             return Fail(error: NetworkError.invalidURL)
                 .eraseToAnyPublisher()
         }
@@ -217,7 +223,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("Sending refreshToken request to \(url.absoluteString) with refreshToken: \(refreshToken)")
         
-        return URLSession.shared.dataTaskPublisher(for: request)
+        return self.session.dataTaskPublisher(for: request)
             .tryMap { result -> Data in
                 guard let httpResponse = result.response as? HTTPURLResponse else {
                     throw BackendError.unknownError
@@ -268,7 +274,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
             fatalError("Invalid URL")
         }
         
-        guard let refreshToken = LoginManager.shared.publicUserData.adventuretubeRefreshJWTToken else {
+        guard let refreshToken = LoginManager.shared.userData.adventuretubeRefreshJWTToken else {
             return Fail(error: NetworkError.invalidURL)
                 .eraseToAnyPublisher()
         }
@@ -278,7 +284,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         request.setValue(refreshToken, forHTTPHeaderField: "Authorization")
         print("Sending signOut request to \(url.absoluteString) with refreshToken: \(refreshToken)")
         
-        return URLSession.shared.dataTaskPublisher(for: request)
+        return self.session.dataTaskPublisher(for: request)
             .tryMap { result -> Data in
                 guard let httpResponse = result.response as? HTTPURLResponse else {
                     throw BackendError.unknownError

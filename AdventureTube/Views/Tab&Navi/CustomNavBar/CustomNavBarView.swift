@@ -14,7 +14,7 @@ import SwiftUI
 struct CustomNavBarView: View {
     
 //    @EnvironmentObject private var myStoryListVM : MainStoryListViewModel
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     
     
     var title : String
@@ -79,7 +79,7 @@ extension CustomNavBarView {
         switch button  {
         case .back :
             return Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             }) {
                 Image(systemName:button.iconName)
                     .resizable()
@@ -125,7 +125,7 @@ extension CustomNavBarView {
             
         case .empty :
             return Button(action: {
-                presentationMode.wrappedValue.dismiss()
+                dismiss()
             }) {
                 Image(systemName:button.iconName)
                     .resizable()
@@ -137,12 +137,8 @@ extension CustomNavBarView {
             
         case .checkUpdateBeforeBack(let addStoryViewVM):
             return Button(action: {
-                presentationMode.wrappedValue.dismiss()
-//                if addStoryViewVM.checkUpdatedDataFromAdventureTubeData(){
-//                    addStoryViewVM.actionSheet = .saveChangeWarningSheet
-//                }else{
-//                   presentationMode.wrappedValue.dismiss()
-//                }
+                dismiss()
+
             }) {
                 Image(systemName:button.iconName)
                     .resizable()

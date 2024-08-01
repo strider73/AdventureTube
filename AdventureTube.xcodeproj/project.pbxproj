@@ -125,7 +125,6 @@
 		B401180A2B182BBF00AA9286 /* Restaurant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118092B182BBF00AA9286 /* Restaurant.swift */; };
 		B419E1B12885847500F669CA /* AdventureTube.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B419E1AF2885847500F669CA /* AdventureTube.xcdatamodeld */; };
 		B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */; };
-		B4559BFC2C3CE91000247EF3 /* AdventureTubeAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4559BFB2C3CE91000247EF3 /* AdventureTubeAppDelegate.swift */; };
 		B45733FA2C4DDBD30055E53C /* APIComponentsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45733F92C4DDBD30055E53C /* APIComponentsBuilder.swift */; };
 		B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */; };
 		B46829C22B749F7700DCE22B /* LoginSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46829C12B749F7700DCE22B /* LoginSource.swift */; };
@@ -151,6 +150,7 @@
 		B48C346528851BB8005AA142 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B48C346428851BB8005AA142 /* Preview Assets.xcassets */; };
 		B48C347928851BB8005AA142 /* AdventureTubeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48C347828851BB8005AA142 /* AdventureTubeUITests.swift */; };
 		B48C347B28851BB8005AA142 /* AdventureTubeUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B48C347A28851BB8005AA142 /* AdventureTubeUITestsLaunchTests.swift */; };
+		B49A8A632C5A8406008EC839 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49A8A622C5A8406008EC839 /* ErrorView.swift */; };
 		B4B7DE102B28BE0600582C23 /* StoryMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE0E2B28BE0600582C23 /* StoryMapViewController.swift */; };
 		B4B7DE112B28BE0600582C23 /* StoryMapViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */; };
 		B4B7DE152B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */; };
@@ -296,7 +296,6 @@
 		B40118092B182BBF00AA9286 /* Restaurant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Restaurant.swift; sourceTree = "<group>"; };
 		B419E1B02885847500F669CA /* AdventureTube.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventureTube.xcdatamodel; sourceTree = "<group>"; };
 		B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeApp.swift; sourceTree = "<group>"; };
-		B4559BFB2C3CE91000247EF3 /* AdventureTubeAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeAppDelegate.swift; sourceTree = "<group>"; };
 		B45733F92C4DDBD30055E53C /* APIComponentsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIComponentsBuilder.swift; sourceTree = "<group>"; };
 		B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
 		B46829C12B749F7700DCE22B /* LoginSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSource.swift; sourceTree = "<group>"; };
@@ -324,6 +323,7 @@
 		B48C347428851BB8005AA142 /* AdventureTubeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AdventureTubeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B48C347828851BB8005AA142 /* AdventureTubeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeUITests.swift; sourceTree = "<group>"; };
 		B48C347A28851BB8005AA142 /* AdventureTubeUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B49A8A622C5A8406008EC839 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		B4B7DE0E2B28BE0600582C23 /* StoryMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryMapViewController.swift; sourceTree = "<group>"; };
 		B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryMapViewControllerBridge.swift; sourceTree = "<group>"; };
 		B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryControllerBridge.swift; sourceTree = "<group>"; };
@@ -492,7 +492,6 @@
 		B4003B00288525E4002926F1 /* Tab&Navi */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B55288525E5002926F1 /* LoginService */,
 				B4003B01288525E4002926F1 /* CustomNavBar */,
 				B4003B09288525E4002926F1 /* CustomTabView */,
 			);
@@ -634,6 +633,7 @@
 				B4003B3A288525E4002926F1 /* LoadingView.swift */,
 				B4003B3B288525E4002926F1 /* SystemErrorView.swift */,
 				B4003B3C288525E4002926F1 /* Login */,
+				B49A8A622C5A8406008EC839 /* ErrorView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -682,6 +682,7 @@
 		B4003B46288525E5002926F1 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				B4003B55288525E5002926F1 /* LoginService */,
 				B469E486288F6917003EB360 /* UserDefaulPublisher */,
 				B4003B47288525E5002926F1 /* CoreDataService */,
 				B4003B4F288525E5002926F1 /* APIService */,
@@ -927,7 +928,6 @@
 				B4003AD4288525E4002926F1 /* Util */,
 				B4003AFA288525E4002926F1 /* Views */,
 				B4003ACB28852496002926F1 /* Info.plist */,
-				B4559BFB2C3CE91000247EF3 /* AdventureTubeAppDelegate.swift */,
 				B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */,
 				B4003ACD288525B0002926F1 /* HomeView.swift */,
 				B4003AD2288525D4002926F1 /* Launch Screen.storyboard */,
@@ -1323,6 +1323,7 @@
 				B4003BBA288525E5002926F1 /* BoardingView.swift in Sources */,
 				B4003BA8288525E5002926F1 /* PlayChapterView.swift in Sources */,
 				B4FB96D92A2997F100AAED3A /* ProfileView.swift in Sources */,
+				B49A8A632C5A8406008EC839 /* ErrorView.swift in Sources */,
 				B4003BD0288525E5002926F1 /* InstagramLoginService.swift in Sources */,
 				B4003BBB288525E5002926F1 /* ExplainViewNo4.swift in Sources */,
 				B4003B88288525E5002926F1 /* AdventureTube.swift in Sources */,
@@ -1331,7 +1332,6 @@
 				B486DDD628BF0713003F59BC /* PlaceEntity+CoreDataClass.swift in Sources */,
 				B4003B78288525E5002926F1 /* UIImage.swift in Sources */,
 				B4003B96288525E5002926F1 /* NavBarButton.swift in Sources */,
-				B4559BFC2C3CE91000247EF3 /* AdventureTubeAppDelegate.swift in Sources */,
 				B4003BC6288525E5002926F1 /* CoreDataSaveModelPublisher.swift in Sources */,
 				B4003B76288525E5002926F1 /* UIResponder.swift in Sources */,
 				B4003BAB288525E5002926F1 /* AddStoryViewVM.swift in Sources */,

@@ -21,6 +21,16 @@ struct UserModel : Codable{
     //about login user
     var signed_in : Bool = false
     var isYoutubeAccountReady : Bool = false
+    var storedScopes: [String] = []{
+        didSet {
+            print("userData storedScopes changed to")
+            storedScopes.forEach { scope in
+                print( scope )
+            }
+        }
+    }
+
+    
     
     var emailAddress : String?
     var fullName     : String?

@@ -21,17 +21,16 @@ struct MainStoryView: View {
     @StateObject var myStoryListVM : MyStoryListViewVM  =  MyStoryListViewVM()
     
     init(){
-        print("Init MyStoriesView ")
+        print("Init MainStoryView  ")
     }
     
     
     var body: some View {
-        CustomNavView{
             ZStack {
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
-                switch(loginManager.publicLoginState){
+                switch(loginManager.loginState){
                     case .signedOut:
-                        Button("Sign In"){
+                        Button("Sign In.MainStoryView"){
                             isShowingLogin.toggle()
                         }
                         .fullScreenCover(isPresented: $isShowingLogin) {
@@ -49,12 +48,10 @@ struct MainStoryView: View {
                 }
             }
             .preferredColorScheme(.light)
-            .customNavigationBarHidden(true)
+            .environmentObject(myStoryListVM)
         }
-        .environmentObject(myStoryListVM)
+     
 
-    }
-    
 }
 
 struct MyStoryView_Previews: PreviewProvider {
