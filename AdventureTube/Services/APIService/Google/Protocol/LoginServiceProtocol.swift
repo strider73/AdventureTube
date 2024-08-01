@@ -11,7 +11,6 @@ protocol LoginServiceProtocol {
     
     func signIn(completion:@escaping(_ userData :(Result<UserModel,Error>)) -> ())
     
-    
     func restorePreviousSignIn(completion:@escaping(_ reesult:(Result<UserModel,Error>)) -> ())
     
     func signOut(completion: @escaping (_ result: Result<Void, Error>) -> Void)

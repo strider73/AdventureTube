@@ -74,21 +74,6 @@ struct MyStoryListView: View {
                             myStoryListVM.downloadYotubeContentsAndMappedWithCoreData{}
                         }
                         
-                        
-                        
-                        loginManager.requestMoreAccess { error in
-                            if let error = error {
-                                // Handle the error, e.g., show an alert to the user
-                                print("Failed to request more access: \(error.localizedDescription)")
-                                // Possibly show an alert or take other action
-                            } else {
-                                // Proceed with downloading content if no error occurred
-                                print("Success to request more access")
-                            }
-                        }
-                        
-                        
-                        
                     }
 //                    .onDisappear {
 //                        customTabVM.hideTabBar()
