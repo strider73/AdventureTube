@@ -78,103 +78,111 @@ final class MyStoryListViewVM:ObservableObject{
     
     
     //Step1) get the Youtube Data
-    func downloadYotubeContentsAndMappedWithCoreData(){
-        
-        youtubeAPIService.youtubeContentResourcePublisher {[weak self] publisher  in
-            guard let self = self else {return}
-            
-            self.cancellable =  publisher.sink(receiveCompletion: {
-                completion in
-                switch completion{
-                    case .finished:
-                        print("===========youtubeAPIService.youtubeContentResourcePublisher has been finished ===============")
-                        if self.youtubeAPIService.nextPageToken != nil && self.youtubeContentItems.count < self.limitOfYoutubeContentItem {
-                            self.downloadYotubeContentsAndMappedWithCoreData()
-                        }
-                        break
-                    case .failure(let error):
-                        print("Error retrieving for Data \(error)")
-                }
-            }, receiveValue: {  youtubeContentResource in
-                //print("===========Value has been received ===============")
-                //print(youtubeContentResource)
-                //set the pageToken
+    func downloadYotubeContentsAndMappedWithCoreData(outerCompletion : @escaping () -> Void){
+        var isFetching = true
+
+        func fetchNextPage() {
+            guard isFetching else { return }
+
+            youtubeAPIService.youtubeContentResourcePublisher {[weak self] publisher  in
+                guard let self = self else {return}
                 
-                
-                //store pageToken
-                if let nextPageToken = youtubeContentResource.nextPageToken{
-                    print("set nextPageToken")
-                    self.youtubeAPIService.nextPageToken = nextPageToken
-                }else{
-                    self.youtubeAPIService.nextPageToken = nil
-                }
-                if let prevPageToken = youtubeContentResource.prevPageToken{
-                    print("set prevPageToken")
-                    self.youtubeAPIService.prevPageToken = prevPageToken
-                }else{
-                    self.youtubeAPIService.prevPageToken = nil
-                }
-                
-                
-                //Step2) Mapping with CoreData
-                let request = NSFetchRequest<StoryEntity>(entityName: "StoryEntity")
-                
-                //check the YoutubeContentResource.YoutubeContentItem.YoutubeContentDetails.videoId
-                //with StoryEntity from CoreData
-                //and create the AdventureTubeData if there is any  matches accordingly
-                do{
-                    let  coreDataStories = try self.context.fetch(request)
+                self.cancellable =  publisher.sink(receiveCompletion: {
+                    completion in
+                    switch completion{
+                        case .finished:
+                            print("===========youtubeAPIService.youtubeContentResourcePublisher has been finished ===============")
+                            if self.youtubeAPIService.nextPageToken != nil && self.youtubeContentItems.count < self.limitOfYoutubeContentItem {
+                                fetchNextPage() // Fetch next page
+                            }else{
+                                isFetching = false
+                                outerCompletion()
+                            }
+                            
+                        case .failure(let error):
+                            print("Error retrieving for Data \(error)")
+                            isFetching = false
+                    }
+                }, receiveValue: {  youtubeContentResource in
+                    //print("===========Value has been received ===============")
+                    //print(youtubeContentResource)
+                    //set the pageToken
                     
-                    /*
-                     This process will !!!
-                        1)check the youtubeContentItem inside YoutubeContentResource by
-                           checking the youtubeId
-                        2)if there any matches videoId  between StoryEntity with youtubeContentItem
-                        3)Set the  AdventureTubeData and set this to youtubeContentItem
-                     */
-                    let tempYoutuebeContentItem = youtubeContentResource.items.map { youtubeContentItem -> YoutubeContentItem  in
+                    
+                    //store pageToken
+                    if let nextPageToken = youtubeContentResource.nextPageToken{
+                        print("set nextPageToken")
+                        self.youtubeAPIService.nextPageToken = nextPageToken
+                    }else{
+                        self.youtubeAPIService.nextPageToken = nil
+                    }
+                    if let prevPageToken = youtubeContentResource.prevPageToken{
+                        print("set prevPageToken")
+                        self.youtubeAPIService.prevPageToken = prevPageToken
+                    }else{
+                        self.youtubeAPIService.prevPageToken = nil
+                    }
+                    
+                    
+                    //Step2) Mapping with CoreData
+                    let request = NSFetchRequest<StoryEntity>(entityName: "StoryEntity")
+                    
+                    //check the YoutubeContentResource.YoutubeContentItem.YoutubeContentDetails.videoId
+                    //with StoryEntity from CoreData
+                    //and create the AdventureTubeData if there is any  matches accordingly
+                    do{
+                        let  coreDataStories = try self.context.fetch(request)
                         
-                        var tempYoutubeContentItem = youtubeContentItem
-                        coreDataStories.forEach { storyEntity in
-                            if(storyEntity.youtubeId == tempYoutubeContentItem.contentDetails.videoId){
-                                
-                                let newAdventureTubeData : AdventureTubeData
-                                
-                                var chapters : [AdventureTubeChapter] = []
-                                var categroies : [Category] = []
-                                var places : [AdventureTubePlace] = []
-                                
-                                storyEntity.chapters.forEach { chapter  in
-                                    guard let chapterEntiry = chapter as? ChapterEntity else{ return }
-                                    let placeEntity = chapterEntiry.place
-                                    //1) set AdventureTubePlace
-                                    let adventureTubePlace = AdventureTubePlace(coordinate: CLLocationCoordinate2D(latitude: placeEntity.latitude, longitude: placeEntity.longitude),
-                                                                                name: placeEntity.name,
-                                                                                youtubeTime: Int(placeEntity.youtubeTime),
-                                                                                contentCategory: placeEntity.placeCategory.compactMap{Category(rawValue: $0)},
-                                                                                placeID: placeEntity.placeID,
-                                                                                plusCode: placeEntity.pluscode,
-                                                                                website: placeEntity.website)
-                                    //2) set a chapters
-                                    let chapterCategories = chapterEntiry.category.compactMap{Category(rawValue: $0)}
-                                    let chapter = AdventureTubeChapter(categories: chapterCategories,// category set for each chapter
-                                                                       youtubeId: chapterEntiry.story.youtubeId,
-                                                                       youtubeTime: Int(chapterEntiry.youtubeTime),
-                                                                       place: adventureTubePlace)
-                                    chapters.append(chapter)
+                        /*
+                         This process will !!!
+                         1)check the youtubeContentItem inside YoutubeContentResource by
+                         checking the youtubeId
+                         2)if there any matches videoId  between StoryEntity with youtubeContentItem
+                         3)Set the  AdventureTubeData and set this to youtubeContentItem
+                         */
+                        let tempYoutuebeContentItem = youtubeContentResource.items.map { youtubeContentItem -> YoutubeContentItem  in
+                            
+                            var tempYoutubeContentItem = youtubeContentItem
+                            coreDataStories.forEach { storyEntity in
+                                if(storyEntity.youtubeId == tempYoutubeContentItem.contentDetails.videoId){
                                     
-                                    //3 set a places after remove duplicate
-                                    places.append(adventureTubePlace)
-                                    categroies.append(contentsOf: chapterCategories)
+                                    let newAdventureTubeData : AdventureTubeData
                                     
-                                }
-                                
-                                //remove duplicate
-                                let uniqueCategories =  categroies.removingDuplicates()
-                                let uniquePlaces = places.removingDuplicates()
-                                
-                                //5 set a adventureTubData
-                                newAdventureTubeData =  AdventureTubeData(coreDataID: storyEntity.id,
+                                    var chapters : [AdventureTubeChapter] = []
+                                    var categroies : [Category] = []
+                                    var places : [AdventureTubePlace] = []
+                                    
+                                    storyEntity.chapters.forEach { chapter  in
+                                        guard let chapterEntiry = chapter as? ChapterEntity else{ return }
+                                        let placeEntity = chapterEntiry.place
+                                        //1) set AdventureTubePlace
+                                        let adventureTubePlace = AdventureTubePlace(coordinate: CLLocationCoordinate2D(latitude: placeEntity.latitude, longitude: placeEntity.longitude),
+                                                                                    name: placeEntity.name,
+                                                                                    youtubeTime: Int(placeEntity.youtubeTime),
+                                                                                    contentCategory: placeEntity.placeCategory.compactMap{Category(rawValue: $0)},
+                                                                                    placeID: placeEntity.placeID,
+                                                                                    plusCode: placeEntity.pluscode,
+                                                                                    website: placeEntity.website)
+                                        //2) set a chapters
+                                        let chapterCategories = chapterEntiry.category.compactMap{Category(rawValue: $0)}
+                                        let chapter = AdventureTubeChapter(categories: chapterCategories,// category set for each chapter
+                                                                           youtubeId: chapterEntiry.story.youtubeId,
+                                                                           youtubeTime: Int(chapterEntiry.youtubeTime),
+                                                                           place: adventureTubePlace)
+                                        chapters.append(chapter)
+                                        
+                                        //3 set a places after remove duplicate
+                                        places.append(adventureTubePlace)
+                                        categroies.append(contentsOf: chapterCategories)
+                                        
+                                    }
+                                    
+                                    //remove duplicate
+                                    let uniqueCategories =  categroies.removingDuplicates()
+                                    let uniquePlaces = places.removingDuplicates()
+                                    
+                                    //5 set a adventureTubData
+                                    newAdventureTubeData =  AdventureTubeData(coreDataID: storyEntity.id,
                                                                               youtubeContentID: storyEntity.youtubeId,
                                                                               youtubeTitle: storyEntity.youtubeTitle,
                                                                               youtubeDescription: storyEntity.youtubeDescription,
@@ -184,21 +192,23 @@ final class MyStoryListViewVM:ObservableObject{
                                                                               places: uniquePlaces,
                                                                               chapters:chapters,
                                                                               isPublished: storyEntity.isPublished)
+                                    
+                                    tempYoutubeContentItem.snippet.adventureTubeData = newAdventureTubeData
+                                    print("List  YoutubeContentItem.snippet.adventureTubeData \(tempYoutubeContentItem.snippet.adventureTubeData)")
+                                }
                                 
-                                tempYoutubeContentItem.snippet.adventureTubeData = newAdventureTubeData
-                                print("List  YoutubeContentItem.snippet.adventureTubeData \(tempYoutubeContentItem.snippet.adventureTubeData)")
                             }
-                            
+                            return tempYoutubeContentItem
                         }
-                        return tempYoutubeContentItem
+                        
+                        self.youtubeContentItems.append(contentsOf: tempYoutuebeContentItem)
+                    }catch let error {
+                        print("Error fetching \(error.localizedDescription) ")
                     }
-                    
-                    self.youtubeContentItems.append(contentsOf: tempYoutuebeContentItem)
-                }catch let error {
-                    print("Error fetching \(error.localizedDescription) ")
-                }
-            })
+                })
+            }// end of  youtubeAPIService.youtubeContentResourcePublisher
         }
+        fetchNextPage()
     }
     
     func findStoryEntityForYoutubeId(atId : String) -> StoryEntity?{

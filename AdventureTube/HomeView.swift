@@ -14,8 +14,8 @@ struct HomeView: View {
     var body: some View {
         // if user signed in send user tio contentView
         
-        switch loginManager.publicLoginState{
-        case .signedIn , .signedOut :
+        switch loginManager.loginState{
+            case .signedIn , .signedOut :
               AdventureTubeTabBarView()
         case .initial :
             PagerViewWithDots(data) { value in

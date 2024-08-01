@@ -18,8 +18,13 @@ struct MyStoryListView: View {
     @State private var buttons : [CustomNavBarButtonItem] = []
     @State private var scrollPosition: CGFloat = 0
     @State private var currentIndex = 0
+    init(){
+        print("Init MyStoryListView")
+    }
+    
+    
     var body: some View {
-       // CustomNavView{
+        CustomNavView{
             ZStack {
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 // NavigationLink Should not in the Foreach cycle
@@ -59,20 +64,35 @@ struct MyStoryListView: View {
                         buttons = [.empty , .refreshMyStoryList(myStoryListVM: myStoryListVM)]
                         
                         // it need to be load after view fully loaded not on appear
-                        customTabVM.showTabBar()
+                        //    customTabVM.showTabBar()
                         /// downloadYotubeContents method will get called only
                         ///  when app already have  youtube access permission
                         ///  but there is no youtube content to display
                         if loginManager.hasYoutubeAccessScope &&
                             myStoryListVM.youtubeContentItems.count == 0{
                             //myStoryListVM.getTheAllMomentList()
-                            myStoryListVM.downloadYotubeContentsAndMappedWithCoreData()
+                            myStoryListVM.downloadYotubeContentsAndMappedWithCoreData{}
                         }
                         
+                        
+                        
+                        loginManager.requestMoreAccess { error in
+                            if let error = error {
+                                // Handle the error, e.g., show an alert to the user
+                                print("Failed to request more access: \(error.localizedDescription)")
+                                // Possibly show an alert or take other action
+                            } else {
+                                // Proceed with downloading content if no error occurred
+                                print("Success to request more access")
+                            }
+                        }
+                        
+                        
+                        
                     }
-                    .onDisappear {
-                        customTabVM.hideTabBar()
-                    }
+//                    .onDisappear {
+//                        customTabVM.hideTabBar()
+//                    }
                     
                 }//end of ScrollViewReader
             }//end of ZStack
@@ -86,7 +106,7 @@ struct MyStoryListView: View {
                 )
                 
             )
-       // }//end of customNavView
+        }//end of customNavView
         
         
         /// action sheet  before reload Data from youtube
@@ -112,7 +132,7 @@ struct MyStoryListView: View {
             
             Button ("Reload"){
                 myStoryListVM.deleteExistingYoutubeContent()
-                myStoryListVM.downloadYotubeContentsAndMappedWithCoreData()
+                myStoryListVM.downloadYotubeContentsAndMappedWithCoreData{}
             }
             
         }
@@ -125,7 +145,7 @@ struct MyStoryListView: View {
     
     
     private func getListTitle() -> String {
-        guard let userName = loginManager.publicUserData.givenName else{
+        guard let userName = loginManager.userData.givenName else{
             return "Adventure Story"
         }
         return userName + "'s Adventure Story"

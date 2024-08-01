@@ -10,7 +10,16 @@ import SwiftUI
 
 class `CustomTabBarViewVM` :ObservableObject {
     static let shared = CustomTabBarViewVM()
-    @Published var isTabBarViewShow :Bool = true
+    @Published var isTabBarViewShow :Bool = true{
+        willSet{
+            switch newValue {
+                case false  :
+                    print("CustomTabBar will be hide")
+                case true  :
+                    print("CustomTabBar will be shown")
+            }
+        }
+    }
     
     private init(){
         print("init CustomTabBarViewModel")

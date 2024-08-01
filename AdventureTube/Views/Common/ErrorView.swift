@@ -1,18 +1,21 @@
-//
-//  ErrorView.swift
-//  AdventureTube
-//
-//  Created by chris Lee on 1/8/2024.
-//
-
 import SwiftUI
 
 struct ErrorView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    let message: String
 
-#Preview {
-    ErrorView()
+    var body: some View {
+        VStack {
+            Text("Error")
+                .font(.headline)
+                .foregroundColor(.red)
+            Text(message)
+                .multilineTextAlignment(.center)
+                .padding()
+            Button("OK") {
+                // Dismiss the error view
+                // Use environment dismiss if needed
+            }
+        }
+        .padding()
+    }
 }

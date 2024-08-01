@@ -17,13 +17,13 @@ struct MainSavedStoryView: View {
         print("Init ProfileView ")
     }
     var body: some View {
-        NavigationView{
+        CustomNavView{
             ZStack{
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 VStack{
-                    switch(loginManager.publicLoginState){
+                    switch(loginManager.loginState){
                         case .signedOut:
-                            Button("Sign In"){
+                            Button("Sign In.MainSavedStoryView"){
                                 isShowingLogin.toggle()
                             }
                             .fullScreenCover(isPresented: $isShowingLogin) {
@@ -39,7 +39,7 @@ struct MainSavedStoryView: View {
                 }
             }
             .preferredColorScheme(.light)
-            //.navigationBarHidden(true)
+            .customNavigationBarHidden(true )
         }
     }
     

@@ -23,14 +23,14 @@ struct SettingView: View {
     
     
     var body: some View {
-        NavigationView{
+        CustomNavView{
             ZStack {
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 VStack{
                     
-                    switch(loginManager.publicLoginState){
+                    switch(loginManager.loginState){
                         case .signedOut:
-                            Button("Sign In"){
+                            Button("Sign In.SettingView"){
                                 isShowingLogin.toggle()
                             }
                             .fullScreenCover(isPresented: $isShowingLogin) {
@@ -51,10 +51,10 @@ struct SettingView: View {
                                     }
                                     Spacer()
                                 }
-                                Text( loginManager.publicUserData.emailAddress ?? "No_Email")
-                                Text( loginManager.publicUserData.fullName ?? "No_FullName")
-                                Text( loginManager.publicUserData.givenName ?? "No_GivenName")
-                                Text( loginManager.publicUserData.familyName ?? "No_FamilyName")
+                                Text( loginManager.userData.emailAddress ?? "No_Email")
+                                Text( loginManager.userData.fullName ?? "No_FullName")
+                                Text( loginManager.userData.givenName ?? "No_GivenName")
+                                Text( loginManager.userData.familyName ?? "No_FamilyName")
                             }
                             
                             
@@ -74,8 +74,7 @@ struct SettingView: View {
                 //.foregroundColor(ColorConstant.foreground.color)
             }
             .preferredColorScheme(.light)
-            //.navigationBarHidden(true)
-        }
+            .customNavigationBarHidden(true)        }
     }
 }
 

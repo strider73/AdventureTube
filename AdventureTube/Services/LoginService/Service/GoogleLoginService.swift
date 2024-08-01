@@ -40,9 +40,8 @@ import Combine
 
 /// An observable class for authenticating via Google.
 final class GoogleLoginService: LoginServiceProtocol {
-    
-    
-    
+
+
     private var adventuretubeAPI: AdventureTubeAPIPrototol
     private var cancellables = Set<AnyCancellable>()
     
@@ -190,6 +189,9 @@ final class GoogleLoginService: LoginServiceProtocol {
         }//end of google login
     }
     
+    
+    
+    
     func restorePreviousSignIn(completion:@escaping(Result<UserModel,Error>) -> Void) {
         GIDSignIn.sharedInstance.restorePreviousSignIn {[weak self] user , error in
             guard let self = self else {return}
@@ -279,16 +281,20 @@ final class GoogleLoginService: LoginServiceProtocol {
         let idToken = user.idToken?.tokenString ?? ""
         
         //TODO: this doesn't copy the value why ? check the LoginManager.shared.userData first
-        var userData : UserModel = LoginManager.shared.publicUserData
+        var userData : UserModel = LoginManager.shared.userData
         userData.idToken = idToken
         userData.emailAddress = emailAddress
         userData.fullName = fullName
         userData.familyName = familyName
         userData.profilePicUrl = profilePicUrl?.absoluteString
         userData.loginSource = .google
-        
+        if let grantScopes = user.grantedScopes {
+            userData.storedScopes.append(contentsOf: grantScopes.map { "\($0)" })
+        }
         return userData
     }
+
+    
     
     
     
@@ -297,14 +303,14 @@ final class GoogleLoginService: LoginServiceProtocol {
     /// `addScopes(_:presenting:)` request.
     /// - note: Successful requests will update the `loginManager.state` with a new current user that
     /// has the granted scope.
-    func addMoreScope(completion : @escaping(Error?) -> Void) {
+    func addMoreScope(completion : @escaping (Result<UserModel,Error>) -> Void) {
         
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                let rootViewController = windowScene.windows.first?.rootViewController else {
-              print("There is no root view controller!")
-              completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No root view controller found"]))
-              return
-          }
+              let rootViewController = windowScene.windows.first?.rootViewController else {
+            print("There is no root view controller!")
+            completion(.failure( NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No root view controller found"])))
+            return
+        }
         /*
          migration to Google Sign-In SDK v7.0.0  https://developers.google.com/identity/sign-in/ios/quick-migration-guide
          
@@ -316,23 +322,39 @@ final class GoogleLoginService: LoginServiceProtocol {
          */
         
         guard let currentUser = GIDSignIn.sharedInstance.currentUser else {
-             print("No user signed in!")
-             completion(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user signed in"]))
-             return
-         }
+            print("No user signed in!")
+            completion(.failure( NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user signed in"])))
+            return
+        }
         
         currentUser.addScopes([YoutubeAPIService.youtubeContentReadScope], presenting: rootViewController){ signInResult,error in
             guard error == nil else {
                 print("Found error while Youtube read scope: \(String(describing: error?.localizedDescription)).")
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No scopes granted"])))
                 return
             }
-            //guard signInResult != nil else { return }
-            guard let signInResult = signInResult else { return }
-            signInResult.user.grantedScopes?.map({ scope in
-                print("user has scope of \(scope)")
-            })
-            //TODO:  Check if the user granted access to the scopes you requested.
-            completion(nil)
+            
+            
+            guard let signInResult = signInResult, let grantedScopes = signInResult.user.grantedScopes else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No scopes granted"])))
+                return
+            }
+            
+            
+            // Use map to convert the grantedScopes to an array of Strings, if not already.
+            let scopes = grantedScopes.map { "\($0)" } // Ensure each scope is a String
+            
+            // Log each scope for debugging purposes
+            scopes.forEach { scope in
+                print("User has scope: \(scope)")
+            }
+            
+            let user = signInResult.user
+            var adventureUser  = self.createAdventureUser(from: user);
+            
+            // Complete with the scopes
+            completion(.success(adventureUser))
+            
         }
     }
     

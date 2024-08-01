@@ -16,56 +16,41 @@
  */
 
 import Foundation
-
+///To ensure that userData and loginState can only be modified within the LoginManager class but still allow read access from outside,
+///Use a combination of private(set) and public computed properties.
+/// This setup restricts the ability to set the properties directly outside of LoginManager, while still providing read access.
 class LoginManager : ObservableObject  {
     static let shared = LoginManager()
-    @Published private var userData : UserModel = UserModel()
-//    var userDataPublisher: Published<UserModel>.Publisher{
-//        $userData
-//    }
-    @Published private var loginState : State = .initial{
-        willSet(loginState){
-            switch loginState  {
+    // Properties with private(set) to restrict external modification
+    @Published private(set) var userData: UserModel = UserModel()
+    @Published private(set) var loginState: State = .initial {
+        willSet {
+            switch newValue {
                 case .signedIn:
                     print("loginState :===signedIn===")
+                    saveUserStateToUserDefault()
+
                 case .signedOut:
                     print("loginState :===signedOut===")
-                case .initial :
+                    userData.adventuretubeJWTToken = nil
+                    userData.adventuretubeRefreshJWTToken = nil
+                    userData.idToken = nil
+                    userData.signed_in = false
+                    userData.storedScopes.removeAll()
+                    saveUserStateToUserDefault()
+
+                case .initial:
                     print("loginState :===initial===")
-                    
             }
-            
         }
     }
-    
-    var publicUserData : UserModel {
-        return userData
-    }
-    
-    /// The user-authorized scopes.
-    /// - note: If the user is logged out, then this will default to empty.
-    var authorizedScopes: [String] {
-        switch loginState {
-            case .signedIn:
-                return  []
-            case .signedOut:
-                return []
-            case .initial:
-                return []
-        }
-    }
+
     
     var hasYoutubeAccessScope:Bool{
-        return authorizedScopes.contains(YoutubeAPIService.youtubeContentReadScope)
+        return userData.storedScopes.contains(YoutubeAPIService.youtubeContentReadScope)
     }
     
-
-    var loginStatePublisher: Published<State>.Publisher{
-        $loginState
-    }
-    var publicLoginState: State {
-        return loginState
-    }
+    
     
     
     
@@ -74,11 +59,11 @@ class LoginManager : ObservableObject  {
     
     
     func updateUserData(_  updateUserData: UserModel) {
-           self.userData = updateUserData
+        self.userData = updateUserData
     }
     
     func updateLoginState( _ updateState: State) {
-           self.loginState = updateState
+        self.loginState = updateState
     }
     
     private init(){
@@ -94,20 +79,19 @@ class LoginManager : ObservableObject  {
             if adventureUser.signed_in == true {
                 // MARK: step2 check the loginSource and initiate loginService instance accordinly
                 switch(adventureUser.loginSource){
-                     case .google:
+                    case .google:
                         // MARK:  in here AdventureTubeAPI called and intialize first time
                         loginService = GoogleLoginService()
                         if let  loginService = loginService{
                             loginService.restorePreviousSignIn(completion: {[weak self] result in
                                 guard let self = self else {return}
-
+                                
                                 // MARK: in here returned googleUser may have updated information for tokenId!
                                 switch result {
                                     case .success(let adventureUser):
                                         // Update user object
                                         self.userData = adventureUser
                                         self.loginState = .signedIn
-                                        saveUserStateToUserDefault()
                                     case .failure(let error):
                                         print("error : \(error.localizedDescription)")
                                         self.loginState = .signedOut
@@ -165,7 +149,6 @@ class LoginManager : ObservableObject  {
                         self.userData = adventureUser
                         self.loginState = .signedIn
                         //MARK: Store Data in UserDefault
-                        saveUserStateToUserDefault()
                         completion(.success(adventureUser))
                     case .failure(let error):
                         completion(.failure(error))
@@ -193,16 +176,10 @@ class LoginManager : ObservableObject  {
                 switch result {
                     case .success:
                         print("Sign out successful")
-                        
-                        userData.adventuretubeJWTToken = nil
-                        userData.adventuretubeRefreshJWTToken = nil
-                        userData.idToken = nil
-                        userData.signed_in = false
+                        //STEP 1
                         loginService.disconnectAdditionalScope()
+                        //STEP2
                         loginState = .signedOut
-                        
-                        saveUserStateToUserDefault()
-                        
                     case .failure(let error):
                         print("Sign out failed: \(error.localizedDescription)")
                         // Handle sign out failure
@@ -214,48 +191,33 @@ class LoginManager : ObservableObject  {
     }
     
     
-    func requestMoreAccess(completion : @escaping () -> Void ){
-        //change loginState
-        /// This single line make everything not working
-        /// since loginState was publisher for the view it will trigger all the viiews update
-        /// once state has been changed
-        ///
-        /// in my case it has updated just before  request youtube service which needs
-        /// both YoutubeService & MyStoryListModelView .
-        ///
-        /// since MyStoryListModelView has been initialize at MyStoryView  anytime
-        /// MyStoryView hsa been initialise it will be initialize as well
-        /// so moment just before call the  YoutubeService and update loginState will causing
-        /// reinitalize MyStoriesView and also create New YoutubeService with New MyStoryListViewModel
-        /// will be the reason of deinitialize of origianal both object
-        //loginState = .youtubeAccessRequest
+    func requestMoreAccess(completion: @escaping (Error?) -> Void) {
+        print("requestMoreAccess  has been called~~~")
+        
         if let loginService = loginService {
-            loginService.addMoreScope { error in
-                if let error = error {
+            loginService.addMoreScope {[weak self]result in
+                guard let self = self else {return}
+
+                switch result{
+                    case .success(let adventureUser):
+                        userData.storedScopes.append(contentsOf: adventureUser.storedScopes)
+                        saveUserStateToUserDefault()
+                        completion(nil)
+                    case .failure(let error ):
                         print("Error requesting additional scopes: \(error.localizedDescription)")
-                        // Handle error appropriately, possibly by showing an alert to the user
-                        return
-                    }
+                        completion(NSError(domain: "com.adventuretube", code: -1, userInfo: [NSLocalizedDescriptionKey: "Login service not available"])) // Handle loginService nil case
+                }
+                
             }
         }
-        //TODO: update userData
-        
-        //MARK: Store Data in UserDefault
-        saveUserStateToUserDefault()
     }
-    
-    
-    //    func disconnectPrivilegeAndSignedOut(){
-    //        loginService.disconnectAdditionalScope()
-    //    }
-    
-   
+
     
     deinit{
         print("Deinitialize Login Manager")
     }
     
-
+    
     
     private func saveUserStateToUserDefault(){
         
