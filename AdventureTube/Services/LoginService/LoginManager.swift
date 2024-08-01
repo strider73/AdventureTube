@@ -23,6 +23,20 @@ class LoginManager : ObservableObject  {
 //    var userDataPublisher: Published<UserModel>.Publisher{
 //        $userData
 //    }
+    @Published private var loginState : State = .initial{
+        willSet(loginState){
+            switch loginState  {
+                case .signedIn:
+                    print("loginState :===signedIn===")
+                case .signedOut:
+                    print("loginState :===signedOut===")
+                case .initial :
+                    print("loginState :===initial===")
+                    
+            }
+            
+        }
+    }
     
     var publicUserData : UserModel {
         return userData
@@ -45,21 +59,7 @@ class LoginManager : ObservableObject  {
         return authorizedScopes.contains(YoutubeAPIService.youtubeContentReadScope)
     }
     
-    @Published private var loginState : State = .initial{
-        willSet(loginState){
-            switch loginState  {
-                case .signedIn:
-                    print("loginState :===signedIn===")
-                case .signedOut:
-                    print("loginState :===signedOut===")
-                case .initial :
-                    print("loginState :===initial===")
-                    
-            }
-            
-        }
-    }
-    
+
     var loginStatePublisher: Published<State>.Publisher{
         $loginState
     }
