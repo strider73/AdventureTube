@@ -48,12 +48,6 @@
 		B4003B8E288525E5002926F1 /* GoogleMapAPIPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003AF9288525E4002926F1 /* GoogleMapAPIPlace.swift */; };
 		B4003B90288525E5002926F1 /* YoutubeViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003AFE288525E4002926F1 /* YoutubeViewVM.swift */; };
 		B4003B91288525E5002926F1 /* YoutubeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003AFF288525E4002926F1 /* YoutubeView.swift */; };
-		B4003B92288525E5002926F1 /* CustomNavBarContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B02288525E4002926F1 /* CustomNavBarContainerView.swift */; };
-		B4003B93288525E5002926F1 /* CustomNavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B03288525E4002926F1 /* CustomNavView.swift */; };
-		B4003B95288525E5002926F1 /* CustomNavLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B05288525E4002926F1 /* CustomNavLink.swift */; };
-		B4003B96288525E5002926F1 /* CustomNavBarButtonInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B06288525E4002926F1 /* CustomNavBarButtonInfo.swift */; };
-		B4003B97288525E5002926F1 /* CustomNavBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B07288525E4002926F1 /* CustomNavBarView.swift */; };
-		B4003B98288525E5002926F1 /* CustomNavBarPreferenceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B08288525E4002926F1 /* CustomNavBarPreferenceKey.swift */; };
 		B4003B99288525E5002926F1 /* TabBarItemInfoEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B0A288525E4002926F1 /* TabBarItemInfoEnum.swift */; };
 		B4003B9A288525E5002926F1 /* CustomTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B0B288525E4002926F1 /* CustomTabBarView.swift */; };
 		B4003B9B288525E5002926F1 /* TabBarItemsPreferenceKey .swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B0C288525E4002926F1 /* TabBarItemsPreferenceKey .swift */; };
@@ -221,12 +215,6 @@
 		B4003AF9288525E4002926F1 /* GoogleMapAPIPlace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapAPIPlace.swift; sourceTree = "<group>"; };
 		B4003AFE288525E4002926F1 /* YoutubeViewVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeViewVM.swift; sourceTree = "<group>"; };
 		B4003AFF288525E4002926F1 /* YoutubeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeView.swift; sourceTree = "<group>"; };
-		B4003B02288525E4002926F1 /* CustomNavBarContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarContainerView.swift; sourceTree = "<group>"; };
-		B4003B03288525E4002926F1 /* CustomNavView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavView.swift; sourceTree = "<group>"; };
-		B4003B05288525E4002926F1 /* CustomNavLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavLink.swift; sourceTree = "<group>"; };
-		B4003B06288525E4002926F1 /* CustomNavBarButtonInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarButtonInfo.swift; sourceTree = "<group>"; };
-		B4003B07288525E4002926F1 /* CustomNavBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarView.swift; sourceTree = "<group>"; };
-		B4003B08288525E4002926F1 /* CustomNavBarPreferenceKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarPreferenceKey.swift; sourceTree = "<group>"; };
 		B4003B0A288525E4002926F1 /* TabBarItemInfoEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarItemInfoEnum.swift; sourceTree = "<group>"; };
 		B4003B0B288525E4002926F1 /* CustomTabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarView.swift; sourceTree = "<group>"; };
 		B4003B0C288525E4002926F1 /* TabBarItemsPreferenceKey .swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TabBarItemsPreferenceKey .swift"; sourceTree = "<group>"; };
@@ -496,24 +484,10 @@
 		B4003B00288525E4002926F1 /* Tab&Navi */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B01288525E4002926F1 /* CustomNavBar */,
+				B4367F202C63AC0E00236B31 /* NavigationSateManager.swift */,
 				B4003B09288525E4002926F1 /* CustomTabView */,
 			);
 			path = "Tab&Navi";
-			sourceTree = "<group>";
-		};
-		B4003B01288525E4002926F1 /* CustomNavBar */ = {
-			isa = PBXGroup;
-			children = (
-				B4003B03288525E4002926F1 /* CustomNavView.swift */,
-				B4003B02288525E4002926F1 /* CustomNavBarContainerView.swift */,
-				B4003B07288525E4002926F1 /* CustomNavBarView.swift */,
-				B4003B05288525E4002926F1 /* CustomNavLink.swift */,
-				B4003B08288525E4002926F1 /* CustomNavBarPreferenceKey.swift */,
-				B4003B06288525E4002926F1 /* CustomNavBarButtonInfo.swift */,
-				B4367F202C63AC0E00236B31 /* NavigationSateManager.swift */,
-			);
-			path = CustomNavBar;
 			sourceTree = "<group>";
 		};
 		B4003B09288525E4002926F1 /* CustomTabView */ = {
@@ -1264,7 +1238,6 @@
 				B4003B81288525E5002926F1 /* ObjectSavable.swift in Sources */,
 				B4003BCB288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift in Sources */,
 				B4003BA4288525E5002926F1 /* MainStoryView.swift in Sources */,
-				B4003B95288525E5002926F1 /* CustomNavLink.swift in Sources */,
 				B4003B9F288525E5002926F1 /* UserProfileImageLoader.swift in Sources */,
 				B486DDD428BF0713003F59BC /* ChapterEntity+CoreDataClass.swift in Sources */,
 				B4003BD2288525E5002926F1 /* FacebookLoginService.swift in Sources */,
@@ -1294,7 +1267,6 @@
 				B4003B7C288525E5002926F1 /* Color.swift in Sources */,
 				B46AF5552C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift in Sources */,
 				B4003B7A288525E5002926F1 /* HapticFeedBack.swift in Sources */,
-				B4003B97288525E5002926F1 /* CustomNavBarView.swift in Sources */,
 				B4003BCD288525E5002926F1 /* DownloadPublisher.swift in Sources */,
 				B4003BAA288525E5002926F1 /* GoogleSearchMapView.swift in Sources */,
 				B4003B83288525E5002926F1 /* CheckBoxView.swift in Sources */,
@@ -1302,7 +1274,6 @@
 				B4003B9E288525E5002926F1 /* CustomTabBarContainerView.swift in Sources */,
 				B469E483288E465B003EB360 /* Array.swift in Sources */,
 				B469E485288EC402003EB360 /* OrderedArray.swift in Sources */,
-				B4003B93288525E5002926F1 /* CustomNavView.swift in Sources */,
 				B4003B8B288525E5002926F1 /* UserModel.swift in Sources */,
 				B4B7DE102B28BE0600582C23 /* StoryMapViewController.swift in Sources */,
 				B45733FA2C4DDBD30055E53C /* APIComponentsBuilder.swift in Sources */,
@@ -1321,7 +1292,6 @@
 				B4003B77288525E5002926F1 /* ConerRadius.swift in Sources */,
 				B4003BAC288525E5002926F1 /* AddStoryView.swift in Sources */,
 				B46E34092C3638BF0025DE65 /* MemberDTO.swift in Sources */,
-				B4003B98288525E5002926F1 /* CustomNavBarPreferenceKey.swift in Sources */,
 				B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */,
 				B4003BD8288525E5002926F1 /* Birthday.swift in Sources */,
 				B4367F212C63AC0E00236B31 /* NavigationSateManager.swift in Sources */,
@@ -1347,12 +1317,10 @@
 				B46E340D2C3638F30025DE65 /* AuthResponse.swift in Sources */,
 				B486DDD628BF0713003F59BC /* PlaceEntity+CoreDataClass.swift in Sources */,
 				B4003B78288525E5002926F1 /* UIImage.swift in Sources */,
-				B4003B96288525E5002926F1 /* CustomNavBarButtonInfo.swift in Sources */,
 				B4003BC6288525E5002926F1 /* CoreDataSaveModelPublisher.swift in Sources */,
 				B4003B76288525E5002926F1 /* UIResponder.swift in Sources */,
 				B4003BAB288525E5002926F1 /* AddStoryViewVM.swift in Sources */,
 				B4003BB6288525E5002926F1 /* ExplainViewNo3.swift in Sources */,
-				B4003B92288525E5002926F1 /* CustomNavBarContainerView.swift in Sources */,
 				B4003BCF288525E5002926F1 /* LoginManager.swift in Sources */,
 				B4003AD1288525C3002926F1 /* PersistenceController.swift in Sources */,
 				B4003BAE288525E5002926F1 /* YoutubeAccessGrantRequestView1.swift in Sources */,

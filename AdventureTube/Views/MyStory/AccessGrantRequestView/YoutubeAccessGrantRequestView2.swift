@@ -78,7 +78,7 @@ struct YoutubeAccessGrantRequestView2: View {
                 ErrorView(message: errorMessage ?? "An error occurred")
             }
             .background(
-                CustomNavLink(
+                NavigationLink(
                     destination: MyStoryListView(),
                     isActive: $isPresentingMyStoryListView
                 ) {

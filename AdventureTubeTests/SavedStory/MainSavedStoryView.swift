@@ -19,7 +19,7 @@ struct MainSavedStoryView: View {
         print("Init ProfileView ")
     }
     var body: some View {
-        CustomNavView{
+        NavigationStack{
             ZStack{
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 VStack{
@@ -41,7 +41,7 @@ struct MainSavedStoryView: View {
                 }
             }
             .preferredColorScheme(.light)
-            .customNavigationBarHidden(true )
+            .navigationBarHidden(true )
         }
     }
     
