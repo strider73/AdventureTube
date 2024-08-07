@@ -24,7 +24,7 @@ struct SettingView: View {
     
     
     var body: some View {
-        CustomNavView{
+        NavigationStack{
             ZStack {
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 VStack{
@@ -75,7 +75,7 @@ struct SettingView: View {
                 //.foregroundColor(ColorConstant.foreground.color)
             }
             .preferredColorScheme(.light)
-            .customNavigationBarHidden(true)        }
+            .navigationBarHidden(true)        }
     }
 }
 

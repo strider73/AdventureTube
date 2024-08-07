@@ -47,7 +47,6 @@ class AddStoryViewVM : ObservableObject {
     @Published  var actionSheet : AddStoryViewActiveSheet?
     
     
-    @Published var buttons : [CustomNavBarButtonInfo] = []
     //These are all data to store in core data
     @Published var categorySelection : [Category] = []
     @Published var durationSelection : Duration = .select {
@@ -105,7 +104,6 @@ class AddStoryViewVM : ObservableObject {
         /// all kind of datatyoe for
         /// category , duration , video type and location
         /// and also setup all confirmedPlace in createChapterViewVM
-        buttons = [.back]
         checkStoryAndSetValues()
         //listening update of Chapters from createChapterViewVM
         subscribeChapterFromCreateChapterViewVM()
@@ -212,8 +210,6 @@ class AddStoryViewVM : ObservableObject {
     private func storyHasChapter(){
         if chapters.count > 0 {
             hasChapter = true
-            self.buttons = [.checkUpdateBeforeBack(addStoryViewVM: self) ,
-                             .uploadStory(addStoryViewVM:self)]
         }
     }
     //Syncronize chapters between AddStoryViewVM with CreateChapterViewVM

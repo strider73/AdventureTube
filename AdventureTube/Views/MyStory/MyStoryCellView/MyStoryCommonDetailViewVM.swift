@@ -25,7 +25,6 @@ class MyStoryCommonDetailViewVM : ObservableObject{
     @Published var desciption : String = ""
     @Published var image:UIImage? = nil
     @Published var isLoading:Bool = false
-    @Published var buttons : [CustomNavBarButtonInfo] = []
     @Published  var isShowAddStory  = false
 
     var imageSubscription:AnyCancellable?
@@ -49,7 +48,6 @@ class MyStoryCommonDetailViewVM : ObservableObject{
         //inital assign
         self.adventureTubeDataPublisher = adventureTubeData
         imageName = youtubeContentItem.contentDetails.videoId+"thumbnailImage"
-        buttons = [.back , .addNewStory(myStoryCommonDetailViewVM: self)]
         getThumbnailImage()
         getAdventureTubeDataFromPublisher()
         setChapterDescription()
