@@ -10,12 +10,13 @@
 import SwiftUI
 
 struct CustomNavView<Content:View>: View {
-    
     let content : Content
-    
-    init(@ViewBuilder content : () -> Content){
-        self.content = content()
+        
+    init(@ViewBuilder content: () -> Content) {
+          self.content = content()
     }
+    
+    
     
     var body: some View {
         
@@ -30,6 +31,7 @@ struct CustomNavView<Content:View>: View {
 }
 
 struct CustomNavView_Previews: PreviewProvider {
+
     static var previews: some View {
         CustomNavView {
             Color.yellow.ignoresSafeArea()

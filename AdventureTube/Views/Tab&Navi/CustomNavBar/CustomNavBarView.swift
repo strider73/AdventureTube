@@ -18,7 +18,7 @@ struct CustomNavBarView: View {
     
     
     var title : String
-    @Binding var buttons : [CustomNavBarButtonItem]
+    @Binding var buttons : [CustomNavBarButtonInfo]
 
     
     
@@ -75,7 +75,7 @@ extension CustomNavBarView {
     }
     
     
-    private func returnButton(button : CustomNavBarButtonItem) -> some View {
+    private func returnButton(button : CustomNavBarButtonInfo) -> some View {
         switch button  {
         case .back :
             return Button(action: {
@@ -216,7 +216,7 @@ extension CustomNavBarView {
 }
 
 struct CustomNavBarView_Previews: PreviewProvider {
-  @State  static var buttons :[CustomNavBarButtonItem] = [
+  @State  static var buttons :[CustomNavBarButtonInfo] = [
         .back , .addNewStory(myStoryCommonDetailViewVM: dev.myStoryCommonDetailViewVM)
     ]
     

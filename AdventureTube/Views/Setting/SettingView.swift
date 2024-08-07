@@ -12,7 +12,8 @@ struct SettingView: View {
     //User Profile Data
     @EnvironmentObject private var loginManager : LoginManager
     @State private var isShowingLogin = false
-    
+    @State private var path: [String] = []
+
     private var user: GIDGoogleUser? {
         return GIDSignIn.sharedInstance.currentUser
     }

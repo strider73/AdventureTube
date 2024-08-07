@@ -12,43 +12,35 @@ struct CustomNavLink<Label:View, Destination:View>: View {
     let label : Label
     @Binding var isActive : Bool
     
-
+    
     init(destination: Destination,
-            isActive: Binding<Bool> = .constant(true),
+         isActive: Binding<Bool> = .constant(true),
          @ViewBuilder label: () -> Label) {
         self.destination = destination
         self.label = label()
         self._isActive = isActive
     }
     var body: some View {
-        
-        NavigationLink(isActive: _isActive,
-                       destination: {
-            //instead of normal destination we wrap with
-            //CustomNavBarContainerView{destination}
-            //This is the part to give us custom navigation bar on destination
-            CustomNavBarContainerView {
+            NavigationLink(destination: CustomNavBarContainerView {
                 destination
-
             }
-            .navigationBarHidden(true)// will remove navigation View on StoryView which is targetView
-        },
-        label: {label}
-        )
-        
-        
-       
-    }
+            .navigationBarHidden(true)) {
+                label
+            }
+            .buttonStyle(PlainButtonStyle()) // Removes the default ">" indicator
+        }
 }
 
 struct CustomNavLink_Previews: PreviewProvider {
+    @State static var path : [String]  = []
     static var previews: some View {
-        NavigationView{
+        CustomNavView{
             CustomNavLink(destination:Text("Destination")){
                 Text("Click me")
             }
         }
     }
+    
 }
 
 

@@ -6,31 +6,31 @@
 //
 
 import SwiftUI
-struct StoryLoadingView : View {
-    
-    var youtubeContentItem : YoutubeContentItem?
-    var adventureTubeData :  Published<AdventureTubeData?>.Publisher
-    init(youtubeContentItem:YoutubeContentItem? ,adventureTubeData:Published<AdventureTubeData?>.Publisher){
-        print("init StoryLoadingView!!!!!!")
-        self.youtubeContentItem = youtubeContentItem
-        self.adventureTubeData = adventureTubeData
-        
-    }
-
-    
-    var body : some View {
-        ZStack{
-            if let youtubeContentItem = youtubeContentItem{
-                StoryView(youtubeContentItem: youtubeContentItem, adventureTubeData: adventureTubeData)
-                    .navigationBarBackButtonHidden(true)
-
-            }
-        }
-
-    }
-    
-    
-}
+//struct StoryLoadingView : View {
+//    
+//    var youtubeContentItem : YoutubeContentItem?
+//    var adventureTubeData :  Published<AdventureTubeData?>.Publisher
+//    init(youtubeContentItem:YoutubeContentItem? ,adventureTubeData:Published<AdventureTubeData?>.Publisher){
+//        print("init StoryLoadingView!!!!!!")
+//        self.youtubeContentItem = youtubeContentItem
+//        self.adventureTubeData = adventureTubeData
+//        
+//    }
+//
+//    
+//    var body : some View {
+//        ZStack{
+//            if let youtubeContentItem = youtubeContentItem{
+//                StoryView(youtubeContentItem: youtubeContentItem, adventureTubeData: adventureTubeData)
+//                    .navigationBarBackButtonHidden(true)
+//
+//            }
+//        }
+//
+//    }
+//    
+//    
+//}
 
 
 
@@ -44,7 +44,7 @@ struct StoryView: View {
     @State var title : String
     
     @State var storyEntity : StoryEntity?
-    @State var buttons : [CustomNavBarButtonItem] = []
+    @State var buttons : [CustomNavBarButtonInfo] = []
     @State private var isDescriptionEditorShow = false
     @State private var isCreateNewStory = false
     @State private var isUpdateStory = false
@@ -211,6 +211,8 @@ struct StoryView: View {
 }
 
 struct NewStoryView_Previews: PreviewProvider {
+    @State static var path: [String] = []
+
     static var previews: some View {
         CustomNavView{
             StoryView(youtubeContentItem: dev.youtubeContentItems.first! , adventureTubeData: dev.myStoryVM.$adventureTubeData)

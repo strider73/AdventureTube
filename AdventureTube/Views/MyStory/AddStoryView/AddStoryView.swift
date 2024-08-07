@@ -54,7 +54,7 @@ struct AddStoryView: View {
     @State private var youtubePopUpData : PlayChapterData?
     @State private var createChapterViewData : CreateChapterViewData?
     
-    @State private var buttons : [CustomNavBarButtonItem] =  []
+    @State private var buttons : [CustomNavBarButtonInfo] =  []
     @State private var isShowNewStoryMapView =  false
     @State private var isEditable = false
     @State private var selectedIndex : Int = 0
@@ -495,6 +495,9 @@ struct AddStoryView: View {
 }
 
 struct AddStoryView_Previews: PreviewProvider {
+    @State static var path: [String] = []
+
+    
     static var previews: some View {
         CustomNavView{
             AddStoryView(youtubeContentItem: dev.youtubeContentItems.first!,
