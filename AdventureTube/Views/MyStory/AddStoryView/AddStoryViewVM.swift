@@ -47,7 +47,7 @@ class AddStoryViewVM : ObservableObject {
     @Published  var actionSheet : AddStoryViewActiveSheet?
     
     
-    @Published var buttons : [CustomNavBarButtonItem] = []
+    @Published var buttons : [CustomNavBarButtonInfo] = []
     //These are all data to store in core data
     @Published var categorySelection : [Category] = []
     @Published var durationSelection : Duration = .select {

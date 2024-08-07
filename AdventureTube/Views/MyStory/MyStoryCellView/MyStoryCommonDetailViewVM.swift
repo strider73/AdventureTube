@@ -25,7 +25,7 @@ class MyStoryCommonDetailViewVM : ObservableObject{
     @Published var desciption : String = ""
     @Published var image:UIImage? = nil
     @Published var isLoading:Bool = false
-    @Published var buttons : [CustomNavBarButtonItem] = []
+    @Published var buttons : [CustomNavBarButtonInfo] = []
     @Published  var isShowAddStory  = false
 
     var imageSubscription:AnyCancellable?

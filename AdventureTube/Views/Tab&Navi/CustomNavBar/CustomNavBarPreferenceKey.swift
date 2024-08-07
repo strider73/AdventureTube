@@ -20,8 +20,8 @@ struct CustomNavBarTitlePreferenceKey: PreferenceKey {
     
 }
 struct CustomNavBarButtonPreferenceKey: PreferenceKey{
-    static var defaultValue: [CustomNavBarButtonItem] = []
-    static func reduce(value: inout [CustomNavBarButtonItem], nextValue: () -> [CustomNavBarButtonItem]) {
+    static var defaultValue: [CustomNavBarButtonInfo] = []
+    static func reduce(value: inout [CustomNavBarButtonInfo], nextValue: () -> [CustomNavBarButtonInfo]) {
         value += nextValue()
     }
 }
@@ -36,7 +36,7 @@ extension View {
         preference(key: CustomNavBarTitlePreferenceKey.self, value: title)
     }
     
-    func customNavigationBarButtons( buttons : [CustomNavBarButtonItem]) -> some View{
+    func customNavigationBarButtons( buttons : [CustomNavBarButtonInfo]) -> some View{
         preference(key: CustomNavBarButtonPreferenceKey.self, value: buttons)
     }
     
@@ -48,7 +48,7 @@ extension View {
 
     
     func customNavBarItems(title: String = "",
-        buttons:[CustomNavBarButtonItem] = []) -> some View {
+        buttons:[CustomNavBarButtonInfo] = []) -> some View {
         self
             .customNavigationTitle(title)
             .customNavigationBarButtons(buttons: buttons)

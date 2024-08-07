@@ -13,6 +13,8 @@ struct MainSavedStoryView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var loginManager : LoginManager
     @State private var isShowingLogin = false
+    @State private var path: [String] = [] // Define the path state with a specific type
+
     init(){
         print("Init ProfileView ")
     }

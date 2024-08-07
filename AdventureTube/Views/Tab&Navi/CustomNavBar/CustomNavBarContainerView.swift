@@ -12,7 +12,7 @@ struct CustomNavBarContainerView<Content : View>: View {
     let content: Content
     @State private var showBackButton : Bool = false
     @State private var title: String = ""
-    @State private var buttons : [CustomNavBarButtonItem] = []
+    @State private var buttons : [CustomNavBarButtonInfo] = []
     @State private var isNavBarHidden : Bool = false
     
     init(@ViewBuilder content: () -> Content){
@@ -47,7 +47,7 @@ struct CustomNavBarContainerView<Content : View>: View {
 }
 
 struct CustomNavBarContainerView_Previews: PreviewProvider {
-    static let buttons : [CustomNavBarButtonItem ] = [.addNewStory(myStoryCommonDetailViewVM: dev.myStoryCommonDetailViewVM) , .back]
+    static let buttons : [CustomNavBarButtonInfo ] = [.addNewStory(myStoryCommonDetailViewVM: dev.myStoryCommonDetailViewVM) , .back]
     static var previews: some View {
         CustomNavBarContainerView {
             ZStack {

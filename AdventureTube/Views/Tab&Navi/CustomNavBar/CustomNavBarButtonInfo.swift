@@ -8,8 +8,8 @@
 import Foundation
 import SwiftUI
 
-enum CustomNavBarButtonItem:Equatable{
-    static func == (lhs: CustomNavBarButtonItem, rhs: CustomNavBarButtonItem) -> Bool {
+enum CustomNavBarButtonInfo:Equatable{
+    static func == (lhs: CustomNavBarButtonInfo, rhs: CustomNavBarButtonInfo) -> Bool {
         return lhs.iconName == rhs.iconName
     }
     

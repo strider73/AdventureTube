@@ -51,9 +51,9 @@
 		B4003B92288525E5002926F1 /* CustomNavBarContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B02288525E4002926F1 /* CustomNavBarContainerView.swift */; };
 		B4003B93288525E5002926F1 /* CustomNavView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B03288525E4002926F1 /* CustomNavView.swift */; };
 		B4003B95288525E5002926F1 /* CustomNavLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B05288525E4002926F1 /* CustomNavLink.swift */; };
-		B4003B96288525E5002926F1 /* NavBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B06288525E4002926F1 /* NavBarButton.swift */; };
+		B4003B96288525E5002926F1 /* CustomNavBarButtonInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B06288525E4002926F1 /* CustomNavBarButtonInfo.swift */; };
 		B4003B97288525E5002926F1 /* CustomNavBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B07288525E4002926F1 /* CustomNavBarView.swift */; };
-		B4003B98288525E5002926F1 /* CustomNavBarItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B08288525E4002926F1 /* CustomNavBarItems.swift */; };
+		B4003B98288525E5002926F1 /* CustomNavBarPreferenceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B08288525E4002926F1 /* CustomNavBarPreferenceKey.swift */; };
 		B4003B99288525E5002926F1 /* TabBarItemInfoEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B0A288525E4002926F1 /* TabBarItemInfoEnum.swift */; };
 		B4003B9A288525E5002926F1 /* CustomTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B0B288525E4002926F1 /* CustomTabBarView.swift */; };
 		B4003B9B288525E5002926F1 /* TabBarItemsPreferenceKey .swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B0C288525E4002926F1 /* TabBarItemsPreferenceKey .swift */; };
@@ -134,6 +134,8 @@
 		B469E48A288F7500003EB360 /* MockedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E489288F7500003EB360 /* MockedStorage.swift */; };
 		B469E48C288F776F003EB360 /* PublishedAppStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */; };
 		B46A2C0D2B04541800C54E5D /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B46A2C0C2B04541800C54E5D /* README.md */; };
+		B46AF5552C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46AF5542C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift */; };
+		B46AF5582C60C47700261C71 /* ObservableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46AF5572C60C47700261C71 /* ObservableScrollView.swift */; };
 		B46E34062C3638580025DE65 /* AdventureTubeAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */; };
 		B46E34092C3638BF0025DE65 /* MemberDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E34082C3638BF0025DE65 /* MemberDTO.swift */; };
 		B46E340B2C3638DC0025DE65 /* RestAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */; };
@@ -155,7 +157,6 @@
 		B4B7DE112B28BE0600582C23 /* StoryMapViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */; };
 		B4B7DE152B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */; };
 		B4B7DE162B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE142B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift */; };
-		B4D4F08A2B0EDB1800F6C1CB /* TestScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D4F0892B0EDB1800F6C1CB /* TestScrollView.swift */; };
 		B4FB96D92A2997F100AAED3A /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FB96D82A2997F100AAED3A /* ProfileView.swift */; };
 /* End PBXBuildFile section */
 
@@ -222,9 +223,9 @@
 		B4003B02288525E4002926F1 /* CustomNavBarContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarContainerView.swift; sourceTree = "<group>"; };
 		B4003B03288525E4002926F1 /* CustomNavView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavView.swift; sourceTree = "<group>"; };
 		B4003B05288525E4002926F1 /* CustomNavLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavLink.swift; sourceTree = "<group>"; };
-		B4003B06288525E4002926F1 /* NavBarButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavBarButton.swift; sourceTree = "<group>"; };
+		B4003B06288525E4002926F1 /* CustomNavBarButtonInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarButtonInfo.swift; sourceTree = "<group>"; };
 		B4003B07288525E4002926F1 /* CustomNavBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarView.swift; sourceTree = "<group>"; };
-		B4003B08288525E4002926F1 /* CustomNavBarItems.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarItems.swift; sourceTree = "<group>"; };
+		B4003B08288525E4002926F1 /* CustomNavBarPreferenceKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomNavBarPreferenceKey.swift; sourceTree = "<group>"; };
 		B4003B0A288525E4002926F1 /* TabBarItemInfoEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarItemInfoEnum.swift; sourceTree = "<group>"; };
 		B4003B0B288525E4002926F1 /* CustomTabBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTabBarView.swift; sourceTree = "<group>"; };
 		B4003B0C288525E4002926F1 /* TabBarItemsPreferenceKey .swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TabBarItemsPreferenceKey .swift"; sourceTree = "<group>"; };
@@ -305,6 +306,8 @@
 		B469E489288F7500003EB360 /* MockedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockedStorage.swift; sourceTree = "<group>"; };
 		B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishedAppStorageTests.swift; sourceTree = "<group>"; };
 		B46A2C0C2B04541800C54E5D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B46AF5542C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewOffsetPreferenceKey.swift; sourceTree = "<group>"; };
+		B46AF5572C60C47700261C71 /* ObservableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableScrollView.swift; sourceTree = "<group>"; };
 		B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeAPIProtocol.swift; sourceTree = "<group>"; };
 		B46E34082C3638BF0025DE65 /* MemberDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDTO.swift; sourceTree = "<group>"; };
 		B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestAPIResponse.swift; sourceTree = "<group>"; };
@@ -328,7 +331,6 @@
 		B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryMapViewControllerBridge.swift; sourceTree = "<group>"; };
 		B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryControllerBridge.swift; sourceTree = "<group>"; };
 		B4B7DE142B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryController.swift; sourceTree = "<group>"; };
-		B4D4F0892B0EDB1800F6C1CB /* TestScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestScrollView.swift; sourceTree = "<group>"; };
 		B4FB96D82A2997F100AAED3A /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -383,6 +385,7 @@
 		B4003AD4288525E4002926F1 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				B4003B60288525E5002926F1 /* UIKit */,
 				B4003AD5288525E4002926F1 /* TimeToString.swift */,
 				B4003AD6288525E4002926F1 /* UserDefault.swift */,
 				B4003AD7288525E4002926F1 /* Extension */,
@@ -469,11 +472,10 @@
 		B4003AFA288525E4002926F1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				B4D4F0882B0EDB0500F6C1CB /* TestUI */,
+				B4003B2F288525E4002926F1 /* Common */,
 				B4003AFD288525E4002926F1 /* YoutubeView */,
 				B4003B00288525E4002926F1 /* Tab&Navi */,
 				B4003B14288525E4002926F1 /* MyStory */,
-				B4003B2F288525E4002926F1 /* Common */,
 				B4003B41288525E5002926F1 /* StoryMap */,
 				B4003B44288525E5002926F1 /* Setting */,
 			);
@@ -501,12 +503,12 @@
 		B4003B01288525E4002926F1 /* CustomNavBar */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B02288525E4002926F1 /* CustomNavBarContainerView.swift */,
 				B4003B03288525E4002926F1 /* CustomNavView.swift */,
-				B4003B05288525E4002926F1 /* CustomNavLink.swift */,
-				B4003B06288525E4002926F1 /* NavBarButton.swift */,
+				B4003B02288525E4002926F1 /* CustomNavBarContainerView.swift */,
 				B4003B07288525E4002926F1 /* CustomNavBarView.swift */,
-				B4003B08288525E4002926F1 /* CustomNavBarItems.swift */,
+				B4003B05288525E4002926F1 /* CustomNavLink.swift */,
+				B4003B08288525E4002926F1 /* CustomNavBarPreferenceKey.swift */,
+				B4003B06288525E4002926F1 /* CustomNavBarButtonInfo.swift */,
 			);
 			path = CustomNavBar;
 			sourceTree = "<group>";
@@ -514,12 +516,12 @@
 		B4003B09288525E4002926F1 /* CustomTabView */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B0A288525E4002926F1 /* TabBarItemInfoEnum.swift */,
-				B4003B0B288525E4002926F1 /* CustomTabBarView.swift */,
-				B4003B0C288525E4002926F1 /* TabBarItemsPreferenceKey .swift */,
-				B4003B0D288525E4002926F1 /* CustomTabBarViewVM.swift */,
 				B4003B0E288525E4002926F1 /* AdventureTubeTabBarView.swift */,
 				B4003B0F288525E4002926F1 /* CustomTabBarContainerView.swift */,
+				B4003B0B288525E4002926F1 /* CustomTabBarView.swift */,
+				B4003B0C288525E4002926F1 /* TabBarItemsPreferenceKey .swift */,
+				B4003B0A288525E4002926F1 /* TabBarItemInfoEnum.swift */,
+				B4003B0D288525E4002926F1 /* CustomTabBarViewVM.swift */,
 			);
 			path = CustomTabView;
 			sourceTree = "<group>";
@@ -627,6 +629,8 @@
 		B4003B2F288525E4002926F1 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B46AF5562C60C44300261C71 /* CustomScrollView */,
+				B46AF5532C6080BD00261C71 /* PreferenceKey */,
 				B4003B30288525E4002926F1 /* BlankView.swift */,
 				B4003B31288525E4002926F1 /* ModalView.swift */,
 				B4003B32288525E4002926F1 /* Boarding */,
@@ -795,6 +799,8 @@
 		B4003B63288525E5002926F1 /* Test */ = {
 			isa = PBXGroup;
 			children = (
+				B4003B6B288525E5002926F1 /* Example */,
+				B4003B66288525E5002926F1 /* ExternalPackage */,
 				B4003B64288525E5002926F1 /* ReadJsonData.swift */,
 				B4003B65288525E5002926F1 /* PreviewProvider.swift */,
 			);
@@ -872,6 +878,22 @@
 			path = UserDefaulPublisher;
 			sourceTree = "<group>";
 		};
+		B46AF5532C6080BD00261C71 /* PreferenceKey */ = {
+			isa = PBXGroup;
+			children = (
+				B46AF5542C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift */,
+			);
+			path = PreferenceKey;
+			sourceTree = "<group>";
+		};
+		B46AF5562C60C44300261C71 /* CustomScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				B46AF5572C60C47700261C71 /* ObservableScrollView.swift */,
+			);
+			path = CustomScrollView;
+			sourceTree = "<group>";
+		};
 		B46E34042C3631F60025DE65 /* Adventuretube */ = {
 			isa = PBXGroup;
 			children = (
@@ -919,12 +941,9 @@
 		B48C345C28851BB7005AA142 /* AdventureTube */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B6B288525E5002926F1 /* Example */,
-				B4003B66288525E5002926F1 /* ExternalPackage */,
 				B4003AF1288525E4002926F1 /* Models */,
 				B4003B46288525E5002926F1 /* Services */,
 				B4003B63288525E5002926F1 /* Test */,
-				B4003B60288525E5002926F1 /* UIKit */,
 				B4003AD4288525E4002926F1 /* Util */,
 				B4003AFA288525E4002926F1 /* Views */,
 				B4003ACB28852496002926F1 /* Info.plist */,
@@ -981,14 +1000,6 @@
 				B4B7DE142B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift */,
 			);
 			path = GoogleMap;
-			sourceTree = "<group>";
-		};
-		B4D4F0882B0EDB0500F6C1CB /* TestUI */ = {
-			isa = PBXGroup;
-			children = (
-				B4D4F0892B0EDB1800F6C1CB /* TestScrollView.swift */,
-			);
-			path = TestUI;
 			sourceTree = "<group>";
 		};
 		B901FED697C24E57499413A4 /* Pods */ = {
@@ -1240,7 +1251,6 @@
 				B4003BD1288525E5002926F1 /* GoogleLoginService.swift in Sources */,
 				B4003B79288525E5002926F1 /* Editor.swift in Sources */,
 				B4003B86288525E5002926F1 /* Utils.swift in Sources */,
-				B4D4F08A2B0EDB1800F6C1CB /* TestScrollView.swift in Sources */,
 				B4003BB8288525E5002926F1 /* ExplainViewNo1.swift in Sources */,
 				B4003B8C288525E5002926F1 /* YoutubeContentResource.swift in Sources */,
 				B4003BD6288525E5002926F1 /* ReadJsonData.swift in Sources */,
@@ -1277,7 +1287,9 @@
 				B4003B72288525E5002926F1 /* UserDefault.swift in Sources */,
 				B4003B84288525E5002926F1 /* CustomTextFieldView.swift in Sources */,
 				B4003B8E288525E5002926F1 /* GoogleMapAPIPlace.swift in Sources */,
+				B46AF5582C60C47700261C71 /* ObservableScrollView.swift in Sources */,
 				B4003B7C288525E5002926F1 /* Color.swift in Sources */,
+				B46AF5552C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift in Sources */,
 				B4003B7A288525E5002926F1 /* HapticFeedBack.swift in Sources */,
 				B4003B97288525E5002926F1 /* CustomNavBarView.swift in Sources */,
 				B4003BCD288525E5002926F1 /* DownloadPublisher.swift in Sources */,
@@ -1306,7 +1318,7 @@
 				B4003B77288525E5002926F1 /* ConerRadius.swift in Sources */,
 				B4003BAC288525E5002926F1 /* AddStoryView.swift in Sources */,
 				B46E34092C3638BF0025DE65 /* MemberDTO.swift in Sources */,
-				B4003B98288525E5002926F1 /* CustomNavBarItems.swift in Sources */,
+				B4003B98288525E5002926F1 /* CustomNavBarPreferenceKey.swift in Sources */,
 				B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */,
 				B4003BD8288525E5002926F1 /* Birthday.swift in Sources */,
 				B4B7DE152B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */,
@@ -1331,7 +1343,7 @@
 				B46E340D2C3638F30025DE65 /* AuthResponse.swift in Sources */,
 				B486DDD628BF0713003F59BC /* PlaceEntity+CoreDataClass.swift in Sources */,
 				B4003B78288525E5002926F1 /* UIImage.swift in Sources */,
-				B4003B96288525E5002926F1 /* NavBarButton.swift in Sources */,
+				B4003B96288525E5002926F1 /* CustomNavBarButtonInfo.swift in Sources */,
 				B4003BC6288525E5002926F1 /* CoreDataSaveModelPublisher.swift in Sources */,
 				B4003B76288525E5002926F1 /* UIResponder.swift in Sources */,
 				B4003BAB288525E5002926F1 /* AddStoryViewVM.swift in Sources */,
