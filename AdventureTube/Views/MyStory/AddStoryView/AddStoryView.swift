@@ -32,7 +32,8 @@ struct CreateChapterViewData : Identifiable {
 
 struct AddStoryView: View {
     @Environment(\.presentationMode) var presentationMode
-    
+    @EnvironmentObject var nav: NavigationStateManager
+
     @EnvironmentObject private var loginManager : LoginManager
     @EnvironmentObject private var myStoryListVM : MyStoryListViewVM
     
@@ -50,7 +51,7 @@ struct AddStoryView: View {
     @StateObject private var youtubeViewVM: YoutubeViewVM
     
     @State var title : String
-                
+    
     @State private var youtubePopUpData : PlayChapterData?
     @State private var createChapterViewData : CreateChapterViewData?
     
@@ -220,73 +221,64 @@ struct AddStoryView: View {
                 }//HStack
                 
             }
+            .navigationBarBackButtonHidden(true)
+            .navigationTitle(title)
+            .toolbar{
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                       // nav.selectionPath.removeLast()
+                        presentationMode.wrappedValue.dismiss()
+
+                    } label: {
+                        Image(systemName: "chevron.backward.circle")
+                            .font(.system(size: 22, weight: .bold)) // Adjust size and weight here
+                            .foregroundColor(Color.black)
+                    }
+                }
+            }
             .alert(addStoryVM.errorMessage, isPresented: $addStoryVM.isShowErrorMessage){
                 Button("OK", role: .cancel) { }
             }
-            .onAppear{
-   
-            }
-            .onDisappear(){
-            
-            }
             .actionSheet(item: $addStoryVM.actionSheet){ actionSheet in
                 switch actionSheet {
-                case .saveChangeWarningSheet :
-                    return ActionSheet(title: Text("Save Change Warning"),
-                                       message: Text("One of your Content fild has been change , it wont be stored if you didnt save this change "),
-                                       buttons: [
-                                        .cancel{
-                                            presentationMode.wrappedValue.dismiss()
-                                        },
-                                        .default(Text("Save change"),
-                                                 action:{
-                                                     // save data
-                                                     addStoryVM.saveNewStory()
-                                                     presentationMode.wrappedValue.dismiss()
-                                                 })
-                                       ])
-                case .uploadSuccessSheet :
-                    return ActionSheet(title: Text("youtube upload sucess"), message: Text("upload success"), buttons: [
-                        .default(Text("confirm"))
-                    ])
-                case .uploadConfirmSheet:
-                    return ActionSheet(title: Text("This will publish your story"), message: Text("publish your story"), buttons: [
-                        .default(Text("publish"),
-                                 action: {
-                                     addStoryVM.uploadStory()
-                                 }
-                                )
-                    ])
-                case .uploadFailByYoutubeIdSheet:
-                    return ActionSheet(title: Text("youtube upload fail"), message: Text("this youtube  already exist"), buttons: [
-                        .default(Text("confirm"))
-                    ])
+                    case .saveChangeWarningSheet :
+                        return ActionSheet(title: Text("Save Change Warning"),
+                                           message: Text("One of your Content fild has been change , it wont be stored if you didnt save this change "),
+                                           buttons: [
+                                            .cancel{
+                                                presentationMode.wrappedValue.dismiss()
+                                            },
+                                            .default(Text("Save change"),
+                                                     action:{
+                                                         // save data
+                                                         addStoryVM.saveNewStory()
+                                                         presentationMode.wrappedValue.dismiss()
+                                                     })
+                                           ])
+                    case .uploadSuccessSheet :
+                        return ActionSheet(title: Text("youtube upload sucess"), message: Text("upload success"), buttons: [
+                            .default(Text("confirm"))
+                        ])
+                    case .uploadConfirmSheet:
+                        return ActionSheet(title: Text("This will publish your story"), message: Text("publish your story"), buttons: [
+                            .default(Text("publish"),
+                                     action: {
+                                         addStoryVM.uploadStory()
+                                     }
+                                    )
+                        ])
+                    case .uploadFailByYoutubeIdSheet:
+                        return ActionSheet(title: Text("youtube upload fail"), message: Text("this youtube  already exist"), buttons: [
+                            .default(Text("confirm"))
+                        ])
                 }
             }
             .padding(EdgeInsets(top: 20, leading: 15, bottom: 20, trailing: 15))
         }
-        .customNavBarItems(title: title, buttons: addStoryVM.buttons)
-        
-        
-        
         
     }
     
     
-    //    func validateUserInput() -> (Bool,String){
-    //       var  isValidateUserInput = false
-    //       var  errorMessage = ""
-    //        do {
-    //            try addStoryVM.validaterExceptLocation()
-    //            isValidateUserInput = true
-    //
-    //        }catch{
-    //            print("there is error \(error.localizedDescription)")
-    //            errorMessage = error.localizedDescription
-    //        }
-    //
-    //        return (isValidateUserInput,errorMessage)
-    //    }
     
     func saveAllChanges(){
         //        if let selectedIndex = selectedIndex , let updateYoutubeTime = youtubeViewVM.currentTime {
@@ -496,7 +488,7 @@ struct AddStoryView: View {
 
 struct AddStoryView_Previews: PreviewProvider {
     @State static var path: [String] = []
-
+    
     
     static var previews: some View {
         CustomNavView{
