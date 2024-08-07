@@ -6,57 +6,31 @@
 //
 
 import SwiftUI
-//struct StoryLoadingView : View {
-//    
-//    var youtubeContentItem : YoutubeContentItem?
-//    var adventureTubeData :  Published<AdventureTubeData?>.Publisher
-//    init(youtubeContentItem:YoutubeContentItem? ,adventureTubeData:Published<AdventureTubeData?>.Publisher){
-//        print("init StoryLoadingView!!!!!!")
-//        self.youtubeContentItem = youtubeContentItem
-//        self.adventureTubeData = adventureTubeData
-//        
-//    }
-//
-//    
-//    var body : some View {
-//        ZStack{
-//            if let youtubeContentItem = youtubeContentItem{
-//                StoryView(youtubeContentItem: youtubeContentItem, adventureTubeData: adventureTubeData)
-//                    .navigationBarBackButtonHidden(true)
-//
-//            }
-//        }
-//
-//    }
-//    
-//    
-//}
-
-
 
 struct StoryView: View {
     // need to be initialized with youtubeContentItem
     @EnvironmentObject private var myStoryListVM : MyStoryListViewVM
-    
+    @EnvironmentObject var nav: NavigationStateManager
+
     @StateObject private var myStoryDetailViewVM  : MyStoryCommonDetailViewVM
     @StateObject var youtubeViewVM : YoutubeViewVM
-
+    
     @State var title : String
     
     @State var storyEntity : StoryEntity?
-    @State var buttons : [CustomNavBarButtonInfo] = []
+    //@State var buttons : [CustomNavBarButtonInfo] = []
     @State private var isDescriptionEditorShow = false
     @State private var isCreateNewStory = false
     @State private var isUpdateStory = false
     
     init(youtubeContentItem : YoutubeContentItem , adventureTubeData:  Published<AdventureTubeData?>.Publisher){
-        print("init StoryView!!!!!!")
+        print("init StoryView!!!!!! of title \(youtubeContentItem.snippet.title)")
         _myStoryDetailViewVM = StateObject(wrappedValue: MyStoryCommonDetailViewVM(youtubeContentItem:youtubeContentItem ,
                                                                                    adventureTubeData:adventureTubeData))
         _youtubeViewVM = StateObject(wrappedValue: YoutubeViewVM(videoId: youtubeContentItem.contentDetails.videoId))
         
         title = youtubeContentItem.snippet.title
- 
+        
     }
     
     
@@ -69,39 +43,16 @@ struct StoryView: View {
                     .frame(height: 220 )
                     .background(Color(.systemBackground))
                     .shadow(color: .black.opacity(0.1),
-                                            radius: 46,
-                                                  x: 0,
-                                                  y: 15)
-/* This might need as offline function
-//                if let image = myStoryDetailViewVM.image {
-//                    Image(uiImage:image)
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                }else if myStoryDetailViewVM.isLoading{
-//                    ProgressView()
-//                }else {
-//                    Image(systemName: "questionmark")
-//                        .foregroundColor(Color.red)
-//                }
-*/
+                            radius: 46,
+                            x: 0,
+                            y: 15)
+                
                 Text(title)
                     .font(.subheadline)
                     .bold()
                     .padding()
                     .fixedSize(horizontal: false, vertical: true)
                     .lineLimit(2)
-                
-//                if let adventureTubeData = myStoryDetailViewVM.adventureTubeData {
-//                    HStack{
-//                        ForEach(adventureTubeData.userContentCategory , id: \.self){ category in
-//                            if  let categoryChar = ContentCategory(rawValue: category){
-//                                Text(categoryChar.key)
-//                                    .font(Font.custom("momentale-categories", size: 22))
-//                            }
-//                        }
-//                    }
-//                }
-                
                 
                 ZStack{
                     RoundedRectangle(cornerRadius: 25, style: .continuous)
@@ -135,9 +86,9 @@ struct StoryView: View {
                                     Text("\(adventureTubeData.userTripDuration.rawValue)")
                                         .font(.caption2)
                                 }
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                                 Spacer()
-
+                                
                                 HStack {
                                     Image(systemName: "bookmark.circle")
                                         .resizable()
@@ -146,8 +97,8 @@ struct StoryView: View {
                                     Text("\(adventureTubeData.chapters.count)")
                                         .font(.caption2)
                                 }
-                                    .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                                
                             }
                         }
                         
@@ -186,22 +137,30 @@ struct StoryView: View {
             }
             
         }
-        .customNavBarItems(title: title, buttons: myStoryDetailViewVM.buttons)
-        .onAppear {
-        
-            
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    // Action for back button
+                    // You might need to dismiss the current view or navigate back
+                    nav.selectionPath.removeLast()
+                } label: {
+                    Image(systemName: "chevron.backward.circle")
+                        .foregroundColor(Color.black)
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: AddStoryView(youtubeContentItem: myStoryDetailViewVM.selectedYoutubeContentItem, adventureTubeData: myStoryDetailViewVM.adventureTubeData)) {
+                    Image(systemName: "plus.circle")
+                        .foregroundColor(Color.black)
+                }
+                .navigationBarBackButtonHidden(true)
+            }
         }
-        .background(
-            CustomNavLink(                //Do not use adventureTubeData here since it wont get anyupdate
-                destination: AddStoryView(youtubeContentItem: myStoryDetailViewVM.selectedYoutubeContentItem ,
-                                          //adventureTubeData from youtubeContentItemsPublisher , which will always get update
-                                          adventureTubeData: myStoryDetailViewVM.adventureTubeData),
-                isActive: $myStoryDetailViewVM.isShowAddStory,
-                label: {EmptyView()}
-            )
-            
-        )
+        
     }
+    
     
     
     func createDescription(){
@@ -212,11 +171,10 @@ struct StoryView: View {
 
 struct NewStoryView_Previews: PreviewProvider {
     @State static var path: [String] = []
-
+    
     static var previews: some View {
-        CustomNavView{
             StoryView(youtubeContentItem: dev.youtubeContentItems.first! , adventureTubeData: dev.myStoryVM.$adventureTubeData)
                 .environmentObject(dev.myStoryVM)
-        }
+        
     }
 }

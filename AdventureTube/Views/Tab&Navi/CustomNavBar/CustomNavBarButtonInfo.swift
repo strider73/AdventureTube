@@ -54,24 +54,4 @@ enum CustomNavBarButtonInfo:Equatable{
         }
     }
     
-    
-//    var function : () -> () {
-//        switch self{
-//        case .addNewStory : return {
-//            print("Add new story function ")
-//            CustomNavLink(destination: AddStoryView()) {
-//                EmptyView()
-//            }
-//        }
-//
-//        case .back : return {
-//            // nothing to do
-//        }
-//        case .refreshMyStoryList : return {
-//
-//        }
-//        }
-//    }
-    
-    
 }

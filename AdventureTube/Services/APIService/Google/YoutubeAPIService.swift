@@ -28,7 +28,7 @@ class YoutubeAPIService  {
     private let youtubeContentInfoBaseURLString = "https://youtube.googleapis.com/youtube/v3/playlistItems"
     private let youtubeContentInfoPartFieldQuery = URLQueryItem(name: "part", value: "snippet,contentDetails,id")
     //This 50 is max acceptable value and default is 5
-    private let youtubeContentInfoMaxFieldQuery  = URLQueryItem(name: "maxResults", value: "5")
+    private let youtubeContentInfoMaxFieldQuery  = URLQueryItem(name: "maxResults", value: "50")
     private let youtubeContentInfoPageToken = URLQueryItem(name: "pageToken", value:"")
     /// https://developers.google.com/youtube/registering_an_application
     /// API Key is requied for a request that does not provide an OAuth 2.0 token
