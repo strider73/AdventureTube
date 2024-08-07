@@ -16,8 +16,6 @@ struct MyStoryListView: View {
     
     
     @State private var showNewStoryView:Bool = false
-    //    @State private var selectedYoutubeContentItem : YoutubeContentItem?
-    @State private var buttons : [CustomNavBarButtonInfo] = []
     @State private var scrollPosition: CGFloat = 0
     @State private var currentIndex = 0
     @State private var dataLoaded: Bool = false // New state variable to track data loading completion
@@ -54,7 +52,8 @@ struct MyStoryListView: View {
                                 .background(Color.white)
                                 .cornerRadius(5)
                                 .shadow(radius: 5)
-                                .padding(0)
+                                .padding(.horizontal,0)
+                                .padding(.vertical,3)
                         }
                         .onAppear {
                             if myStoryListVM.youtubeContentItems.last == youtubeContentItem && !isLoadingMore {
@@ -66,7 +65,6 @@ struct MyStoryListView: View {
                     .listRowInsets(EdgeInsets())
                 }
                 .onAppear{
-                    buttons = [.refreshMyStoryList(myStoryListVM: myStoryListVM)]
                     if loginManager.hasYoutubeAccessScope &&
                         myStoryListVM.youtubeContentItems.count == 0{
                         //myStoryListVM.getTheAllMomentList()
@@ -90,6 +88,7 @@ struct MyStoryListView: View {
                             myStoryListVM.isShowRefreshAlert = true
                         } label: {
                             Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 22, weight: .bold)) // Adjust size and weight here
                                 .foregroundColor(Color.black)
                         }
                     }

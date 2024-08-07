@@ -147,12 +147,14 @@ struct StoryView: View {
                     nav.selectionPath.removeLast()
                 } label: {
                     Image(systemName: "chevron.backward.circle")
+                        .font(.system(size: 22, weight: .bold)) // Adjust size and weight here
                         .foregroundColor(Color.black)
                 }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink(destination: AddStoryView(youtubeContentItem: myStoryDetailViewVM.selectedYoutubeContentItem, adventureTubeData: myStoryDetailViewVM.adventureTubeData)) {
                     Image(systemName: "plus.circle")
+                        .font(.system(size: 22, weight: .bold)) // Adjust size and weight here
                         .foregroundColor(Color.black)
                 }
                 .navigationBarBackButtonHidden(true)
