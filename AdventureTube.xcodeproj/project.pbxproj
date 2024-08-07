@@ -125,6 +125,7 @@
 		B401180A2B182BBF00AA9286 /* Restaurant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118092B182BBF00AA9286 /* Restaurant.swift */; };
 		B419E1B12885847500F669CA /* AdventureTube.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B419E1AF2885847500F669CA /* AdventureTube.xcdatamodeld */; };
 		B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */; };
+		B4367F212C63AC0E00236B31 /* NavigationSateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4367F202C63AC0E00236B31 /* NavigationSateManager.swift */; };
 		B45733FA2C4DDBD30055E53C /* APIComponentsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45733F92C4DDBD30055E53C /* APIComponentsBuilder.swift */; };
 		B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */; };
 		B46829C22B749F7700DCE22B /* LoginSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46829C12B749F7700DCE22B /* LoginSource.swift */; };
@@ -297,6 +298,7 @@
 		B40118092B182BBF00AA9286 /* Restaurant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Restaurant.swift; sourceTree = "<group>"; };
 		B419E1B02885847500F669CA /* AdventureTube.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventureTube.xcdatamodel; sourceTree = "<group>"; };
 		B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeApp.swift; sourceTree = "<group>"; };
+		B4367F202C63AC0E00236B31 /* NavigationSateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationSateManager.swift; sourceTree = "<group>"; };
 		B45733F92C4DDBD30055E53C /* APIComponentsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIComponentsBuilder.swift; sourceTree = "<group>"; };
 		B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
 		B46829C12B749F7700DCE22B /* LoginSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSource.swift; sourceTree = "<group>"; };
@@ -509,6 +511,7 @@
 				B4003B05288525E4002926F1 /* CustomNavLink.swift */,
 				B4003B08288525E4002926F1 /* CustomNavBarPreferenceKey.swift */,
 				B4003B06288525E4002926F1 /* CustomNavBarButtonInfo.swift */,
+				B4367F202C63AC0E00236B31 /* NavigationSateManager.swift */,
 			);
 			path = CustomNavBar;
 			sourceTree = "<group>";
@@ -1321,6 +1324,7 @@
 				B4003B98288525E5002926F1 /* CustomNavBarPreferenceKey.swift in Sources */,
 				B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */,
 				B4003BD8288525E5002926F1 /* Birthday.swift in Sources */,
+				B4367F212C63AC0E00236B31 /* NavigationSateManager.swift in Sources */,
 				B4B7DE152B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */,
 				B4003BC7288525E5002926F1 /* CoreDataStorage.swift in Sources */,
 				B4003BB2288525E5002926F1 /* MyStoryCellView.swift in Sources */,

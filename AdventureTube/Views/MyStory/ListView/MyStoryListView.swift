@@ -4,7 +4,6 @@
 //
 //  Created by chris Lee on 6/3/22.
 //
-
 import SwiftUI
 
 
@@ -13,37 +12,50 @@ struct MyStoryListView: View {
     @EnvironmentObject private var myStoryListVM : MyStoryListViewVM
     @EnvironmentObject var customTabVM : CustomTabBarViewVM
     
+    @StateObject var nav = NavigationStateManager()
+    
+    
     @State private var showNewStoryView:Bool = false
-    @State private var selectedYoutubeContentItem : YoutubeContentItem?
+    //    @State private var selectedYoutubeContentItem : YoutubeContentItem?
     @State private var buttons : [CustomNavBarButtonInfo] = []
     @State private var scrollPosition: CGFloat = 0
     @State private var currentIndex = 0
     @State private var dataLoaded: Bool = false // New state variable to track data loading completion
     @State private var isLoadingMore = false // New state variable to track loading state
     
+    
     init(){
         print("Init MyStoryListView")
+        let coloredAppearance = UINavigationBarAppearance()
+        coloredAppearance.configureWithOpaqueBackground()
+        coloredAppearance.backgroundColor = .systemBackground
+        coloredAppearance.titleTextAttributes = [.foregroundColor: UIColor.black]
+        coloredAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        
+        UINavigationBar.appearance().standardAppearance = coloredAppearance
+        UINavigationBar.appearance().compactAppearance = coloredAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = coloredAppearance
+        UINavigationBar.appearance().tintColor = .white
     }
     
     
     var body: some View {
         
-        CustomNavView{
+        NavigationStack(path: $nav.selectionPath){
             ZStack {
                 ColorConstant.background.color.edgesIgnoringSafeArea(.all)
                 List{
                     ForEach(myStoryListVM.youtubeContentItems) { youtubeContentItem in
                         
-                        
-                        CustomNavLink(destination: StoryView(youtubeContentItem: youtubeContentItem, adventureTubeData: myStoryListVM.$adventureTubeData)) {
+                        Button {
+                            nav.selectionPath.append(youtubeContentItem)
+                        } label: {
                             MyStoryCellView(youtubeContentItem: youtubeContentItem, adventureTubeData: myStoryListVM.$adventureTubeData)
                                 .background(Color.white)
                                 .cornerRadius(5)
                                 .shadow(radius: 5)
-                            
+                                .padding(0)
                         }
-                        .listRowInsets(EdgeInsets())
-                        .buttonStyle(PlainButtonStyle())
                         .onAppear {
                             if myStoryListVM.youtubeContentItems.last == youtubeContentItem && !isLoadingMore {
                                 print("need to load more ")
@@ -51,9 +63,10 @@ struct MyStoryListView: View {
                         }
                         
                     }
+                    .listRowInsets(EdgeInsets())
                 }
                 .onAppear{
-                    buttons = [.empty , .refreshMyStoryList(myStoryListVM: myStoryListVM)]
+                    buttons = [.refreshMyStoryList(myStoryListVM: myStoryListVM)]
                     if loginManager.hasYoutubeAccessScope &&
                         myStoryListVM.youtubeContentItems.count == 0{
                         //myStoryListVM.getTheAllMomentList()
@@ -63,7 +76,24 @@ struct MyStoryListView: View {
                     }
                 }
                 .foregroundColor(Color.black)
-                .customNavBarItems(title:getListTitle(),buttons: buttons)
+                .navigationDestination(for:YoutubeContentItem.self ) { selectedYoutubeContentItem in
+                    StoryView(youtubeContentItem: selectedYoutubeContentItem, adventureTubeData: myStoryListVM.$adventureTubeData)
+                        .navigationBarBackButtonHidden(true)
+                    
+                }
+                .navigationTitle(getListTitle())
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    // TODO: add buttons in here
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            myStoryListVM.isShowRefreshAlert = true
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(Color.black)
+                        }
+                    }
+                }
             }
         }
         .confirmationDialog("Your Story will be reload from Youtube again ",
@@ -76,8 +106,7 @@ struct MyStoryListView: View {
             }
             
         }
-        
-        
+        .environmentObject(nav)
     }
     
     
@@ -90,10 +119,6 @@ struct MyStoryListView: View {
     }
     
     
-    //    private func seque(youtubeContentItem : YoutubeContentItem){
-    //        selectedYoutubeContentItem = youtubeContentItem
-    //        showNewStoryView.toggle()
-    //    }
 }
 
 struct MyStoryListView_Previews: PreviewProvider {
@@ -104,3 +129,5 @@ struct MyStoryListView_Previews: PreviewProvider {
             .environmentObject(CustomTabBarViewVM.shared)
     }
 }
+
+

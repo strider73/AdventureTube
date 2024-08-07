@@ -27,7 +27,6 @@ struct CustomNavLink<Label:View, Destination:View>: View {
             .navigationBarHidden(true)) {
                 label
             }
-            .buttonStyle(PlainButtonStyle()) // Removes the default ">" indicator
         }
 }
 
