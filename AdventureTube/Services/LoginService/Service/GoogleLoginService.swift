@@ -59,8 +59,6 @@ final class GoogleLoginService: LoginServiceProtocol {
     ///
     /// Update the signIn method to ensure completion is only called after the registerUser call completes:
     
-    
-    //func signIn(completion: @escaping (UserModel) -> Void) {
     func signIn(completion:@escaping(Result<UserModel,Error>) -> Void){
         
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -69,7 +67,7 @@ final class GoogleLoginService: LoginServiceProtocol {
             return
         }
         
-        
+        ///https://developers.google.com/identity/sign-in/ios/reference/Classes/GIDSignIn
         GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { signInResult, error in
             
             //step1  make sure there is no error in signIn process
@@ -87,8 +85,11 @@ final class GoogleLoginService: LoginServiceProtocol {
             //has a issue
             var adventureUser  = self.createAdventureUser(from: user);
             
-            //step4 try to refresh token
+            //step4 Authenticate with a backend server
             //https://developers.google.com/identity/sign-in/ios/backend-auth
+            ///Before send token to the backend method will refresh the token if that is needed
+            ///after method call the user.idToken will be available for backend.
+    
             signInResult.user.refreshTokensIfNeeded {[weak self] user, error in
                 guard let self = self , let user = user , error  == nil else {
                     if let error = error {
@@ -111,11 +112,14 @@ final class GoogleLoginService: LoginServiceProtocol {
                 //if user doesn't have a adventuretube UserID  => user need to register
                 //if user doesn't have token but have a UserID => user need to login and get token
                 
+                
+                /// Login process for backend will be seperated here depend on  existence of adventureTube_id
+                
                 if adventureUser.adventureTube_id != nil{
                     
                     //user need to login again since logout has been done
                     print("user need to login with password")
-                    adventuretubeAPI.loginWithPassword(adventureUser: adventureUser)
+                    adventuretubeAPI.loginWithPassword(adventureUser: adventureUser) 
                         .sink(receiveCompletion: { completionSink in
                             switch completionSink {
                                 case .finished:
