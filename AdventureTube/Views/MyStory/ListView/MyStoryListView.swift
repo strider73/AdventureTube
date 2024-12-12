@@ -57,7 +57,11 @@ struct MyStoryListView: View {
                         }
                         .onAppear {
                             if myStoryListVM.youtubeContentItems.last == youtubeContentItem && !isLoadingMore {
-                                print("need to load more ")
+                                isLoadingMore = true
+                                myStoryListVM.downloadYotubeContentsAndMappedWithCoreData{
+                                    self.dataLoaded = true // Set dataLoaded to true after data is fetched
+                                    self.isLoadingMore = false
+                                }
                             }
                         }
                         
@@ -105,7 +109,7 @@ struct MyStoryListView: View {
             }
             
         }
-        .environmentObject(nav)
+                            .environmentObject(nav)
     }
     
     
