@@ -95,3 +95,6 @@ AdventureTube is licensed under the MIT License.
 ## Contact
 For inquiries, please reach out to [your email/contact info].
 
+## Figma Prototype
+[View the AdventureTube Prototype](https://www.figma.com/proto/RZCJw60n7wgWTN4jMYfkoy/AdventureVictoria?kind=proto&node-id=1676-1354&page-id=0%3A1&scaling=min-zoom&starting-point-node-id=1062%3A1567&t=tXBHoTPyfjWpV2TS-1)
+
