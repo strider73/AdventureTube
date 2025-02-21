@@ -69,6 +69,12 @@ class LoginManager : ObservableObject  {
     private init(){
         // MARK: check the UserDefault
         print("init LoginManager")
+        
+        /// Attempts to retrieve the `UserModel` from `UserDefaults`.
+        /// - If successful, it indicates the user is already registered and has a valid `adventureTube_id`.
+        /// - If the retrieval fails, an error is thrown, and the user is assumed to have never signed in.
+        ///
+        /// This process ensures the app correctly initializes the user's state based on prior usage.
         do{
             // MARK: step1 bring the userModel from the UserDefault Object
             /// if user never logged in before   there will be no adventureUser that can be extracted from UserDefaut
@@ -111,6 +117,8 @@ class LoginManager : ObservableObject  {
                         print("user never been signed in !!!")
                 }
             }else{
+                //TODO: before update to signed out
+                /// need to  use
                 loginState = .signedOut
             }
             

@@ -20,21 +20,18 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
     //This is SingleTon Parttern
     static let shared = AdventureTubeAPIService()
     private var cancellables = Set<AnyCancellable>() // (3)
-    //    private var accessToken : String?
-    //    private var refreshToken : String?
-    private  var targetServerAddress: String = "http://192.168.1.106:8030"
-    
-    //    private  var targetServerAddress: String = "http://192.168.0.20:8030"
+    private  var targetServerAddress: String = "http://192.168.1.116:8030"
     //private  var targetServerAddress: String = "https://api.adventuretube.net"
     
     
     // URLSession with timeout configuration
     private let session: URLSession = {
         let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 10 // 30 seconds for request timeout
-        configuration.timeoutIntervalForResource = 10 // 60 seconds for resource timeout
+        configuration.timeoutIntervalForRequest = 600 // 30 seconds for request timeout
+        configuration.timeoutIntervalForResource = 600 // 60 seconds for resource timeout
         return URLSession(configuration: configuration)
     }()
+
     
     
     func getData<T: Decodable>(endpoint: String, id: Int? = nil, returnData: T.Type) -> Future<T, Error> {
@@ -71,6 +68,37 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         }
     }
     
+    
+    private func decodeError<T:Decodable> (_ data:Data, to type: T.Type , defaultMessage: String) -> String {
+        let decodedError = try? JSONDecoder().decode(type, from:  data)
+        return (decodedError as? AuthResponse)?.errorMessage ?? defaultMessage
+    }
+    
+    private func handleHttpResponse<T:Decodable>(_ result:URLSession.DataTaskPublisher.Output, decodingType: T.Type) throws -> T{
+        guard let httpResponse  = result.response as? HTTPURLResponse else {
+            throw BackendError.unknownError
+        }
+        switch httpResponse.statusCode {
+            case 200...299:
+                return try JSONDecoder().decode(decodingType, from: result.data)
+            case 401:
+                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Unauthorized access.", comment: ""))
+                throw BackendError.unauthorized(message: errorMessage)
+            case 404:
+                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Resource not found.", comment: ""))
+                throw BackendError.notFound(message: errorMessage)
+            case 409:
+                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Resource conflict.", comment: ""))
+                throw BackendError.notFound(message: errorMessage)
+            case 500:
+                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Internal server error.", comment: ""))
+                throw BackendError.internalServerError(message: errorMessage)
+            default:
+                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Unknown error.", comment: ""))
+                throw BackendError.serverError(message: errorMessage)
+            }
+    }
+    
     func registerUser(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/register") else {
             fatalError("Invalid URL")
@@ -90,39 +118,9 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("googleIdToken : \(idToken)")
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { result -> Data in
-                guard let httpResponse = result.response as? HTTPURLResponse else {
-                    throw BackendError.unknownError
-                }
-                
-                
-                switch httpResponse.statusCode{
-                    case 200...299:
-                        return  result.data
-                    case 401:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unauthorized access.", comment: "")
-                        throw BackendError.unauthorized(message: errorMessage)
-                    case 404:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource not found.", comment: "")
-                        throw BackendError.notFound(message: errorMessage)
-                    case 409:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource conflict", comment: "")
-                        throw BackendError.notFound(message: errorMessage)
-                    case 500:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Internal server error.", comment: "")
-                        throw BackendError.internalServerError(message: errorMessage)
-                    default:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unknown Error", comment: "")
-                        throw BackendError.serverError(message: errorMessage)
-                }
-                
+            .tryMap {
+                try self.handleHttpResponse($0, decodingType: AuthResponse.self)
             }
-            .decode(type: AuthResponse.self, decoder: JSONDecoder())
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
                     return backendError
@@ -155,37 +153,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("googleIdToken : \(idToken)")
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { result -> Data in
-                guard let httpResponse = result.response as? HTTPURLResponse else {
-                    throw BackendError.unknownError
-                }
-                
-                switch httpResponse.statusCode{
-                    case 200...299:
-                        return  result.data
-                    case 401:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unauthorized access.", comment: "")
-                        throw BackendError.unauthorized(message: errorMessage)
-                    case 404:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource not found.", comment: "")
-                        throw BackendError.notFound(message: errorMessage)
-                    case 409:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource conflict", comment: "")
-                        throw BackendError.notFound(message: errorMessage)
-                    case 500:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Internal server error.", comment: "")
-                        throw BackendError.internalServerError(message: errorMessage)
-                    default:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unknown Error", comment: "")
-                        throw BackendError.serverError(message: errorMessage)
-                }
+            .tryMap { try  self.handleHttpResponse( $0 , decodingType: AuthResponse.self)
             }
-            .decode(type: AuthResponse.self, decoder: JSONDecoder())
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
                     return backendError
@@ -224,38 +193,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         print("Sending refreshToken request to \(url.absoluteString) with refreshToken: \(refreshToken)")
         
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { result -> Data in
-                guard let httpResponse = result.response as? HTTPURLResponse else {
-                    throw BackendError.unknownError
-                }
-                
-                
-                switch httpResponse.statusCode{
-                    case 200...299:
-                        return  result.data
-                    case 401:
-                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Unauthorized access.", comment: "")
-                        throw BackendError.unauthorized(message: errorMessage)
-                    case 404:
-                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Resource not found.", comment: "")
-                        throw BackendError.notFound(message: errorMessage)
-                    case 409:
-                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Resource conflict", comment: "")
-                        throw BackendError.notFound(message: errorMessage)
-                    case 500:
-                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Internal server error.", comment: "")
-                        throw BackendError.internalServerError(message: errorMessage)
-                    default:
-                        let errorResponse = try? JSONDecoder().decode(RestAPIResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.message ?? NSLocalizedString("Unknown Error", comment: "")
-                        throw BackendError.serverError(message: errorMessage)
-                }
+            .tryMap { try self.handleHttpResponse($0, decodingType: AuthResponse.self)
             }
-            .decode(type: AuthResponse.self, decoder: JSONDecoder())
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
                     return backendError
@@ -285,38 +224,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         print("Sending signOut request to \(url.absoluteString) with refreshToken: \(refreshToken)")
         
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { result -> Data in
-                guard let httpResponse = result.response as? HTTPURLResponse else {
-                    throw BackendError.unknownError
-                }
-                
-                
-                switch httpResponse.statusCode{
-                    case 200...299:
-                        return  result.data
-                    case 401:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unauthorized access.", comment: "")
-                        throw BackendError.unauthorized(message: errorMessage)
-                    case 404:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource not found.", comment: "")
-                        throw BackendError.notFound(message: errorMessage)
-                    case 409:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Resource conflict", comment: "")
-                        throw BackendError.notFound(message: errorMessage)
-                    case 500:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Internal server error.", comment: "")
-                        throw BackendError.internalServerError(message: errorMessage)
-                    default:
-                        let errorResponse = try? JSONDecoder().decode(AuthResponse.self, from: result.data)
-                        let errorMessage = errorResponse?.errorMessage ?? NSLocalizedString("Unknown Error", comment: "")
-                        throw BackendError.serverError(message: errorMessage)
-                }
+            .tryMap { try self.handleHttpResponse($0, decodingType: RestAPIResponse.self)
             }
-            .decode(type: RestAPIResponse.self, decoder: JSONDecoder())
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
                     return backendError
