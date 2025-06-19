@@ -2,6 +2,20 @@
 
 [AdventureTube](https://adventuretube.net/) is an iOS application designed to help users explore and create YouTube-based adventure stories. The app integrates with Google APIs to enable YouTube authentication, Google Places, and Google Maps services, providing a seamless experience for location-based storytelling. Most importantly, it communicates with [AdventureTube Microservice](https://github.com/strider73/adventuretube-microservice), the backbone service that powers the entire AdventureTube application. This backend is built using Spring Microservices with Spring Cloud, ensuring scalability and reliability.
 
+## Table of Contents
+- [Key Features & Benefits](#key-features--benefits)
+- [Setup and Installation](#setup-and-installation)
+- [Configuration](#configuration)
+- [Technical Features & Integrations](#technical-features--integrations)
+- [Customized Core Data with Combine](#customized-core-data-with-combine)
+- [Usage](#usage)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Figma Prototype](#figma-prototype)
+
 
 
 So what is AdventureTube app for ?
@@ -42,7 +56,7 @@ Ensure you have the following installed:
 ### Clone the Repository
 
 ```sh
-git clone https://github.com/your-repository/adventuretube.git
+git clone https://github.com/strider73/AdventureTube.git
 cd adventuretube
 ```
 
@@ -53,6 +67,12 @@ pod install
 ```
 
 Open `AdventureTube.xcworkspace` in Xcode to proceed.
+### Build and Run
+
+1. Open `AdventureTube.xcworkspace` with Xcode.
+2. Build and run the app with **Cmd+R**.
+3. Run tests with **Cmd+U**.
+
 
 ### Google API Setup
 
@@ -82,6 +102,11 @@ Open `AdventureTube.xcworkspace` in Xcode to proceed.
 3. **YouTube Data API**
 
    - Enable YouTube API for content retrieval and management [here](https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps)
+
+## Configuration
+
+1. Edit `AdventureTube/Info.plist` with your Google keys (e.g., `GIDClientID`).
+2. Update `targetServerAddress` in `AdventureTube/Services/APIService/Adventuretube/AdventureTubeAPIService.swift` to match your backend URL.
 
 ## Technical Features & Integrations
 
@@ -117,6 +142,13 @@ More details on API calls using Combine can be found [here](https://medium.com/@
 - **GoogleMapView with CoreData**: Provides a unique method for managing UI updates with CoreData.
 - **AdventureTubeAPI Service**: Acts as a bridge between the frontend and backend services.
 
+## Project Structure
+
+- `Views/` contains all SwiftUI views and UI components.
+- `Models/` includes data models and CoreData entities.
+- `Services/` holds networking, persistence, and helper services.
+- `Resources/` stores fonts, sample data, and other assets.
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss the changes.
@@ -127,7 +159,7 @@ AdventureTube is licensed under the MIT License.
 
 ## Contact
 
-For inquiries, please reach out to [your email/contact info].
+For inquiries, please reach out to chris.lee@adventuretube.net.
 
 ## Figma Prototype
 
