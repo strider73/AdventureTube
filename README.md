@@ -155,7 +155,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## License
 
-AdventureTube is licensed under the MIT License.
+AdventureTube is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
