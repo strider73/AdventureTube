@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-//https://developers.google.com/identity/sign-in/ios/start-integrating
 /*
- 1)  OAuth Client ID
- 
- ClientId  is App's OAuth client ID to identify itself to Google's authentication backend.
- for iOS and mac OS the "OAuth clientID application type" must be configured as iOS.
- here is my clintID section .
- https://console.cloud.google.com/projectselector2/apis/credentials?project=_&supportedpurview=project
- => clientID has been moved to info.plist
- clientID = "657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com"
- 
- 2)  OAuth Server Client
- App will need to pass the identity of signed-in users to backend service.
- To securely pass the identity of users who signed in with Google to backend , use the ID token.
- Retrieving a user's ID token requires server client ID which represents backend server
- => serverClientID  has been moved to info.plist
- serverClientID = "657433323337-t5e70nbjmink2ldmt3e34pci55v3sv6k.apps.googleusercontent.com"
+ GoogleLoginService - Google Authentication Implementation
+
+ CONFIGURATION:
+ - OAuth Client ID: Configured in Info.plist for iOS app identification
+ - Server Client ID: Configured in Info.plist for backend authentication
+ - Reference: https://developers.google.com/identity/sign-in/ios/start-integrating
+
+ AUTHENTICATION FLOW:
+ 1. Google OAuth sign-in with UI presentation
+ 2. Token refresh and ID token retrieval
+ 3. Backend authentication (register new users or login existing users)
+ 4. JWT token storage for API access
+ 5. YouTube scope management for content access
+
+ BACKEND INTEGRATION:
+ - Uses AdventureTubeAPIService for user registration/login
+ - Manages JWT tokens for authenticated API requests
+ - Handles token refresh automatically
  */
 
 import Foundation
@@ -38,7 +40,14 @@ import GoogleSignIn
 import Combine
 //import GoogleAPIClientForREST
 
-/// An observable class for authenticating via Google.
+/// Google authentication service implementing LoginServiceProtocol.
+///
+/// Handles complete Google OAuth flow including:
+/// - User sign-in/sign-out with Google
+/// - Backend user registration and authentication
+/// - JWT token management
+/// - YouTube API scope requests
+/// - Session restoration
 final class GoogleLoginService: LoginServiceProtocol {
 
 
@@ -46,19 +55,25 @@ final class GoogleLoginService: LoginServiceProtocol {
     private var cancellables = Set<AnyCancellable>()
     
     
-    /// Creates an instance of this authenticator.
-    /// - parameter authViewModel: The view model this authenticator will set logged in status on.
+    /// Creates a GoogleLoginService instance.
+    /// - Parameter apiService: Backend API service for user authentication (defaults to shared instance)
     init(apiService:AdventureTubeAPIPrototol = AdventureTubeAPIService.shared) {
         self.adventuretubeAPI = apiService
     }
     
-    /// Signs in the user based upon the selected account.'
-    /// - note: Successful calls to this will set the `authViewModel`'s `state` property.
-    /// update Signin  to accept a completion handler that can pass back an error :
-    /// wrap the UserModel and Error with Result to use .success and .failure
-    ///
-    /// Update the signIn method to ensure completion is only called after the registerUser call completes:
     
+    /// Signs in user with Google authentication and backend registration/login.
+    ///
+    /// **Usage:** Called from LoginView when user taps the Google Login button
+    ///
+    /// Performs complete authentication flow:
+    /// 1. Google OAuth sign-in with UI presentation
+    /// 2. Token refresh and validation
+    /// 3. Backend authentication (register new users or login existing users)
+    /// 4. JWT token retrieval and storage
+    ///
+    /// - Parameter completion: Result callback with authenticated UserModel or error
+    /// - Note: Completion is called only after all backend authentication steps complete
     func signIn(completion:@escaping(Result<UserModel,Error>) -> Void){
         
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -70,25 +85,24 @@ final class GoogleLoginService: LoginServiceProtocol {
         ///https://developers.google.com/identity/sign-in/ios/reference/Classes/GIDSignIn
         GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController) { signInResult, error in
             
-            //step1  make sure there is no error in signIn process
+            // STEP 1: Validate Google sign-in response
             if let error = error {
                 completion(.failure(error))
                 return
             }
-            //step2 get the signInResult
+            // STEP 2: Extract user data from sign-in result
             guard let signInResult = signInResult else { return }
             let user = signInResult.user
             print("Initial Google Signed in Success")
             
-            //step3 create adventuretube userModel base on information from google user object
-            //and user set as  logged in but there will be update as logged out if any follow process
-            //has a issue
+            // STEP 3: Create AdventureTube user model from Google user data
+            // Note: User is initially marked as logged in, but will be updated if backend authentication fails
             var adventureUser  = self.createAdventureUser(from: user);
             
-            //step4 Authenticate with a backend server
-            //https://developers.google.com/identity/sign-in/ios/backend-auth
-            ///Before send token to the backend method will refresh the token if that is needed
-            ///after method call the user.idToken will be available for backend.
+            // STEP 4: Authenticate with backend server
+            // Reference: https://developers.google.com/identity/sign-in/ios/backend-auth
+            // Refreshes Google tokens if needed before backend communication
+            // Ensures fresh idToken is available for backend validation
     
             signInResult.user.refreshTokensIfNeeded {[weak self] user, error in
                 guard let self = self , let user = user , error  == nil else {
@@ -98,9 +112,9 @@ final class GoogleLoginService: LoginServiceProtocol {
                     return
                 }
                 
-                //step5 get the update user info from the google
+                // STEP 5: Extract updated token information from Google
                 if let idToken = user.idToken , let userId = user.userID  {
-                    //not quite sure to cast to String type
+                    // Store Google ID token and user ID for backend authentication
                     adventureUser.idToken = idToken.tokenString
                     adventureUser.googleUserId = userId
                 }else{
@@ -108,17 +122,16 @@ final class GoogleLoginService: LoginServiceProtocol {
                     completion(.failure(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "idToken for Backend Server retrieve failed"])))
                 }
                 
-                //step6 check the JWT  token
-                //if user doesn't have a adventuretube UserID  => user need to register
-                //if user doesn't have token but have a UserID => user need to login and get token
-                
-                
-                /// Login process for backend will be seperated here depend on  existence of adventureTube_id
+                // STEP 6: Determine backend authentication flow
+                // - No AdventureTube ID: New user registration required
+                // - Has AdventureTube ID: Existing user login required
+
+                // Backend authentication branches based on user registration status
                 
                 if adventureUser.adventureTube_id != nil{
                     
-                    //user need to login again since logout has been done
-                    print("user need to login with password")
+                    // Existing user: Login with backend to refresh JWT tokens
+                    print("Existing user detected - performing backend login")
                     adventuretubeAPI.loginWithPassword(adventureUser: adventureUser) 
                         .sink(receiveCompletion: { completionSink in
                             switch completionSink {
@@ -128,7 +141,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                                     print("BackEnd Connection Error: \(error.localizedDescription)")
                                     adventureUser.signed_in = false;
                                     completion(.failure(error))
-                                    //TODO: need to show up error message and ask to retry again later
+                                    // TODO: Implement user-facing error handling for backend failures
                             }
                         }, receiveValue: { authResponse in
                             // Process the received authResponse
@@ -140,10 +153,10 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 adventureUser.signed_in = false;
                                 let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
                                 completion(.failure(error))
-                                //TODO:  need to show the error to user
+                                // TODO: Display error message to user
                                 return
                             }
-                            //TODO: need to validate a token later
+                            // TODO: Add JWT token validation before storing
                             adventureUser.adventuretubeJWTToken = accessToken
                             adventureUser.adventuretubeRefreshJWTToken = refreshToken
                             adventureUser.signed_in = true
@@ -153,8 +166,8 @@ final class GoogleLoginService: LoginServiceProtocol {
                         })
                         .store(in: &cancellables)
                 }else{
-                    //user need to register
-                    print("user need to register")
+                    // New user: Register with backend to create account
+                    print("New user detected - performing backend registration")
                     adventuretubeAPI.registerUser(adventureUser: adventureUser)
                         .sink(receiveCompletion: { completionSink in
                             switch completionSink {
@@ -164,7 +177,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                                     print("BackEnd Connection Error: \(error.localizedDescription)")
                                     adventureUser.signed_in = false;
                                     completion(.failure(error))
-                                    //TODO: need to show up error message and ask to retry again later
+                                    // TODO: Implement user-facing error handling for backend failures
                             }
                         }, receiveValue: { authResponse in
                             // Process the received authResponse
@@ -176,10 +189,10 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 adventureUser.signed_in = false;
                                 let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
                                 completion(.failure(error))
-                                //TODO:  need to show the error to user
+                                // TODO: Display error message to user
                                 return
                             }
-                            //TODO: need to validate a token later
+                            // TODO: Add JWT token validation before storing
                             adventureUser.adventuretubeJWTToken = accessToken
                             adventureUser.adventuretubeRefreshJWTToken = refreshToken
                             adventureUser.adventureTube_id = userId
@@ -196,15 +209,23 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     
+    /// Restores previous Google sign-in session and refreshes backend tokens.
+    ///
+    /// **Usage:** Automatically called during app initialization by LoginManager
+    ///
+    /// Restores user sessions and refreshes JWT tokens with backend
+    /// to ensure valid authentication state on app startup.
+    ///
+    /// - Parameter completion: Result callback with restored UserModel or error
     func restorePreviousSignIn(completion:@escaping(Result<UserModel,Error>) -> Void) {
         GIDSignIn.sharedInstance.restorePreviousSignIn {[weak self] user , error in
             guard let self = self else {return}
-            //TODO: need to AdventuretubeAPIService
+            // Restore previous session using existing Google credentials
             if let user = user {
                 var adventureUser  = self.createAdventureUser(from: user);
                 
                 
-                //TODO: refresh token
+                // Refresh backend JWT tokens for restored session
                 adventuretubeAPI.refreshToken(adventureUser: adventureUser)
                     .sink(receiveCompletion: { completionSink in
                         switch completionSink {
@@ -214,7 +235,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 print("BackEnd Connection Error: \(error.localizedDescription)")
                                 adventureUser.signed_in = false;
                                 completion(.failure(error))
-                                //TODO: need to show up error message and ask to retry again later
+                                // TODO: Implement user-facing error handling for backend failures
                         }
                     }, receiveValue: { authResponse in
                         // Process the received authResponse
@@ -226,10 +247,10 @@ final class GoogleLoginService: LoginServiceProtocol {
                             adventureUser.signed_in = false;
                             let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
                             completion(.failure(error))
-                            //TODO:  need to show the error to user
+                            // TODO: Display error message to user
                             return
                         }
-                        //TODO: update token
+                        // Update user model with refreshed tokens
                         adventureUser.adventuretubeJWTToken = accessToken
                         adventureUser.adventuretubeRefreshJWTToken = refreshToken
                         //adventureUser.signed_in = true
@@ -248,7 +269,16 @@ final class GoogleLoginService: LoginServiceProtocol {
         }
     }
     
-    /// Signs out the current user.
+    /// Signs out current user from Google and backend services.
+    ///
+    /// **Usage:** Called from LoginManager when user explicitly signs out
+    ///
+    /// Performs complete sign-out:
+    /// - Google OAuth sign-out
+    /// - Backend session termination
+    /// - Local token cleanup
+    ///
+    /// - Parameter completion: Result callback indicating success or error
     func signOut(completion: @escaping (_ result: Result<Void, Error>) -> Void) {
         GIDSignIn.sharedInstance.signOut()
         //sign Out from backend server
@@ -269,7 +299,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                     print("Failed to logut from backend")
                     return
                 }
-                //TODO need to validate a token later
+                // TODO: Add response validation for logout confirmation
                 
             })
             .store(in: &cancellables)
@@ -284,7 +314,8 @@ final class GoogleLoginService: LoginServiceProtocol {
         let profilePicUrl = user.profile?.imageURL(withDimension: 320)
         let idToken = user.idToken?.tokenString ?? ""
         
-        //TODO: this doesn't copy the value why ? check the LoginManager.shared.userData first
+        // Initialize user model from LoginManager's current state
+        // Note: Preserves existing user data while updating with Google information
         var userData : UserModel = LoginManager.shared.userData
         userData.idToken = idToken
         userData.emailAddress = emailAddress
@@ -302,11 +333,15 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     
-    /// Adds the youtube channel  read scope for the current user.
-    /// - parameter completion: An escaping closure that is called upon successful completion of the
-    /// `addScopes(_:presenting:)` request.
-    /// - note: Successful requests will update the `loginManager.state` with a new current user that
-    /// has the granted scope.
+    /// Requests YouTube content read scope for the current user.
+    ///
+    /// **Usage:** Called from LoginManager when user needs YouTube API access
+    ///
+    /// Presents Google authorization UI to grant additional YouTube API access.
+    /// Required for fetching user's YouTube videos and channel information.
+    ///
+    /// - Parameter completion: Result callback with updated UserModel containing new scopes or error
+    /// - Note: User must be already signed in before requesting additional scopes
     func addMoreScope(completion : @escaping (Result<UserModel,Error>) -> Void) {
         
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -364,7 +399,12 @@ final class GoogleLoginService: LoginServiceProtocol {
     
     
     
-    /// Disconnects the previously granted scope and signs the user out.
+    /// Revokes all granted scopes and disconnects Google authentication.
+    ///
+    /// **Usage:** Called from LoginManager during complete sign-out process
+    ///
+    /// Completely disconnects the app from user's Google account,
+    /// revoking all previously granted permissions including YouTube access.
     func disconnectAdditionalScope() {
         GIDSignIn.sharedInstance.disconnect { error in
             if let error = error {

@@ -37,15 +37,10 @@ struct AddStoryView: View {
     @EnvironmentObject private var loginManager : LoginManager
     @EnvironmentObject private var myStoryListVM : MyStoryListViewVM
     
-    ///AddStoryViewVMl initialize with AddStoryMapViewVM
-    ///But still able to listeining confirmedPlace in AddStoryMapViewViewModel from AddStoryViewViewModel !!! Amazing !!!
-    ///The question is whjy try to seperate those two module  ?????
-    ///
-    ///1) AddStoryViewViewModel
-    ///   Its most likely data to store core data for Activity , Trip Duration , Video Type and Confirmed Location
-    ///2) AddStoryMapViewViewModel
-    ///     is more  specify for GooglePlace and Map API  in order to get the Data for Confirmed Location
-    /// and I dont want to mix those  functioning in one place !!!!!!!
+    /// Architecture Note:
+    /// - `AddStoryViewVM` is responsible for storing core data related to the story, such as activity, trip duration, video type, and confirmed location.
+    /// - `AddStoryMapViewVM` handles Google Place and Map API interactions to obtain confirmed location data.
+    /// Keeping these responsibilities separate helps maintain a clean architecture and avoids mixing concerns.
     
     @StateObject private var addStoryVM :AddStoryViewVM
     @StateObject private var youtubeViewVM: YoutubeViewVM

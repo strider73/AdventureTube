@@ -20,9 +20,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
     //This is SingleTon Parttern
     static let shared = AdventureTubeAPIService()
     private var cancellables = Set<AnyCancellable>() // (3)
-    private  var targetServerAddress: String = "http://192.168.1.116:8030"
+    private  var targetServerAddress: String = "http://192.168.1.105:8030"
     //private  var targetServerAddress: String = "https://api.adventuretube.net"
-    
     
     // URLSession with timeout configuration
     private let session: URLSession = {
@@ -100,23 +99,27 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
     }
     
     func registerUser(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
-        guard let url = URL(string: "\(targetServerAddress)/auth/register") else {
+        guard let url = URL(string: "\(targetServerAddress)/auth/users") else {
             fatalError("Invalid URL")
         }
-        
+
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         // Safely unwrap optional properties
-        guard let idToken = adventureUser.idToken
+        guard let idToken = adventureUser.idToken,
+              let email = adventureUser.emailAddress
         else {
             fatalError("Missing user information")
         }
         let body: [String: Any] = [
-            "googleIdToken": idToken,
+            "googleIdToken": idToken,"email":email
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
+        print("Request URL: \(url.absoluteString)")
         print("googleIdToken : \(idToken)")
+        print("googleIdToken : \(email)")
+
         return self.session.dataTaskPublisher(for: request)
             .tryMap {
                 try self.handleHttpResponse($0, decodingType: AuthResponse.self)
@@ -135,7 +138,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
     }
     
     func loginWithPassword(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
-        guard let url = URL(string: "\(targetServerAddress)/auth/login") else {
+        guard let url = URL(string: "\(targetServerAddress)/auth/token") else {
             fatalError("Invalid URL")
         }
         
@@ -152,6 +155,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIPrototol {
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("googleIdToken : \(idToken)")
+        print("Request URL: \(url.absoluteString)")
+
         return self.session.dataTaskPublisher(for: request)
             .tryMap { try  self.handleHttpResponse( $0 , decodingType: AuthResponse.self)
             }

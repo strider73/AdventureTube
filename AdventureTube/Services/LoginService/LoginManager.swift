@@ -6,19 +6,48 @@
 //
 
 
-//TODO: loginService injection
 /*
- 
- in LoginManager I've used Dependecy injection with Protocol
- in order to prepare to use other login service
- but since its currently google  only using computed property instead atm.
- 
+ LoginManager - Singleton Authentication Manager
+
+ ARCHITECTURE PATTERNS:
+
+ 1. SINGLETON PATTERN:
+    - static let shared = LoginManager() - Single instance for entire app lifecycle
+    - private init() - Prevents external instantiation
+    - Global access point for authentication state across the app
+    - Lives for entire app duration (never deallocates)
+
+ 2. OBSERVABLE OBJECT PATTERN:
+    - Conforms to ObservableObject protocol for SwiftUI reactive programming
+    - @Published properties automatically trigger UI updates via objectWillChange publisher
+    - Works with @StateObject and @ObservedObject in SwiftUI views
+    - Integrates with Combine framework for reactive data flow
+    - Views automatically re-render when userData or loginState changes
+
+ RESPONSIBILITIES:
+ - Manages user authentication state across the app
+ - Handles login/logout operations with Google (future: multiple providers)
+ - Persists user data and JWT tokens to UserDefaults
+ - Provides reactive state updates via @Published properties
+ - Manages YouTube API scope permissions
+
+ IMPLEMENTATION NOTES:
+ - Uses protocol-based design (LoginServiceProtocol) for future multi-provider support
+ - Currently only implements Google login via GoogleLoginService
+ - Properties use private(set) for controlled external access
+ - Automatic state persistence on login state changes via willSet observers
+ - Single source of truth for authentication state
+
+ TODO: Implement proper dependency injection for loginService
+ TODO: Fix potential memory leak in signOut method (line 188)
+ TODO: Add loginService cleanup and reuse logic
  */
 
 import Foundation
-///To ensure that userData and loginState can only be modified within the LoginManager class but still allow read access from outside,
-///Use a combination of private(set) and public computed properties.
-/// This setup restricts the ability to set the properties directly outside of LoginManager, while still providing read access.
+/// LoginManager combines Singleton + ObservableObject patterns to provide:
+/// - Single source of truth for authentication state (Singleton)
+/// - Automatic UI updates without manual refresh calls (ObservableObject)
+/// - Properties use private(set) for controlled external access while enabling reactive updates
 class LoginManager : ObservableObject  {
     static let shared = LoginManager()
     // Properties with private(set) to restrict external modification
