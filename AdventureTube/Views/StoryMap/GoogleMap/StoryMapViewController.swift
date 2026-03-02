@@ -47,7 +47,7 @@ class StoryMapViewController:UIViewController{
         if mapView.selectedMarker == nil{
             locationManager.requestLocation {[weak self] location in
                 guard let self = self else{return}
-                self.mapView.camera = GMSCameraPosition(latitude:40.82302903, longitude: -73.93414657, zoom: 16)
+                self.mapView.camera = GMSCameraPosition(latitude:-37.8136, longitude: 144.9631, zoom: 10)
             }
         }
         //        if  let myLocation  = mapView.myLocation {
