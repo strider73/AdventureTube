@@ -28,6 +28,7 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
     
     @Binding  var markers:[GMSMarker]
     var getBoxPointOnMap : (CLLocationCoordinate2D,CLLocationCoordinate2D) -> Void
+    var onMarkerTap: (String) -> Void
     var markerCountLimitforClsuter = 200
     var markkerZoomLimitForCluster : Float = 14.0
     
@@ -110,17 +111,24 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
         
         
         func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-            
+
             // center the map on tapped marker
             mapView.animate(toLocation: marker.position)
             // check if a cluster icon was tapped
             if marker.userData is GMUCluster {
-                // zoom in on tapped cluster                
+                // zoom in on tapped cluster
                 mapView.animate(toZoom: 17)
                 NSLog("Did tap cluster")
                 return true
             }
-            
+
+            // Extract youtubeContentID from marker and notify SwiftUI
+            if let videoID = marker.userData as? String {
+                NSLog("Did tap marker with videoID: \(videoID)")
+                storyMapViewControllerBridge.onMarkerTap(videoID)
+                return true
+            }
+
             NSLog("Did tap a normal marker")
             return false
         }

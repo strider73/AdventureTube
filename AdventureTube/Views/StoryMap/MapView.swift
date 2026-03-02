@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct MapView: View {
-    
+
     @StateObject var mapViewVM : MapViewVM = MapViewVM()
-    
+
     init(){
         print("Init MapView ")
     }
@@ -26,23 +26,54 @@ struct MapView: View {
             }
             .preferredColorScheme(.light)
             .navigationBarHidden(true)
-        }.onAppear{
-            mapViewVM.fetchRestaurants()
+        }
+        .onAppear{
+            mapViewVM.fetchGeoData()
+        }
+        .sheet(isPresented: Binding<Bool>(
+            get: { mapViewVM.selectedVideoID != nil },
+            set: { if !$0 { mapViewVM.selectedVideoID = nil } }
+        )) {
+            if let videoID = mapViewVM.selectedVideoID {
+                YoutubePopupView(videoID: videoID) {
+                    mapViewVM.selectedVideoID = nil
+                }
+            }
         }
     }
-        
-    
-    
-    
-    var storyMap:some View{
-            StoryMapViewControllerBridge(markers: $mapViewVM.markers){southWestCoordinate,northEastCoordinate in
-                mapViewVM.southWestCoordinate = southWestCoordinate
-                mapViewVM.northEastCoordinate = northEastCoordinate
+
+    var storyMap: some View {
+        StoryMapViewControllerBridge(
+            markers: $mapViewVM.markers,
+            getBoxPointOnMap: { _, _ in },
+            onMarkerTap: { videoID in
+                mapViewVM.selectedVideoID = videoID
             }
-//        StoryMapViewControllerBridge(markers: $mapViewVM.markers){centerPoint in
-//            mapViewVM.centerPoint = centerPoint
-//        }
+        )
         .edgesIgnoringSafeArea(.all)
+    }
+}
+
+// MARK: - YouTube Popup View
+private struct YoutubePopupView: View {
+    let videoID: String
+    let onClose: () -> Void
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Color.black.edgesIgnoringSafeArea(.all)
+
+            YoutubeView(youtubeViewVM: YoutubeViewVM(videoId: videoID))
+                .padding(.top, 60)
+                .padding(.bottom, 40)
+
+            Button(action: onClose) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title)
+                    .foregroundColor(.white)
+                    .padding()
+            }
+        }
     }
 }
 

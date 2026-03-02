@@ -9,137 +9,92 @@ import Foundation
 import GoogleMaps
 import GooglePlaces
 import Combine
+import UIKit
 
 //Tonight I will bring the  data here
 
 class MapViewVM : ObservableObject {
-    
+
     //here is the the very first place that initialize googleMap and Place API Service using a API_KEY !!!!
     private let googleMapAPIService  = GoogleMapAndPlaceAPIService()
-    
+
     private var apiService = AdventureTubeAPIService.shared
     private var cancellables = Set<AnyCancellable>()
-    
-    //    @Published var restaurants: [Restaurants] = []{
-    //        didSet{
-    //            markers = restaurants.map{ restaurant -> GMSMarker in
-    //                let marker = GMSMarker(position: CLLocationCoordinate2D(latitude: restaurant.location.coordinates[1], longitude: restaurant.location.coordinates[0]))
-    //                marker.title = restaurant.name
-    //                return marker
-    //            }
-    //        }
-    //    }
+
     @Published var errorMessage: String?
-    
+    @Published var selectedVideoID: String? = nil
+
     /*   Power of Published
-     1) Data for markers will be received from apiService.getData and packed as an array of Restaurant.
+     1) Data for markers will be received from apiService and packed as an array of AdventureTubeData.
      2) Marker data will be passed to StoryMapViewControllerBridge.
      Not in makeUIViewController, but in updateUIViewController.
-     
+
      Since the response is not immediate, the markers won't be able to set when makeUIViewController is called!
      However, it will be updated by updateUIViewController because
      the markers here are @Published, which will notify markers in StoryMapViewControllerBridge,
      and that will be the reason to call updateUIViewController.
      */
     @Published var markers :[GMSMarker] = []
-    
-    var centerPoint : CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 40.82302903, longitude: -73.93414657){
-        didSet{
-            print("center point has been updated")
-            fetchRestaurants()
-        }
-    }
-    
-    var southWestCoordinate : CLLocationCoordinate2D = CLLocationCoordinate2D()
-    var northEastCoordinate : CLLocationCoordinate2D = CLLocationCoordinate2D(){
-        didSet{
-            fetchRestaurants()
-        }
-    }
-    
-    var locationManager = LocationManager2()
-    init(){
-        locationManager.requestLocation{[weak self] location in
-            guard let self = self else{return}
-            self.centerPoint = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
-        }
-    }
-    
-    //Search area is circle base on center point
-    //    func generateEndpoint( maxDistance: Double = 2) -> String {
-    //        return "http://192.168.1.106:8888/api/v1/restaurants/near?longitude=\(centerPoint.latitude)&latitude=\(centerPoint.latitude)&maxDistance=\(maxDistance)"    }
-    
-    //Search area is square base on two edge position 
-    func generateEndpoint2( maxDistance: Double = 0.2) -> String {
-        return "\(APIService.rasberryTestServer.address)/restaurants/locations-in-bounding-box?swLon=\(southWestCoordinate.longitude)&swLat=\(southWestCoordinate.latitude)&neLon=\(northEastCoordinate.longitude)&neLat=\(northEastCoordinate.latitude)"
-    }
-    // TODO:  implement correctly 
-    func fetchRestaurants(){
-        print("This is mockup call for fetchRestaurants()");
-    }
-    
-    //    func fetchRestaurants() {
-    //        // Replace the endpoint with your actual API endpoint
-    //        let endpoint = generateEndpoint2()
-    //  
-    //        
-    //        //validate end point and return here if fail
-    //        
-    //        
-    //        apiService.getData(endpoint: endpoint, returnData: [Restaurant].self)
-    //            .sink(receiveCompletion: { [weak self] completion in
-    //                guard let self = self else { return }
-    //                
-    //                switch completion {
-    //                    case .finished:
-    //                        break // Do nothing on success, as you'll handle the values in the receiveValue closure
-    //                    case .failure(let error):
-    //                        self.errorMessage = error.localizedDescription
-    //                }
-    //            }, receiveValue: { [weak self] (receivedRestaurants: [Restaurant]) in
-    //                guard let self = self else { return }
-    //                
-    //                print("getting data now ===========>")
-    //                // Update the @Published property
-    //                //self.restaurants = receivedRestaurants
-    //                markers = receivedRestaurants.map{ restaurant -> GMSMarker in
-    //                    let marker = GMSMarker(position: CLLocationCoordinate2D(latitude: restaurant.location.coordinates[1], longitude: restaurant.location.coordinates[0]))
-    //                    marker.title = restaurant.name
-    //                    marker.appearAnimation = GMSMarkerAnimation.fadeIn
-    //                    return marker
-    //                }
-    //            })
-    //            .store(in: &cancellables)
-    //    }
-}
 
+    /// Fetch geo data from backend and create one marker per story with YouTube thumbnail icons
+    func fetchGeoData() {
+        apiService.fetchGeoData()
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self = self else { return }
+                if case .failure(let error) = completion {
+                    self.errorMessage = error.localizedDescription
+                    print("Failed to fetch geo data: \(error.localizedDescription)")
+                }
+            }, receiveValue: { [weak self] adventureDataList in
+                guard let self = self else { return }
+                print("Received \(adventureDataList.count) adventure stories")
 
-class LocationManager2: NSObject, ObservableObject, CLLocationManagerDelegate {
-    let manager = CLLocationManager()
-    var completion  : ((CLLocationCoordinate2D) -> Void)?
-    
-    override init() {
-        super.init()
-        manager.delegate = self
-    }
-    
-    func requestLocation(completion:@escaping (CLLocationCoordinate2D) -> Void) {
-        manager.requestLocation()
-        self.completion = completion
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("error:: \(error.localizedDescription)")
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse {
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.first ,
-              let completion = completion else {return}
-        completion(location.coordinate)
+                // Create one marker per story using the first place's coordinates
+                self.markers = adventureDataList.compactMap { story -> GMSMarker? in
+                    // Find the first place with valid GeoJSON coordinates
+                    guard let firstPlace = story.places.first(where: { place in
+                        guard let geoJson = place.location else { return false }
+                        return geoJson.coordinates.count >= 2
+                    }), let geoJson = firstPlace.location else {
+                        return nil
+                    }
+
+                    let marker = GMSMarker(position: CLLocationCoordinate2D(
+                        latitude: geoJson.coordinates[1],
+                        longitude: geoJson.coordinates[0]
+                    ))
+                    marker.title = story.youtubeTitle
+                    marker.snippet = firstPlace.name
+                    marker.appearAnimation = GMSMarkerAnimation.fadeIn
+
+                    // Store youtubeContentID for marker tap handling
+                    marker.userData = story.youtubeContentID
+
+                    // Set category-based border color
+                    let borderColor = MarkerIconGenerator.color(for: story.userContentCategory)
+
+                    // Set placeholder icon immediately
+                    marker.icon = MarkerIconGenerator.placeholderMarkerIcon(borderColor: borderColor)
+                    // Anchor at the bottom center of the pin pointer
+                    marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
+
+                    // Asynchronously load YouTube thumbnail and update marker icon
+                    let thumbnailURLString = "https://img.youtube.com/vi/\(story.youtubeContentID)/default.jpg"
+                    if let thumbnailURL = URL(string: thumbnailURLString) {
+                        MarkerIconGenerator.generateMarkerIcon(
+                            thumbnailURL: thumbnailURL,
+                            borderColor: borderColor
+                        ) { [weak self] icon in
+                            guard self != nil, let icon = icon else { return }
+                            marker.icon = icon
+                            marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
+                        }
+                    }
+
+                    return marker
+                }
+                print("Created \(self.markers.count) markers")
+            })
+            .store(in: &cancellables)
     }
 }
