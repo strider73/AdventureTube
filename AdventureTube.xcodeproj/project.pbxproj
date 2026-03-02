@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -152,6 +152,7 @@
 		B4B7DE112B28BE0600582C23 /* StoryMapViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */; };
 		B4B7DE152B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */; };
 		B4B7DE162B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4B7DE142B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift */; };
+		B4BC1D252F1E0B24005CA725 /* StoryDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4BC1D242F1E0B24005CA725 /* StoryDTO.swift */; };
 		B4FB96D92A2997F100AAED3A /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FB96D82A2997F100AAED3A /* ProfileView.swift */; };
 /* End PBXBuildFile section */
 
@@ -284,6 +285,7 @@
 		B4003B70288525E5002926F1 /* ExampleViewForNavigartionBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewForNavigartionBar.swift; sourceTree = "<group>"; };
 		B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeAPIService.swift; sourceTree = "<group>"; };
 		B40118092B182BBF00AA9286 /* Restaurant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Restaurant.swift; sourceTree = "<group>"; };
+		B40F2F942EFCB3880092ED54 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		B419E1B02885847500F669CA /* AdventureTube.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventureTube.xcdatamodel; sourceTree = "<group>"; };
 		B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeApp.swift; sourceTree = "<group>"; };
 		B4367F202C63AC0E00236B31 /* NavigationSateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationSateManager.swift; sourceTree = "<group>"; };
@@ -321,8 +323,13 @@
 		B4B7DE0F2B28BE0600582C23 /* StoryMapViewControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryMapViewControllerBridge.swift; sourceTree = "<group>"; };
 		B4B7DE132B28BE1B00582C23 /* GoogleMapViewForCreateStoryControllerBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryControllerBridge.swift; sourceTree = "<group>"; };
 		B4B7DE142B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapViewForCreateStoryController.swift; sourceTree = "<group>"; };
+		B4BC1D242F1E0B24005CA725 /* StoryDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryDTO.swift; sourceTree = "<group>"; };
 		B4FB96D82A2997F100AAED3A /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		B40F2F9C2EFCB3880092ED54 /* docs */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = docs; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		B48C345728851BB7005AA142 /* Frameworks */ = {
@@ -468,6 +475,7 @@
 				B4003B14288525E4002926F1 /* MyStory */,
 				B4003B41288525E5002926F1 /* StoryMap */,
 				B4003B44288525E5002926F1 /* Setting */,
+				B4003B10288525E4002926F1 /* SavedStory */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -877,6 +885,7 @@
 				B46E34072C3638AA0025DE65 /* DTO */,
 				B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */,
 				B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */,
+				B4BC1D242F1E0B24005CA725 /* StoryDTO.swift */,
 			);
 			path = Adventuretube;
 			sourceTree = "<group>";
@@ -894,6 +903,8 @@
 		B48C345128851BB7005AA142 = {
 			isa = PBXGroup;
 			children = (
+				B40F2F942EFCB3880092ED54 /* CLAUDE.md */,
+				B40F2F9C2EFCB3880092ED54 /* docs */,
 				B46A2C0C2B04541800C54E5D /* README.md */,
 				B4003ABC288523CB002926F1 /* Resources */,
 				B48C345C28851BB7005AA142 /* AdventureTube */,
@@ -945,7 +956,6 @@
 		B48C346D28851BB8005AA142 /* AdventureTubeTests */ = {
 			isa = PBXGroup;
 			children = (
-				B4003B10288525E4002926F1 /* SavedStory */,
 				B469E48B288F776F003EB360 /* PublishedAppStorageTests.swift */,
 				B469E489288F7500003EB360 /* MockedStorage.swift */,
 			);
@@ -1163,9 +1173,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AdventureTube/Pods-AdventureTube-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AdventureTube/Pods-AdventureTube-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1180,9 +1194,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AdventureTube/Pods-AdventureTube-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AdventureTube/Pods-AdventureTube-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1198,6 +1216,7 @@
 			files = (
 				B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */,
 				B4003BC5288525E5002926F1 /* CoreDataManager.swift in Sources */,
+				B4BC1D252F1E0B24005CA725 /* StoryDTO.swift in Sources */,
 				B4003BA3288525E5002926F1 /* StoryView.swift in Sources */,
 				B4003BA6288525E5002926F1 /* CreateChapterViewVM.swift in Sources */,
 				B4003BA7288525E5002926F1 /* ConfirmChapterModalView.swift in Sources */,
