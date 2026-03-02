@@ -1,0 +1,92 @@
+ID,Process,Function,Service/Class,Description,Complexity,Implementation (%),Dependencies,Test Requirement,Last Modified
+1,User Authentication Process,googleSignIn(),LoginManager,Initiates Google Sign-In flow with completion handler,High,100,GoogleSignIn SDK,Unit + Integration,2023-11
+2,User Authentication Process,restorePreviousSignIn(),GoogleLoginService,Restores previous Google session from stored credentials,Normal,100,GoogleSignIn SDK,Unit,2023-11
+3,User Authentication Process,signIn(),GoogleLoginService,Handles Google authentication with OAuth flow,High,100,GoogleSignIn SDK,Integration,2023-11
+4,User Authentication Process,signOut(),GoogleLoginService,Signs out from Google and clears session,Normal,100,GoogleSignIn SDK,Unit,2023-11
+5,User Authentication Process,addMoreScope(),GoogleLoginService,Requests YouTube scope permission from user,Normal,100,GoogleSignIn SDK,Unit,2023-11
+6,User Authentication Process,registerUser(),AdventureTubeAPIService,Creates user account on backend server,High,100,URLSession + Combine,Integration,2023-11
+7,User Authentication Process,loginWithPassword(),AdventureTubeAPIService,Authenticates with backend using Google ID token,High,100,URLSession + Combine,Integration,2023-11
+8,User Authentication Process,refreshToken(),AdventureTubeAPIService,Refreshes JWT tokens when expired,High,100,URLSession + Combine,Unit + Integration,2023-11
+9,User Authentication Process,updateLoginState(),LoginManager,Updates authentication state in app,Low,100,None,Unit,2023-11
+10,User Authentication Process,saveUserStateToUserDefault(),LoginManager,Persists user data to UserDefaults,Low,100,UserDefaults,Unit,2023-11
+11,YouTube Data Fetching Process,sessionWithFreshToken(),YoutubeAPIService,Creates authenticated YouTube session with fresh tokens,High,100,GoogleSignIn + YouTube API,Unit,2023-12
+12,YouTube Data Fetching Process,youtubeContentResourcePublisher(),YoutubeAPIService,Fetches user's YouTube videos with pagination,High,100,YouTube API + Combine,Integration,2023-12
+13,YouTube Data Fetching Process,handleOutput(),YoutubeAPIService,Processes YouTube API responses and validates status codes,Normal,100,URLSession,Unit,2023-12
+14,YouTube Data Fetching Process,loadYouTubeContent(),MyStoryListViewVM,Loads YouTube content into view model,Normal,100,YoutubeAPIService + Combine,Unit,2024-01
+15,YouTube Data Fetching Process,fetchNextPage(),MyStoryListViewVM,Implements pagination for YouTube videos,Normal,90,YoutubeAPIService,Unit,2024-01
+16,YouTube Data Fetching Process,saveYouTubeData(),CoreDataManager,Stores YouTube data to Core Data,Normal,100,Core Data,Unit + Integration,2023-12
+17,Story List Display Process,loadStories(),MyStoryListViewVM,Loads stories from Core Data with reactive updates,Normal,100,Core Data + Combine,Unit,2024-01
+18,Story List Display Process,onAppear(),MyStoryListView,Initializes story list view when appearing,Low,100,SwiftUI,Manual,2024-01
+19,Story List Display Process,init(),MyStoryCellView,Displays individual story cells in list,Low,100,SwiftUI,Manual,2023-12
+20,Story List Display Process,publisher(),CoreDataFetchResultsPublisher,Provides reactive Core Data updates,Normal,100,Core Data + Combine,Unit,2023-12
+21,Story Creation Process,onAppear(),AddStoryView,Initializes story creation UI,Low,100,SwiftUI,Manual,2024-01
+22,Story Creation Process,addChapter(),CreateChapterView,Creates new story chapters with location data,Normal,100,SwiftUI + Core Data,Unit,2024-01
+23,Story Creation Process,saveChapter(),CreateChapterViewVM,Saves chapter data to Core Data,Normal,100,Core Data,Unit,2024-01
+24,Story Creation Process,didTapPlace(),GoogleMapViewForCreateStory,Handles place selection from map,Normal,100,Google Maps SDK,Manual,2024-01
+25,Story Creation Process,searchPlace(),GoogleSearchMapView,Searches for locations using Google Places API,Normal,100,Google Places API,Integration,2024-01
+26,Story Creation Process,setTimestamp(),PlayChapterView,Sets chapter timestamps for video segments,Low,100,SwiftUI,Unit,2024-01
+27,Story Creation Process,save(),CoreDataSaveModelPublisher,Saves story data to Core Data,Normal,100,Core Data + Combine,Unit,2023-12
+28,Story Validation Process,validateContent(),StoryView,Validates story content before publishing,Normal,80,None,Unit,2024-01
+29,Story Validation Process,validateDescription(),DescriptionEditorView,Validates story description text,Low,90,None,Unit,2024-01
+30,Story Validation Process,loadStoryDetails(),MyStoryCommonDetailViewVM,Loads story details for review,Normal,100,Core Data,Unit,2024-01
+31,Story Publishing Process,publishStory(),AdventureTubeAPIService,Publishes story to backend server,High,70,URLSession + Combine,Integration,2024-01
+32,Story Publishing Process,publishStory(),MyStoryCommonDetailViewVM,Handles publishing flow in view model,Normal,80,AdventureTubeAPIService,Unit,2024-01
+33,Story Publishing Process,handleHttpResponse(),AdventureTubeAPIService,Processes backend responses with error handling,Normal,100,URLSession,Unit,2023-11
+34,Map Discovery Process,viewDidLoad(),StoryMapViewController,Initializes map view for story discovery,Normal,100,Google Maps SDK,Manual,2023-12
+35,Map Discovery Process,mapView(),StoryMapViewController,Handles map interactions and gestures,Normal,100,Google Maps SDK,Manual,2023-12
+36,Map Discovery Process,queryStoriesInRegion(),StoryMapViewController,Queries stories by geographic location,High,60,AdventureTubeAPIService + Google Maps,Integration,2024-01
+37,Map Discovery Process,onMapRegionChange(),MapView,Detects map scrolling and region changes,Normal,100,SwiftUI + Google Maps,Manual,2023-12
+38,Map Discovery Process,getStoriesByLocation(),AdventureTubeAPIService,Fetches location-based stories from backend,High,50,URLSession + Combine,Integration,2024-01
+39,Map Discovery Process,displayStories(),StoryMapViewController,Shows stories on map with markers,Normal,80,Google Maps SDK,Manual,2024-01
+40,N/A - File Management,saveImage(),LocalFileManager,Saves images to local file system with folder organization,Normal,100,FileManager,Unit,2023-10
+41,N/A - File Management,getImage(),LocalFileManager,Retrieves images from local storage by name and folder,Low,100,FileManager,Unit,2023-10
+42,N/A - File Management,createFolderIfNeeded(),LocalFileManager,Creates directory structure if not exists,Low,100,FileManager,Unit,2023-10
+43,N/A - File Management,getURLForFolder(),LocalFileManager,Gets file URL for specified folder,Low,100,FileManager,Unit,2023-10
+44,N/A - File Management,getURLForImage(),LocalFileManager,Gets file URL for specific image,Low,100,FileManager,Unit,2023-10
+45,N/A - File Management,saveImage(),LocalImageFileManager,Saves images to default local storage,Normal,100,FileManager,Unit,2023-10
+46,N/A - File Management,getImage(),LocalImageFileManager,Retrieves images from default storage,Low,100,FileManager,Unit,2023-10
+47,N/A - File Management,createFolderIfNeeded(),LocalImageFileManager,Creates default image folder,Low,100,FileManager,Unit,2023-10
+48,N/A - File Management,getURLForFolder(),LocalImageFileManager,Gets default folder URL,Low,100,FileManager,Unit,2023-10
+49,N/A - File Management,getURLForImage(),LocalImageFileManager,Gets default image file URL,Low,100,FileManager,Unit,2023-10
+50,N/A - Core Data Utilities,save(),CoreDataManager,Saves Core Data context changes,Normal,100,Core Data,Unit,2023-05
+51,N/A - Core Data Utilities,insertIntoChapters(),StoryEntity,Core Data relationship management for chapters,Low,100,Core Data,Unit,2023-05
+52,N/A - Core Data Utilities,removeFromChapters(),StoryEntity,Removes chapters from story entity,Low,100,Core Data,Unit,2023-05
+53,N/A - Core Data Utilities,replaceChapters(),StoryEntity,Replaces chapter entities in story,Low,100,Core Data,Unit,2023-05
+54,N/A - Core Data Utilities,addToChapters(),StoryEntity,Adds chapters to story relationship,Low,100,Core Data,Unit,2023-05
+55,N/A - Core Data Utilities,addToPlaces(),StoryEntity,Adds places to story relationship,Low,100,Core Data,Unit,2023-05
+56,N/A - Core Data Utilities,removeFromPlaces(),StoryEntity,Removes places from story relationship,Low,100,Core Data,Unit,2023-05
+57,N/A - Core Data Utilities,fetchRequest(),ChapterEntity,Core Data fetch request for chapters,Low,100,Core Data,Unit,2023-05
+58,N/A - Core Data Utilities,fetchRequest(),PlaceEntity,Core Data fetch request for places,Low,100,Core Data,Unit,2023-05
+59,N/A - Core Data Utilities,fetchRequest(),StoryEntity,Core Data fetch request for stories,Low,100,Core Data,Unit,2023-05
+60,N/A - UI Utilities,getDisplayTime(),TimeToString,Converts time integer to display string,Low,100,Foundation,Unit,2023-08
+61,N/A - UI Utilities,getYoutubeTime(),TimeToString,Converts time to YouTube format string,Low,100,Foundation,Unit,2023-08
+62,N/A - UI Utilities,withBackground(),UIImage,Adds background color to image,Low,100,UIKit,Unit,2023-09
+63,N/A - UI Utilities,maskWithColor(),UIImage,Applies color mask to image,Normal,100,UIKit,Unit,2023-09
+64,N/A - UI Utilities,resize(),UIImage,Resizes image to max width/height,Normal,100,UIKit,Unit,2023-09
+65,N/A - UI Utilities,setImageColor(),UIImage,Sets image tint color,Low,100,UIKit,Unit,2023-09
+66,N/A - UI Utilities,hapticImpactFeedbackOnTap(),View,Adds haptic feedback to views,Low,100,UIKit,Manual,2023-09
+67,N/A - UI Utilities,hapticNotificationFeedbackOnTap(),View,Adds notification haptic feedback,Low,100,UIKit,Manual,2023-09
+68,N/A - UI Utilities,endEditing(),View,Dismisses keyboard for text editing,Low,100,UIKit,Manual,2023-09
+69,N/A - UI Utilities,snapshot(),View,Captures view as UIImage,Normal,100,UIKit,Unit,2023-09
+70,N/A - UI Utilities,cornerRadius(),View,Applies corner radius to specific corners,Low,100,SwiftUI,Manual,2023-09
+71,N/A - UI Utilities,removingDuplicates(),Array,Removes duplicate elements from array,Low,100,Foundation,Unit,2023-08
+72,N/A - UI Utilities,removeDuplicates(),Array,Mutating version of duplicate removal,Low,100,Foundation,Unit,2023-08
+73,N/A - Google Services,autoCompletePrediction(),GoogleMapAPIService,Gets place autocomplete predictions,Normal,100,Google Places API,Integration,2023-10
+74,N/A - Google Services,getPlaceFieldCoordinate(),GoogleMapAPIService,Gets coordinates for place ID,Normal,100,Google Places API,Integration,2023-10
+75,N/A - Google Services,autoCompletePrediction(),GoogleMapAndPlaceAPIService,Alternative autocomplete service,Normal,100,Google Places API,Integration,2023-10
+76,N/A - Google Services,getPlaceFieldCoordinate(),GoogleMapAndPlaceAPIService,Alternative coordinate service,Normal,100,Google Places API,Integration,2023-10
+77,N/A - Navigation,init(),CustomTabBarContainerView,Initializes custom tab bar container,Normal,100,SwiftUI,Manual,2023-11
+78,N/A - Testing,test(),Utils,Testing utility function,Low,100,None,None,2023-08
+79,N/A - Testing,test2(),Utils,Additional testing utility,Low,100,None,None,2023-08
+80,N/A - Testing,loadData(),ReadJsonData,Loads test JSON data,Low,100,Foundation,Unit,2023-08
+81,N/A - UI Components,makeUIView(),VisualEffectView,Creates blur effect view,Low,100,UIKit,Manual,2023-09
+82,N/A - UI Components,updateUIView(),VisualEffectView,Updates blur effect,Low,100,UIKit,Manual,2023-09
+83,N/A - UI Components,makeUIView(),GoogleSignInButtonWrapper,Wraps Google Sign-In button for SwiftUI,Normal,100,GoogleSignIn SDK + SwiftUI,Manual,2023-11
+84,N/A - UI Components,makeUIView(),TextWithAttributedString,Displays attributed strings in SwiftUI,Normal,100,UIKit + SwiftUI,Manual,2023-09
+85,N/A - UI Components,updateUIView(),TextWithAttributedString,Updates attributed string display,Normal,100,UIKit + SwiftUI,Manual,2023-09
+86,N/A - Data Models,hash(),AdventureTubeData,Implements Hashable for data models,Low,100,Foundation,Unit,2023-08
+87,N/A - Data Models,build(),Duration,Builds duration from raw string,Low,100,Foundation,Unit,2023-08
+88,N/A - Data Models,build(),ContentType,Builds content type from raw string,Low,100,Foundation,Unit,2023-08
+89,N/A - Data Models,build(),Category,Builds category from raw string,Low,100,Foundation,Unit,2023-08
+90,N/A - Data Models,hash(),YoutubeContentResource,Hashable implementation for YouTube resources,Low,100,Foundation,Unit,2023-12
+91,N/A - Data Models,encode(),CLLocationCoordinate2D,Encodes coordinates for serialization,Low,100,CoreLocation,Unit,2023-10
