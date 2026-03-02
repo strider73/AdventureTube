@@ -22,4 +22,5 @@ protocol AdventureTubeAPIProtocol:AnyObject{
     func syncMoments(_ moments: [PlaceEntity], toStory storyId: String) -> AnyPublisher<MomentSyncResponse, Error>
     func fetchUserStories() -> AnyPublisher<[StoryDTO], Error>
     func deleteStory(_ storyId: String) -> AnyPublisher<RestAPIResponse, Error>
+    func fetchGeoData() -> AnyPublisher<[AdventureTubeData], Error>
 }

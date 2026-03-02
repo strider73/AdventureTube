@@ -430,6 +430,45 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
     
+    /// Fetch public geo data (adventure stories with locations) from backend
+    /// - Returns: Publisher with array of AdventureTubeData or Error
+    func fetchGeoData() -> AnyPublisher<[AdventureTubeData], Error> {
+        guard let url = URL(string: "\(targetServerAddress)/web/geo/data") else {
+            return Fail(error: NetworkError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        print("Fetching geo data from \(url.absoluteString)")
+
+        return self.session.dataTaskPublisher(for: request)
+            .tryMap { (data, response) -> GeoDataResponse in
+                guard let httpResponse = response as? HTTPURLResponse, 200...299 ~= httpResponse.statusCode else {
+                    throw NetworkError.responseError
+                }
+                do {
+                    return try JSONDecoder().decode(GeoDataResponse.self, from: data)
+                } catch let decodingError as DecodingError {
+                    print("GeoData DecodingError: \(decodingError)")
+                    throw decodingError
+                }
+            }
+            .map { $0.data }
+            .mapError { error -> BackendError in
+                if let backendError = error as? BackendError {
+                    return backendError
+                } else if let decodingError = error as? DecodingError {
+                    return BackendError.decodingError(message: decodingError.localizedDescription)
+                } else {
+                    return BackendError.unknownError
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
     /// Delete a story from the backend
     /// - Parameter storyId: The ID of the story to delete
     /// - Returns: Publisher with RestAPIResponse or Error
