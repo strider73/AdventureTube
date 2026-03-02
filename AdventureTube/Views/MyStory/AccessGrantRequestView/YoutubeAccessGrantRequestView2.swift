@@ -12,7 +12,7 @@ struct YoutubeAccessGrantRequestView2: View {
     
     @EnvironmentObject private var loginManager : LoginManager
     @EnvironmentObject var myStoryListVM : MyStoryListViewVM
-    @State private var isPresentingMyStoryListView = false
+    @State private var navigationPath = NavigationPath()
     @State private var isShowingError = false
     @State private var errorMessage: String? = nil
     
@@ -22,12 +22,12 @@ struct YoutubeAccessGrantRequestView2: View {
     }
     
     var body: some View {
-        
-        ZStack{
-            
-            ColorConstant.background.color.ignoresSafeArea()
-            
-            VStack {
+        NavigationStack(path: $navigationPath) {
+            ZStack{
+                
+                ColorConstant.background.color.ignoresSafeArea()
+                
+                VStack {
                 Image("appIcon")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -59,7 +59,7 @@ struct YoutubeAccessGrantRequestView2: View {
                             myStoryListVM.deleteExistingYoutubeContent()
                             myStoryListVM.downloadYotubeContentsAndMappedWithCoreData {
                                 // Navigate to MyStoryListView after data is loaded
-                                isPresentingMyStoryListView = true
+                                navigationPath.append("MyStoryListView")
                             }
                         }
                     }
@@ -77,18 +77,14 @@ struct YoutubeAccessGrantRequestView2: View {
                 // Present an error message if there is an error
                 ErrorView(message: errorMessage ?? "An error occurred")
             }
-            .background(
-                NavigationLink(
-                    destination: MyStoryListView(),
-                    isActive: $isPresentingMyStoryListView
-                ) {
-                    EmptyView()
+            .navigationDestination(for: String.self) { destination in
+                if destination == "MyStoryListView" {
+                    MyStoryListView()
                 }
-                
-                
-            )
+            }
+            }
+            .navigationBarHidden(false)
         }
-        .navigationBarHidden(/*@START_MENU_TOKEN@*/false/*@END_MENU_TOKEN@*/)
     }
 }
 
