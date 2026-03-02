@@ -130,9 +130,10 @@ class AddStoryViewVM : ObservableObject {
             createChapterViewVM.chapters = adventureTubeData.chapters
             
             // defalut first selected marker : GMSMarker
-            if let adventureTubeLocation = chapters.first?.place{
-                
-                let marker =  GMSMarker(position: adventureTubeLocation.coordinate)
+            if let adventureTubeLocation = chapters.first?.place,
+               let coord = adventureTubeLocation.coordinate {
+
+                let marker =  GMSMarker(position: coord)
                 
                 marker.title = adventureTubeLocation.name
                 marker.icon =  UIImage(systemName: "1.circle.fill")?
@@ -142,8 +143,9 @@ class AddStoryViewVM : ObservableObject {
             }
             
             //confimed marker: GMSMarker
-            createChapterViewVM.markers =  chapters.enumerated().map{ (index ,chapter) -> GMSMarker in
-                let marker =  GMSMarker(position: chapter.place.coordinate)
+            createChapterViewVM.markers =  chapters.enumerated().compactMap{ (index ,chapter) -> GMSMarker? in
+                guard let coord = chapter.place.coordinate else { return nil }
+                let marker =  GMSMarker(position: coord)
                 marker.title = chapter.place.name
                 marker.icon = UIImage(systemName: "\(index+1).circle.fill")?
                     .resize(maxWidthHeight: 35)?
@@ -661,7 +663,7 @@ class AddStoryViewVM : ObservableObject {
             newChapter.id = UUID().uuidString
             newChapter.category = chapter.categories.map{$0.rawValue}
             newChapter.youtubeTime = Int16(chapter.youtubeTime)
-            newChapter.youtubeId = chapter.youtubeId
+            newChapter.youtubeId = chapter.youtubeId ?? ""
             
             
             //create place for chapter
@@ -673,8 +675,8 @@ class AddStoryViewVM : ObservableObject {
             newPlace.placeID = placeOfChapter.placeID ?? "no placeID"
             newPlace.pluscode = placeOfChapter.plusCode
             //newLocation.types  = place.types ?? []
-            newPlace.latitude = placeOfChapter.coordinate.latitude
-            newPlace.longitude = placeOfChapter.coordinate.longitude
+            newPlace.latitude = placeOfChapter.coordinate?.latitude ?? 0
+            newPlace.longitude = placeOfChapter.coordinate?.longitude ?? 0
             newChapter.place = newPlace
             return newChapter
         }

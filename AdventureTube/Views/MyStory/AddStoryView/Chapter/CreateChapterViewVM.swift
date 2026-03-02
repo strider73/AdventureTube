@@ -400,7 +400,7 @@ class CreateChapterViewVM : ObservableObject {
             chapterEntity.id = UUID().uuidString
             chapterEntity.category = newChapter.categories.map{$0.rawValue}
             chapterEntity.youtubeTime = Int16(newChapter.youtubeTime)
-            chapterEntity.youtubeId = newChapter.youtubeId
+            chapterEntity.youtubeId = newChapter.youtubeId ?? ""
             //manager.save()
             
             //create place for chapter
@@ -413,8 +413,8 @@ class CreateChapterViewVM : ObservableObject {
             placeEnity.placeID = adventureTubePlace.placeID ?? "no placeID"
             placeEnity.pluscode = adventureTubePlace.plusCode
             //newLocation.types  = place.types ?? []
-            placeEnity.latitude = adventureTubePlace.coordinate.latitude
-            placeEnity.longitude = adventureTubePlace.coordinate.longitude
+            placeEnity.latitude = adventureTubePlace.coordinate?.latitude ?? 0
+            placeEnity.longitude = adventureTubePlace.coordinate?.longitude ?? 0
             manager.save()
             
             storyEntity.addToChapters(chapterEntity)
@@ -440,8 +440,9 @@ class CreateChapterViewVM : ObservableObject {
         //  this will update all marker image on google map with correct order autometically
         selectedMarker = nil
 
-        markers =  chapters.enumerated().map{ (index ,chapter) -> GMSMarker in
-            let marker =  GMSMarker(position: chapter.place.coordinate)
+        markers =  chapters.enumerated().compactMap{ (index ,chapter) -> GMSMarker? in
+            guard let coord = chapter.place.coordinate else { return nil }
+            let marker =  GMSMarker(position: coord)
             marker.title = chapter.place.name
             marker.icon = UIImage(systemName: "\(index+1).circle.fill")?
                 .resize(maxWidthHeight: 35)?
@@ -471,8 +472,9 @@ class CreateChapterViewVM : ObservableObject {
         //  and set the new marker image  on the property
         //  this will update all marker image on google map with correct order autometically
         //isMarkerWillRedrawing = true
-        markers =  chapters.enumerated().map{ (index ,chapter) -> GMSMarker in
-            let marker =  GMSMarker(position: chapter.place.coordinate)
+        markers =  chapters.enumerated().compactMap{ (index ,chapter) -> GMSMarker? in
+            guard let coord = chapter.place.coordinate else { return nil }
+            let marker =  GMSMarker(position: coord)
             marker.title = chapter.place.name
             marker.icon = UIImage(systemName: "\(index+1).circle.fill")?
                 .resize(maxWidthHeight: 35)?
@@ -552,9 +554,9 @@ class CreateChapterViewVM : ObservableObject {
             newChapter.id = UUID().uuidString
             newChapter.category = chapter.categories.map{$0.rawValue}
             newChapter.youtubeTime = Int16(chapter.youtubeTime)
-            newChapter.youtubeId = chapter.youtubeId
-            
-            
+            newChapter.youtubeId = chapter.youtubeId ?? ""
+
+
             //create place for chapter
             let placeOfChapter: AdventureTubePlace = chapter.place
             let newPlace = PlaceEntity(context: manager.context)
@@ -564,8 +566,8 @@ class CreateChapterViewVM : ObservableObject {
             newPlace.placeID = placeOfChapter.placeID ?? "no placeID"
             newPlace.pluscode = placeOfChapter.plusCode
             //newLocation.types  = place.types ?? []
-            newPlace.latitude = placeOfChapter.coordinate.latitude
-            newPlace.longitude = placeOfChapter.coordinate.longitude
+            newPlace.latitude = placeOfChapter.coordinate?.latitude ?? 0
+            newPlace.longitude = placeOfChapter.coordinate?.longitude ?? 0
             newChapter.place = newPlace
             return newChapter
         }
@@ -591,8 +593,8 @@ class CreateChapterViewVM : ObservableObject {
             newPlace.placeID = googleMapAPIPlace.placeID ?? "no placeID"
             newPlace.pluscode = googleMapAPIPlace.plusCode
             //newLocation.types  = place.types ?? []
-            newPlace.latitude = googleMapAPIPlace.coordinate.latitude ?? 0
-            newPlace.longitude = googleMapAPIPlace.coordinate.longitude ??  0
+            newPlace.latitude = googleMapAPIPlace.coordinate?.latitude ?? 0
+            newPlace.longitude = googleMapAPIPlace.coordinate?.longitude ?? 0
             return newPlace
         }
         //        .reduce(Set<LocationEntity>() ,{ partialResult, locationlEntity in
