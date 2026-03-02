@@ -8,11 +8,18 @@
 import Foundation
 import Combine
 
-protocol AdventureTubeAPIPrototol:AdventureTubeAPIService{
-    func getData<T: Decodable>(endpoint: String, id: Int?, returnData: T.Type) -> Future<T, Error>
+protocol AdventureTubeAPIProtocol:AnyObject{
+    
+    
     func registerUser (adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error>
     func loginWithPassword(adventureUser:UserModel) ->AnyPublisher<AuthResponse,Error>
     func refreshToken(adventureUser:UserModel) ->AnyPublisher<AuthResponse,Error>
     func signOut() -> AnyPublisher<RestAPIResponse, Error>
-
+    
+    func getData<T: Decodable>(endpoint: String, id: Int?, returnData: T.Type) -> Future<T, Error>
+    func syncStory(_ story: StoryEntity) -> AnyPublisher<StoryResponse, Error>
+    func updateStory(_ story: StoryEntity) -> AnyPublisher<StoryResponse, Error>
+    func syncMoments(_ moments: [PlaceEntity], toStory storyId: String) -> AnyPublisher<MomentSyncResponse, Error>
+    func fetchUserStories() -> AnyPublisher<[StoryDTO], Error>
+    func deleteStory(_ storyId: String) -> AnyPublisher<RestAPIResponse, Error>
 }

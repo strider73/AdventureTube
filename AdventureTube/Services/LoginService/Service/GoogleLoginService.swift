@@ -51,13 +51,13 @@ import Combine
 final class GoogleLoginService: LoginServiceProtocol {
 
 
-    private var adventuretubeAPI: AdventureTubeAPIPrototol
+    private var adventuretubeAPI: AdventureTubeAPIProtocol
     private var cancellables = Set<AnyCancellable>()
     
     
     /// Creates a GoogleLoginService instance.
     /// - Parameter apiService: Backend API service for user authentication (defaults to shared instance)
-    init(apiService:AdventureTubeAPIPrototol = AdventureTubeAPIService.shared) {
+    init(apiService:AdventureTubeAPIProtocol = AdventureTubeAPIService.shared) {
         self.adventuretubeAPI = apiService
     }
     
