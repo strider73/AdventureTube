@@ -1,2 +1,8 @@
 .DS_Store
 AdventureTube.xcworkspace/xcuserdata/chrislee.xcuserdatad/UserInterfaceState.xcuserstate
+
+# Documentation (may contain API keys)
+docs/
+
+# Google OAuth client secrets
+Resources/client_secret_*.json
