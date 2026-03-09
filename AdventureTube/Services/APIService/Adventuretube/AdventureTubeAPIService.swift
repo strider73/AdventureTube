@@ -15,13 +15,16 @@ import UIKit
 import Combine
 
 class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
-    
-    
+
+
     //This is SingleTon Parttern
     static let shared = AdventureTubeAPIService()
     private var cancellables = Set<AnyCancellable>() // (3)
     //private  var targetServerAddress: String = "http://192.168.1.105:8030"
     private  var targetServerAddress: String = "https://api.travel-tube.com"
+
+    /// Active SSE client for job status streaming
+    private var activeSSEClient: SSEClient?
     
     // URLSession with timeout configuration
     private let session: URLSession = {
@@ -467,6 +470,143 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+    }
+
+    // MARK: - Async Publish with SSE Job Tracking
+
+    /// Publish geo data asynchronously via Kafka.
+    /// Returns 202 Accepted with a trackingId for SSE streaming.
+    func publishGeoData(_ jsonData: Data) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> {
+        guard let url = URL(string: "\(targetServerAddress)/auth/geo/save") else {
+            return Fail(error: NetworkError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+
+        guard let accessToken = LoginManager.shared.userData.adventuretubeJWTToken else {
+            return Fail(error: BackendError.unauthorized(message: "No access token available"))
+                .eraseToAnyPublisher()
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        request.httpBody = jsonData
+
+        print("Publishing geo data to \(url.absoluteString)")
+
+        return self.session.dataTaskPublisher(for: request)
+            .tryMap { (data, response) -> ServiceResponse<JobStatusDTO> in
+                guard let httpResponse = response as? HTTPURLResponse,
+                      (200...299).contains(httpResponse.statusCode) else {
+                    if let httpResponse = response as? HTTPURLResponse {
+                        let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
+                        throw BackendError.serverError(message: "Publish failed (\(httpResponse.statusCode)): \(errorMessage)")
+                    }
+                    throw BackendError.unknownError
+                }
+                return try JSONDecoder().decode(ServiceResponse<JobStatusDTO>.self, from: data)
+            }
+            .mapError { error -> Error in error }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
+    /// Open an SSE stream for real-time job status updates.
+    func streamJobStatus(trackingId: String) -> AnyPublisher<JobStatusDTO, Error> {
+        guard let url = URL(string: "\(targetServerAddress)/auth/geo/status/stream/\(trackingId)") else {
+            return Fail(error: NetworkError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+
+        guard let accessToken = LoginManager.shared.userData.adventuretubeJWTToken else {
+            return Fail(error: BackendError.unauthorized(message: "No access token available"))
+                .eraseToAnyPublisher()
+        }
+
+        // Disconnect previous SSE client if any
+        activeSSEClient?.disconnect()
+
+        let sseClient = SSEClient()
+        activeSSEClient = sseClient
+
+        sseClient.connect(url: url, headers: [
+            "Authorization": "Bearer \(accessToken)"
+        ])
+
+        print("SSE streaming job status from \(url.absoluteString)")
+
+        return sseClient.publisher
+            .tryMap { data -> JobStatusDTO in
+                try JSONDecoder().decode(JobStatusDTO.self, from: data)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    /// REST fallback to poll job status.
+    func pollJobStatus(trackingId: String) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> {
+        guard let url = URL(string: "\(targetServerAddress)/auth/geo/status/\(trackingId)") else {
+            return Fail(error: NetworkError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+
+        guard let accessToken = LoginManager.shared.userData.adventuretubeJWTToken else {
+            return Fail(error: BackendError.unauthorized(message: "No access token available"))
+                .eraseToAnyPublisher()
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+
+        print("Polling job status from \(url.absoluteString)")
+
+        return self.session.dataTaskPublisher(for: request)
+            .tryMap { try self.handleHttpResponse($0, decodingType: ServiceResponse<JobStatusDTO>.self) }
+            .mapError { error -> Error in error }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
+    /// Delete published geo data by youtubeContentId
+    func deleteGeoData(youtubeContentId: String) -> AnyPublisher<ServiceResponse<String>, Error> {
+        guard let url = URL(string: "\(targetServerAddress)/auth/geo/\(youtubeContentId)") else {
+            return Fail(error: NetworkError.invalidURL)
+                .eraseToAnyPublisher()
+        }
+
+        guard let accessToken = LoginManager.shared.userData.adventuretubeJWTToken else {
+            return Fail(error: BackendError.unauthorized(message: "No access token available"))
+                .eraseToAnyPublisher()
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+
+        print("Deleting geo data at \(url.absoluteString)")
+
+        return self.session.dataTaskPublisher(for: request)
+            .tryMap { (data, response) -> ServiceResponse<String> in
+                guard let httpResponse = response as? HTTPURLResponse,
+                      (200...299).contains(httpResponse.statusCode) else {
+                    if let httpResponse = response as? HTTPURLResponse {
+                        let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
+                        throw BackendError.serverError(message: "Delete failed (\(httpResponse.statusCode)): \(errorMessage)")
+                    }
+                    throw BackendError.unknownError
+                }
+                return try JSONDecoder().decode(ServiceResponse<String>.self, from: data)
+            }
+            .mapError { error -> Error in error }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
+    /// Cancel any active SSE connection
+    func cancelSSEStream() {
+        activeSSEClient?.disconnect()
+        activeSSEClient = nil
     }
 
     /// Delete a story from the backend
