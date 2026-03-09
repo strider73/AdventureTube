@@ -567,6 +567,9 @@ class AddStoryViewVM : ObservableObject {
             return
         }
 
+        // Cancel any lingering SSE connection first
+        AdventureTubeAPIService.shared.cancelSSEStream()
+
         isPublishing = true
         publishingStatus = .uploading
 
@@ -574,10 +577,12 @@ class AddStoryViewVM : ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {
+                    print("Delete error: \(error)")
                     self?.publishingStatus = .failed(message: error.localizedDescription)
                 }
             }, receiveValue: { [weak self] _ in
                 guard let self = self else { return }
+                print("Delete succeeded for youtubeId: \(youtubeId)")
                 self.storyEntity?.isPublished = false
                 self.isStoryPublished = false
                 self.manager.save()
