@@ -99,6 +99,8 @@
 		B4003BCB288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B51288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift */; };
 		B4003BCC288525E5002926F1 /* YoutubeAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B52288525E5002926F1 /* YoutubeAPIService.swift */; };
 		B4003BCD288525E5002926F1 /* DownloadPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B54288525E5002926F1 /* DownloadPublisher.swift */; };
+		9EA3CC135B618D159C4BB80A /* JobStatusDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9506C71760D3FFAF1DB52ACC /* JobStatusDTO.swift */; };
+		36E83D049CCA131D4A287B14 /* SSEClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57301BE9F58E1B5E8074647B /* SSEClient.swift */; };
 		B4003BCE288525E5002926F1 /* LoginServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B57288525E5002926F1 /* LoginServiceProtocol.swift */; };
 		B4003BCF288525E5002926F1 /* LoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B58288525E5002926F1 /* LoginManager.swift */; };
 		B4003BD0288525E5002926F1 /* InstagramLoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B5A288525E5002926F1 /* InstagramLoginService.swift */; };
@@ -268,6 +270,8 @@
 		B4003B51288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleMapAndPlaceAPIService.swift; sourceTree = "<group>"; };
 		B4003B52288525E5002926F1 /* YoutubeAPIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YoutubeAPIService.swift; sourceTree = "<group>"; };
 		B4003B54288525E5002926F1 /* DownloadPublisher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadPublisher.swift; sourceTree = "<group>"; };
+		9506C71760D3FFAF1DB52ACC /* JobStatusDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobStatusDTO.swift; sourceTree = "<group>"; };
+		57301BE9F58E1B5E8074647B /* SSEClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSEClient.swift; sourceTree = "<group>"; };
 		B4003B57288525E5002926F1 /* LoginServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginServiceProtocol.swift; sourceTree = "<group>"; };
 		B4003B58288525E5002926F1 /* LoginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginManager.swift; sourceTree = "<group>"; };
 		B4003B5A288525E5002926F1 /* InstagramLoginService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstagramLoginService.swift; sourceTree = "<group>"; };
@@ -728,6 +732,7 @@
 			isa = PBXGroup;
 			children = (
 				B4003B54288525E5002926F1 /* DownloadPublisher.swift */,
+				57301BE9F58E1B5E8074647B /* SSEClient.swift */,
 			);
 			path = NetworkService;
 			sourceTree = "<group>";
@@ -888,6 +893,7 @@
 				B46E34072C3638AA0025DE65 /* DTO */,
 				B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */,
 				B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */,
+				9506C71760D3FFAF1DB52ACC /* JobStatusDTO.swift */,
 				B4BC1D242F1E0B24005CA725 /* StoryDTO.swift */,
 			);
 			path = Adventuretube;
@@ -1291,6 +1297,8 @@
 				B46AF5552C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift in Sources */,
 				B4003B7A288525E5002926F1 /* HapticFeedBack.swift in Sources */,
 				B4003BCD288525E5002926F1 /* DownloadPublisher.swift in Sources */,
+				36E83D049CCA131D4A287B14 /* SSEClient.swift in Sources */,
+				9EA3CC135B618D159C4BB80A /* JobStatusDTO.swift in Sources */,
 				B4003BAA288525E5002926F1 /* GoogleSearchMapView.swift in Sources */,
 				B4003B83288525E5002926F1 /* CheckBoxView.swift in Sources */,
 				B4003BD7288525E5002926F1 /* PreviewProvider.swift in Sources */,

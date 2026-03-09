@@ -40,13 +40,27 @@ extension SaveError:LocalizedError{
         }
     }
 }
+enum PublishingStatus {
+    case idle
+    case uploading
+    case streaming
+    case pollingFallback
+    case completed(chaptersCount: Int, placesCount: Int)
+    case duplicate
+    case failed(message: String)
+}
+
 class AddStoryViewVM : ObservableObject {
     @Published var adventureTubeData : AdventureTubeData?
     let youtubeContentItem       : YoutubeContentItem
-    
+
     @Published  var actionSheet : AddStoryViewActiveSheet?
-    
-    
+
+    // MARK: - Publishing Status
+    @Published var publishingStatus: PublishingStatus = .idle
+    @Published var isPublishing: Bool = false
+    @Published var isStoryPublished: Bool = false
+
     //These are all data to store in core data
     @Published var categorySelection : [Category] = []
     @Published var durationSelection : Duration = .select {
@@ -172,6 +186,7 @@ class AddStoryViewVM : ObservableObject {
             if stories.count > 0{
                 storyEntity = stories.first
                 createChapterViewVM.storyEntity = stories.first
+                isStoryPublished = stories.first?.isPublished ?? false
                 print("found story entity from coredata")
             }else{
                 //create new storyentity
@@ -401,90 +416,177 @@ class AddStoryViewVM : ObservableObject {
             ApplyStoryToCoreData(storyEntity: storyEntity)
         }
     }
-    //{"places.location":{$near :  {$maxDistance :250000 , $geometry:{type:"Point",coordinates:[141.6041,-38.3]}}}}
+    // MARK: - Async Publish with SSE Job Tracking
+
     func uploadStory(){
-        
-        do{
+        do {
             try validaterAllContentsBeforeStoreToCoreData()
-            //all validation has been passed
-            //bring the target entity from coredata
-            //            print("story will be saved in coredata")
-            //            addStoryToCoreData()
-            
-        }catch{
+        } catch {
             print("there is error \(error.localizedDescription)")
             isShowErrorMessage = true
             errorMessage = error.localizedDescription
+            return
         }
-        
-        let request = NSFetchRequest<StoryEntity>(entityName:"StoryEntity")
+
+        let fetchRequest = NSFetchRequest<StoryEntity>(entityName:"StoryEntity")
         let filter = NSPredicate(format: "youtubeId == %@", youtubeContentItem.contentDetails.videoId)
-        request.predicate = filter
-        
-        var targetStoryEntity : StoryEntity?
-        
-        do{
-            let stories = try manager.context.fetch(request)
+        fetchRequest.predicate = filter
+
+        var targetStoryEntity: StoryEntity?
+
+        do {
+            let stories = try manager.context.fetch(fetchRequest)
             if stories.count > 0 {
                 targetStoryEntity = stories.first
                 print("found story from coreData")
-                
-                
             }
-        }catch let error {
+        } catch let error {
             print("Error fetching. \(error.localizedDescription)")
         }
-        
+
+        guard let storyEntity = targetStoryEntity else {
+            publishingStatus = .failed(message: "Story not found in local storage")
+            isPublishing = true
+            return
+        }
+
         do {
-            if let storyEntity = targetStoryEntity {
-                
-                guard let url = URL(string: APIService.rasberryTestServer.address) else { return }
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                request.httpBody = try createJsonFromStory(storyEntity: storyEntity)
-                
-                URLSession.DataTaskPublisher(request: request, session: .shared)
-                //inspect response before inspection the data
-                //and throw an Error if the response is unacceptable
-                    .tryMap { data,response -> Data in
-                        guard let httpResponse = response as? HTTPURLResponse,
-                              (200...299).contains(httpResponse.statusCode) else{
-                            if let mimeType = response.mimeType,
-                               mimeType == "application/json"{
-                                
-                                let responseMessage = try JSONDecoder().decode(ResponseMessage.self, from: data)
-                                DispatchQueue.main.async {
-                                    self.actionSheet = .uploadFailByYoutubeIdSheet
-                                }
-                                throw APIError.apiError(reason: responseMessage.message)
-                            }
-                            throw APIError.unknown
-                        }
-                        return data
+            let jsonData = try createJsonFromStory(storyEntity: storyEntity)
+
+            isPublishing = true
+            publishingStatus = .uploading
+
+            AdventureTubeAPIService.shared.publishGeoData(jsonData)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion {
+                        print("Publish error: \(error.localizedDescription)")
+                        self?.publishingStatus = .failed(message: error.localizedDescription)
                     }
-                    .decode(type: ResponseMessage.self, decoder: JSONDecoder())
-                    .sink(receiveCompletion: { completion in
-                        switch completion{
-                        case .finished:
-                            break
-                        case .failure(let error):
-                            print(error.localizedDescription)
-                        }
-                    }, receiveValue: { responseMessage in
-                        print("responseMessage \(responseMessage)")
-                        DispatchQueue.main.async {
-                            self.actionSheet = .uploadSuccessSheet
-                            storyEntity.isPublished = true
-                            self.manager.save()
-                        }                    })
-                    .store(in: &cancellables)
-            }
-        }catch let error{
+                }, receiveValue: { [weak self] response in
+                    guard let self = self else { return }
+                    if response.success, let jobStatus = response.data {
+                        print("Publish accepted, trackingId: \(jobStatus.trackingId)")
+                        self.startSSETracking(trackingId: jobStatus.trackingId)
+                    } else {
+                        self.publishingStatus = .failed(message: response.message ?? "Publish request failed")
+                    }
+                })
+                .store(in: &cancellables)
+        } catch let error {
             print("Error create json. \(error.localizedDescription)")
+            publishingStatus = .failed(message: error.localizedDescription)
+            isPublishing = true
         }
     }
-    
+
+    private func startSSETracking(trackingId: String) {
+        publishingStatus = .streaming
+
+        AdventureTubeAPIService.shared.streamJobStatus(trackingId: trackingId)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self = self else { return }
+                if case .failure(let error) = completion {
+                    print("SSE error, falling back to polling: \(error.localizedDescription)")
+                    self.startPollingFallback(trackingId: trackingId)
+                }
+            }, receiveValue: { [weak self] jobStatus in
+                self?.handleJobStatus(jobStatus)
+            })
+            .store(in: &cancellables)
+    }
+
+    private func startPollingFallback(trackingId: String) {
+        publishingStatus = .pollingFallback
+        var pollCount = 0
+        let maxPolls = 20
+
+        Timer.publish(every: 3.0, on: .main, in: .common)
+            .autoconnect()
+            .prefix(maxPolls)
+            .flatMap { [weak self] _ -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> in
+                pollCount += 1
+                print("Polling attempt \(pollCount)/\(maxPolls)")
+                guard self != nil else {
+                    return Fail(error: BackendError.unknownError).eraseToAnyPublisher()
+                }
+                return AdventureTubeAPIService.shared.pollJobStatus(trackingId: trackingId)
+            }
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self = self else { return }
+                if case .failure(let error) = completion {
+                    self.publishingStatus = .failed(message: error.localizedDescription)
+                } else {
+                    // Completed all polls without terminal status
+                    if case .pollingFallback = self.publishingStatus {
+                        self.publishingStatus = .failed(message: "Publish timed out. Please check your story status later.")
+                    }
+                }
+            }, receiveValue: { [weak self] response in
+                guard let self = self, let jobStatus = response.data else { return }
+                if jobStatus.status.isTerminal {
+                    self.handleJobStatus(jobStatus)
+                    // Cancel remaining polls by cancelling subscriptions
+                    // Terminal status reached, no more polls needed
+                }
+            })
+            .store(in: &cancellables)
+    }
+
+    private func handleJobStatus(_ jobStatus: JobStatusDTO) {
+        switch jobStatus.status {
+        case .COMPLETED:
+            storyEntity?.isPublished = true
+            isStoryPublished = true
+            manager.save()
+            publishingStatus = .completed(chaptersCount: jobStatus.chaptersCount, placesCount: jobStatus.placesCount)
+            AdventureTubeAPIService.shared.cancelSSEStream()
+        case .DUPLICATE:
+            publishingStatus = .duplicate
+            AdventureTubeAPIService.shared.cancelSSEStream()
+        case .FAILED:
+            publishingStatus = .failed(message: jobStatus.errorMessage ?? "Publishing failed on server")
+            AdventureTubeAPIService.shared.cancelSSEStream()
+        case .PENDING:
+            publishingStatus = .streaming
+        }
+    }
+
+    func dismissPublishingOverlay() {
+        publishingStatus = .idle
+        isPublishing = false
+        AdventureTubeAPIService.shared.cancelSSEStream()
+    }
+
+    func deletePublishedStory() {
+        guard let youtubeId = storyEntity?.youtubeId, !youtubeId.isEmpty else {
+            isShowErrorMessage = true
+            errorMessage = "No story to delete"
+            return
+        }
+
+        isPublishing = true
+        publishingStatus = .uploading
+
+        AdventureTubeAPIService.shared.deleteGeoData(youtubeContentId: youtubeId)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                if case .failure(let error) = completion {
+                    self?.publishingStatus = .failed(message: error.localizedDescription)
+                }
+            }, receiveValue: { [weak self] response in
+                guard let self = self else { return }
+                self.storyEntity?.isPublished = false
+                self.isStoryPublished = false
+                self.manager.save()
+                self.isPublishing = false
+                self.publishingStatus = .idle
+            })
+            .store(in: &cancellables)
+    }
+
     enum APIError: Error, LocalizedError {
         case unknown, apiError(reason: String)
         
