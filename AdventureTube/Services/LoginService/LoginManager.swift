@@ -52,12 +52,16 @@ class LoginManager : ObservableObject  {
     static let shared = LoginManager()
     // Properties with private(set) to restrict external modification
     @Published private(set) var userData: UserModel = UserModel()
+    /// Skip UserDefaults save during init to avoid overwriting stored tokens
+    private var isRestoringSession = false
     @Published private(set) var loginState: State = .initial {
         willSet {
             switch newValue {
                 case .signedIn:
                     print("loginState :===signedIn===")
-                    saveUserStateToUserDefault()
+                    if !isRestoringSession {
+                        saveUserStateToUserDefault()
+                    }
 
                 case .signedOut:
                     print("loginState :===signedOut===")
@@ -116,21 +120,26 @@ class LoginManager : ObservableObject  {
                 switch(adventureUser.loginSource){
                     case .google:
                         // MARK:  in here AdventureTubeAPI called and intialize first time
+                        // Set signedIn immediately so HomeView shows the main app
+                        // while tokens are refreshed in the background
+                        isRestoringSession = true
+                        loginState = .signedIn
+                        isRestoringSession = false
                         loginService = GoogleLoginService()
                         if let  loginService = loginService{
                             loginService.restorePreviousSignIn(completion: {[weak self] result in
                                 guard let self = self else {return}
-                                
+
                                 // MARK: in here returned googleUser may have updated information for tokenId!
                                 switch result {
                                     case .success(let adventureUser):
-                                        // Update user object
+                                        // Update user object with refreshed tokens
                                         self.userData = adventureUser
                                         self.loginState = .signedIn
                                     case .failure(let error):
                                         print("error : \(error.localizedDescription)")
                                         self.loginState = .signedOut
-                                        
+
                                 }
                             })
                         }

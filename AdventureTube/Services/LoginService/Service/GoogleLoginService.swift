@@ -253,15 +253,11 @@ final class GoogleLoginService: LoginServiceProtocol {
                         // Update user model with refreshed tokens
                         adventureUser.adventuretubeJWTToken = accessToken
                         adventureUser.adventuretubeRefreshJWTToken = refreshToken
-                        //adventureUser.signed_in = true
+                        adventureUser.signed_in = true
                         print("adventureUser.adventuretubeJWTToken:  \(accessToken)");
                         completion(.success(adventureUser))
                     })
                     .store(in: &cancellables)
-                
-                
-                completion(.success(adventureUser))
-                print("user setting has been stored in enviromentObject")
             } else if let error = error {
                 print("There was an error restoring the previous sign-in: \(error)")
                 completion(.failure(error))

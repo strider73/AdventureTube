@@ -190,11 +190,12 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
     }
     
     func refreshToken(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
-        guard let url = URL(string: "\(targetServerAddress)/auth/refreshToken") else {
+        guard let url = URL(string: "\(targetServerAddress)/auth/token/refresh") else {
             fatalError("Invalid URL")
         }
-        
+
         guard let refreshToken = LoginManager.shared.userData.adventuretubeRefreshJWTToken else {
+            print("refreshToken() - No refresh token available, skipping refresh")
             return Fail(error: NetworkError.invalidURL)
                 .eraseToAnyPublisher()
         }
