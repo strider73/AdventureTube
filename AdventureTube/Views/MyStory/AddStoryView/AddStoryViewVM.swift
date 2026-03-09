@@ -576,7 +576,7 @@ class AddStoryViewVM : ObservableObject {
                 if case .failure(let error) = completion {
                     self?.publishingStatus = .failed(message: error.localizedDescription)
                 }
-            }, receiveValue: { [weak self] response in
+            }, receiveValue: { [weak self] _ in
                 guard let self = self else { return }
                 self.storyEntity?.isPublished = false
                 self.isStoryPublished = false

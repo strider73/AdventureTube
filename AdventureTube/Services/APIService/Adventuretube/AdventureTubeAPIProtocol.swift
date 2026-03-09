@@ -28,5 +28,5 @@ protocol AdventureTubeAPIProtocol:AnyObject{
     func publishGeoData(_ jsonData: Data) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error>
     func streamJobStatus(trackingId: String) -> AnyPublisher<JobStatusDTO, Error>
     func pollJobStatus(trackingId: String) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error>
-    func deleteGeoData(youtubeContentId: String) -> AnyPublisher<ServiceResponse<String>, Error>
+    func deleteGeoData(youtubeContentId: String) -> AnyPublisher<Bool, Error>
 }

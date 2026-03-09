@@ -569,7 +569,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
     }
 
     /// Delete published geo data by youtubeContentId
-    func deleteGeoData(youtubeContentId: String) -> AnyPublisher<ServiceResponse<String>, Error> {
+    func deleteGeoData(youtubeContentId: String) -> AnyPublisher<Bool, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/geo/\(youtubeContentId)") else {
             return Fail(error: NetworkError.invalidURL)
                 .eraseToAnyPublisher()
@@ -587,7 +587,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
         print("Deleting geo data at \(url.absoluteString)")
 
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { (data, response) -> ServiceResponse<String> in
+            .tryMap { (data, response) -> Bool in
                 guard let httpResponse = response as? HTTPURLResponse,
                       (200...299).contains(httpResponse.statusCode) else {
                     if let httpResponse = response as? HTTPURLResponse {
@@ -596,7 +596,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
                     }
                     throw BackendError.unknownError
                 }
-                return try JSONDecoder().decode(ServiceResponse<String>.self, from: data)
+                return true
             }
             .mapError { error -> Error in error }
             .receive(on: DispatchQueue.main)
