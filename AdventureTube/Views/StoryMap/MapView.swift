@@ -18,11 +18,6 @@ struct MapView: View {
         NavigationView{
             ZStack {
                 storyMap
-                VStack{
-                    Text("MapView")
-                        .foregroundColor(Color.black)
-                    //from here will be the mark on top of map
-                }
             }
             .preferredColorScheme(.light)
             .navigationBarHidden(true)

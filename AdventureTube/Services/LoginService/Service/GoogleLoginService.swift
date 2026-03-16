@@ -157,7 +157,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 return
                             }
                             // TODO: Add JWT token validation before storing
-                            adventureUser.adventuretubeJWTToken = accessToken
+                            adventureUser.adventuretubeAcessJWTToken = accessToken
                             adventureUser.adventuretubeRefreshJWTToken = refreshToken
                             adventureUser.signed_in = true
                             //MARK: Store Data in UserDefault
@@ -169,15 +169,49 @@ final class GoogleLoginService: LoginServiceProtocol {
                     // New user: Register with backend to create account
                     print("New user detected - performing backend registration")
                     adventuretubeAPI.registerUser(adventureUser: adventureUser)
-                        .sink(receiveCompletion: { completionSink in
+                        .sink(receiveCompletion: {[weak self] completionSink in
+                            guard let self = self else { return }
                             switch completionSink {
                                 case .finished:
                                     print("Request finished successfully")
                                 case .failure(let error):
-                                    print("BackEnd Connection Error: \(error.localizedDescription)")
-                                    adventureUser.signed_in = false;
-                                    completion(.failure(error))
-                                    // TODO: Implement user-facing error handling for backend failures
+                                    // 409 Conflict: User already exists on backend (e.g. app reinstall)
+                                    // Fall back to login instead of failing
+                                    if let backendError = error as? BackendError,
+                                       case .conflict = backendError {
+                                        print("User already exists (409 Conflict) - falling back to login")
+                                        self.adventuretubeAPI.loginWithPassword(adventureUser: adventureUser)
+                                            .sink(receiveCompletion: { loginCompletion in
+                                                switch loginCompletion {
+                                                    case .finished:
+                                                        print("Fallback login finished successfully")
+                                                    case .failure(let loginError):
+                                                        print("Fallback login also failed: \(loginError.localizedDescription)")
+                                                        adventureUser.signed_in = false
+                                                        completion(.failure(loginError))
+                                                }
+                                            }, receiveValue: { authResponse in
+                                                guard let accessToken = authResponse.accessToken,
+                                                      let refreshToken = authResponse.refreshToken
+                                                else {
+                                                    print("Failed to retrieve token from fallback login")
+                                                    adventureUser.signed_in = false
+                                                    let error = NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve token from backend"])
+                                                    completion(.failure(error))
+                                                    return
+                                                }
+                                                adventureUser.adventuretubeAcessJWTToken = accessToken
+                                                adventureUser.adventuretubeRefreshJWTToken = refreshToken
+                                                adventureUser.signed_in = true
+                                                print("Fallback login successful - adventureUser.adventuretubeJWTToken: \(accessToken)")
+                                                completion(.success(adventureUser))
+                                            })
+                                            .store(in: &self.cancellables)
+                                    } else {
+                                        print("BackEnd Connection Error: \(error.localizedDescription)")
+                                        adventureUser.signed_in = false
+                                        completion(.failure(error))
+                                    }
                             }
                         }, receiveValue: { authResponse in
                             // Process the received authResponse
@@ -193,7 +227,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 return
                             }
                             // TODO: Add JWT token validation before storing
-                            adventureUser.adventuretubeJWTToken = accessToken
+                            adventureUser.adventuretubeAcessJWTToken = accessToken
                             adventureUser.adventuretubeRefreshJWTToken = refreshToken
                             adventureUser.adventureTube_id = userId
                             adventureUser.signed_in = true
@@ -233,9 +267,13 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 print("Request finished successfully")
                             case .failure(let error):
                                 print("BackEnd Connection Error: \(error.localizedDescription)")
-                                adventureUser.signed_in = false;
+                                // Only mark as signed out if server explicitly rejected tokens
+                                // For network errors, keep signed_in so tokens aren't wiped
+                                if let backendError = error as? BackendError,
+                                   case .unauthorized = backendError {
+                                    adventureUser.signed_in = false
+                                }
                                 completion(.failure(error))
-                                // TODO: Implement user-facing error handling for backend failures
                         }
                     }, receiveValue: { authResponse in
                         // Process the received authResponse
@@ -251,7 +289,7 @@ final class GoogleLoginService: LoginServiceProtocol {
                             return
                         }
                         // Update user model with refreshed tokens
-                        adventureUser.adventuretubeJWTToken = accessToken
+                        adventureUser.adventuretubeAcessJWTToken = accessToken
                         adventureUser.adventuretubeRefreshJWTToken = refreshToken
                         adventureUser.signed_in = true
                         print("adventureUser.adventuretubeJWTToken:  \(accessToken)");

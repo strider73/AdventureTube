@@ -38,7 +38,7 @@ class MapViewVM : ObservableObject {
 
     /// Fetch geo data from backend and create one marker per story with YouTube thumbnail icons
     func fetchGeoData() {
-        apiService.fetchGeoData()
+        apiService.fetchStory()
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self = self else { return }
                 if case .failure(let error) = completion {

@@ -304,18 +304,20 @@ struct AddStoryView: View {
     // MARK: - Publishing Overlay
 
     private var publishingOverlay: some View {
-        Color.black.opacity(0.4)
-            .edgesIgnoringSafeArea(.all)
-            .overlay(
-                VStack(spacing: 20) {
-                    publishingStatusContent
-                }
-                .frame(width: 280)
-                .padding(30)
-                .background(Color.white)
-                .cornerRadius(20)
-                .shadow(radius: 10)
-            )
+        ZStack {
+            Color.black.opacity(0.4)
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {} // Block taps on background
+
+            VStack(spacing: 20) {
+                publishingStatusContent
+            }
+            .frame(width: 280)
+            .padding(30)
+            .background(Color.white)
+            .cornerRadius(20)
+            .shadow(radius: 10)
+        }
     }
 
     @ViewBuilder
@@ -352,6 +354,25 @@ struct AddStoryView: View {
             Text("\(chaptersCount) chapters, \(placesCount) places")
                 .font(.subheadline)
                 .foregroundColor(.gray)
+            Button("OK") {
+                addStoryVM.dismissPublishingOverlay()
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+        case .deleted:
+            Image(systemName: "checkmark.circle.fill")
+                .resizable()
+                .frame(width: 50, height: 50)
+                .foregroundColor(.green)
+            Text("Deleted!")
+                .font(.headline)
+            Text("Your story has been removed from the server.")
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
             Button("OK") {
                 addStoryVM.dismissPublishingOverlay()
             }

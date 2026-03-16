@@ -77,6 +77,15 @@ struct MyStoryListView: View {
                         }
                     }
                 }
+                .onChange(of: loginManager.userData.adventuretubeAcessJWTToken) { _ in
+                    // Reload when JWT token is refreshed (e.g. after session restore)
+                    if loginManager.hasYoutubeAccessScope &&
+                        myStoryListVM.youtubeContentItems.count == 0 {
+                        myStoryListVM.downloadYotubeContentsAndMappedWithCoreData{
+                            self.dataLoaded = true
+                        }
+                    }
+                }
                 .foregroundColor(Color.black)
                 .navigationDestination(for:YoutubeContentItem.self ) { selectedYoutubeContentItem in
                     StoryView(youtubeContentItem: selectedYoutubeContentItem, adventureTubeData: myStoryListVM.$adventureTubeData)

@@ -42,9 +42,9 @@ struct UserModel : Codable{
     var googleUserId  : String?
     //for Adventuretube
     var adventureTube_id : UUID?
-    var adventuretubeJWTToken: String? {
+    var adventuretubeAcessJWTToken: String? {
         didSet {
-            print("adventuretubeJWTToken changed to: \(adventuretubeJWTToken ?? "nil")")
+            print("adventuretubeJWTToken changed to: \(adventuretubeAcessJWTToken ?? "nil")")
         }
     }
     var adventuretubeRefreshJWTToken: String? {
