@@ -23,7 +23,7 @@ struct MapView: View {
             .navigationBarHidden(true)
         }
         .onAppear{
-            mapViewVM.fetchGeoData()
+            // Initial fetch happens when map reports first bounds via idleAt delegate
         }
         .sheet(isPresented: Binding<Bool>(
             get: { mapViewVM.selectedVideoID != nil },
@@ -40,7 +40,9 @@ struct MapView: View {
     var storyMap: some View {
         StoryMapViewControllerBridge(
             markers: $mapViewVM.markers,
-            getBoxPointOnMap: { _, _ in },
+            getBoxPointOnMap: { sw, ne in
+                mapViewVM.onMapBoundsChanged(sw: sw, ne: ne)
+            },
             onMarkerTap: { videoID in
                 mapViewVM.selectedVideoID = videoID
             }
