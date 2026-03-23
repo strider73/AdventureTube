@@ -43,6 +43,7 @@ extension SaveError:LocalizedError{
 enum PublishingStatus {
     case idle
     case uploading
+    case deleting
     case streaming
     case pollingFallback
     case completed(chaptersCount: Int, placesCount: Int)

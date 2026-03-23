@@ -41,7 +41,7 @@ struct AddStoryView: View {
     /// - `AddStoryMapViewVM` handles Google Place and Map API interactions to obtain confirmed location data.
     /// Keeping these responsibilities separate helps maintain a clean architecture and avoids mixing concerns.
     
-    @StateObject private var addStoryVM :AddStoryViewVM
+    @StateObject var addStoryVM :AddStoryViewVM
     @StateObject private var youtubeViewVM: YoutubeViewVM
     
     @State var title : String
@@ -301,128 +301,7 @@ struct AddStoryView: View {
     
     
     
-    // MARK: - Publishing Overlay
-
-    private var publishingOverlay: some View {
-        ZStack {
-            Color.black.opacity(0.4)
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture {} // Block taps on background
-
-            VStack(spacing: 20) {
-                publishingStatusContent
-            }
-            .frame(width: 280)
-            .padding(30)
-            .background(Color.white)
-            .cornerRadius(20)
-            .shadow(radius: 10)
-        }
-    }
-
-    @ViewBuilder
-    private var publishingStatusContent: some View {
-        switch addStoryVM.publishingStatus {
-        case .uploading:
-            ProgressView()
-                .scaleEffect(1.5)
-            Text("Uploading story...")
-                .font(.headline)
-        case .streaming:
-            ProgressView()
-                .scaleEffect(1.5)
-            Text("Publishing...")
-                .font(.headline)
-            Text("Receiving real-time updates")
-                .font(.caption)
-                .foregroundColor(.gray)
-        case .pollingFallback:
-            ProgressView()
-                .scaleEffect(1.5)
-            Text("Publishing...")
-                .font(.headline)
-            Text("Checking status...")
-                .font(.caption)
-                .foregroundColor(.gray)
-        case .completed(let chaptersCount, let placesCount):
-            Image(systemName: "checkmark.circle.fill")
-                .resizable()
-                .frame(width: 50, height: 50)
-                .foregroundColor(.green)
-            Text("Published!")
-                .font(.headline)
-            Text("\(chaptersCount) chapters, \(placesCount) places")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            Button("OK") {
-                addStoryVM.dismissPublishingOverlay()
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-        case .deleted:
-            Image(systemName: "checkmark.circle.fill")
-                .resizable()
-                .frame(width: 50, height: 50)
-                .foregroundColor(.green)
-            Text("Deleted!")
-                .font(.headline)
-            Text("Your story has been removed from the server.")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .multilineTextAlignment(.center)
-            Button("OK") {
-                addStoryVM.dismissPublishingOverlay()
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-        case .duplicate:
-            Image(systemName: "exclamationmark.triangle.fill")
-                .resizable()
-                .frame(width: 50, height: 50)
-                .foregroundColor(.orange)
-            Text("Already Exists")
-                .font(.headline)
-            Text("This story has already been published.")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .multilineTextAlignment(.center)
-            Button("OK") {
-                addStoryVM.dismissPublishingOverlay()
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-        case .failed(let message):
-            Image(systemName: "xmark.circle.fill")
-                .resizable()
-                .frame(width: 50, height: 50)
-                .foregroundColor(.red)
-            Text("Publishing Failed")
-                .font(.headline)
-            Text(message)
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .multilineTextAlignment(.center)
-            Button("OK") {
-                addStoryVM.dismissPublishingOverlay()
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .background(Color.blue)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-        case .idle:
-            EmptyView()
-        }
-    }
+    // MARK: - Publishing Overlay (see AddStoryView+Overlay.swift)
 
     func saveAllChanges(){
         //        if let selectedIndex = selectedIndex , let updateYoutubeTime = youtubeViewVM.currentTime {

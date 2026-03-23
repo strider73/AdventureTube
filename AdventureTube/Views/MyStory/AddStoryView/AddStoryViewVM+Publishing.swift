@@ -100,7 +100,7 @@ extension AddStoryViewVM {
         AdventureTubeAPIService.shared.cancelSSEStream()
 
         isPublishing = true
-        publishingStatus = .uploading
+        publishingStatus = .deleting
 
         AdventureTubeAPIService.shared.deleteStory(youtubeContentId: youtubeId)
             .receive(on: DispatchQueue.main)

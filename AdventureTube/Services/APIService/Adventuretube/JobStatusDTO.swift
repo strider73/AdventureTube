@@ -25,6 +25,6 @@ struct JobStatusDTO: Decodable {
 }
 
 enum JobStatusType: String, Decodable {
-    case PENDING, COMPLETED, FAILED
+    case PENDING, COMPLETED,DUPLICATED, FAILED
     var isTerminal: Bool { self != .PENDING }
 }

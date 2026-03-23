@@ -11,10 +11,10 @@ import Combine
 protocol AdventureTubeAPIProtocol:AnyObject{
     
     
-    func registerUser (adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error>
-    func loginWithPassword(adventureUser:UserModel) ->AnyPublisher<AuthResponse,Error>
-    func refreshToken(adventureUser:UserModel) ->AnyPublisher<AuthResponse,Error>
-    func signOut() -> AnyPublisher<RestAPIResponse, Error>
+    func registerUser (adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error>
+    func loginWithPassword(adventureUser:UserModel) ->AnyPublisher<ServiceResponse<AuthTokenData>, Error>
+    func refreshToken(adventureUser:UserModel) ->AnyPublisher<ServiceResponse<AuthTokenData>, Error>
+    func signOut() -> AnyPublisher<ServiceResponse<String>, Error>
     
     func getData<T: Decodable>(endpoint: String, id: Int?, returnData: T.Type) -> Future<T, Error>
     func fetchStory() -> AnyPublisher<[AdventureTubeData], Error>
@@ -30,5 +30,5 @@ protocol AdventureTubeAPIProtocol:AnyObject{
     func updateStory(_ story: StoryEntity) -> AnyPublisher<StoryResponse, Error>
     func syncMoments(_ moments: [PlaceEntity], toStory storyId: String) -> AnyPublisher<MomentSyncResponse, Error>
     func fetchUserStories() -> AnyPublisher<[StoryDTO], Error>
-    func deleteStory(_ storyId: String) -> AnyPublisher<RestAPIResponse, Error>
+    func deleteStory(_ storyId: String) -> AnyPublisher<ServiceResponse<String>, Error>
 }

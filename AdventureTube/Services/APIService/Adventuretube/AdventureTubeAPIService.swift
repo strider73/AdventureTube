@@ -3,36 +3,50 @@
 //  AdventureTube
 //
 //  Created by chris Lee on 29/11/2023.
-//  API Service  will be used by user
-//  with adventuretube_id, refresh_token , access_token ....
-//  so its crutial that user data has been set and update accordingly
-//  in order to do that userdata will come from LoginManager.userData
+//
+//  Backend API service layer for AdventureTube iOS app.
+//  All authenticated requests require valid JWT tokens managed via LoginManager.userData.
+//
+//  Architecture:
+//  - Singleton pattern via `shared` instance
+//  - Uses Combine publishers for async request/response
+//  - Token lifecycle: accessToken (short-lived) + refreshToken (long-lived)
+//  - Gateway validates tokens before forwarding — expired tokens get 401 at gateway level
+//
+//  Token Refresh Flow:
+//  1. On app launch: restorePreviousSignIn → refreshToken() called directly
+//     - If 401 (expired/invalid refresh token) → signs user out
+//     - Gateway now catches expired tokens early and returns 401 immediately
+//  2. During normal usage: withTokenRefresh() interceptor wraps authenticated requests
+//     - If 401 → auto-refreshes token → retries original request once
+//     - If refresh also fails → forces sign out
 
 import Foundation
 import UIKit
 import Combine
 
-class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
+class AdventureTubeAPIService: NSObject, AdventureTubeAPIProtocol {
 
-    //This is SingleTon Parttern
+    // MARK: - Singleton
+
     static let shared = AdventureTubeAPIService()
-    private var cancellables = Set<AnyCancellable>()
-    //private  var targetServerAddress: String = "http://192.168.1.105:8030"
-    private  var targetServerAddress: String = "https://api.travel-tube.com"
 
-    /// Active SSE client for job status streaming
+    // MARK: - Properties
+
+    private var cancellables = Set<AnyCancellable>()
+    private var targetServerAddress: String = "https://api.travel-tube.com"
     private var activeSSEClient: SSEClient?
 
-    // URLSession with timeout configuration
     private let session: URLSession = {
         let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 600 // 30 seconds for request timeout
-        configuration.timeoutIntervalForResource = 600 // 60 seconds for resource timeout
+        configuration.timeoutIntervalForRequest = 600
+        configuration.timeoutIntervalForResource = 600
         return URLSession(configuration: configuration)
     }()
 
     // MARK: - Utility / Shared Helpers
 
+    /// Generic GET request for any Decodable type (no auth required)
     func getData<T: Decodable>(endpoint: String, id: Int? = nil, returnData: T.Type) -> Future<T, Error> {
         return Future<T, Error> { [weak self] promise in
             guard let self = self, let url = URL(string: endpoint) else {
@@ -59,56 +73,68 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
                                 promise(.failure(NetworkError.unknown))
                         }
                     }
-                }, receiveValue: {  data in
-                    promise(.success(data)
-                    ) })
+                }, receiveValue: { data in
+                    promise(.success(data))
+                })
                 .store(in: &self.cancellables)
         }
     }
 
-    private func decodeError<T:Decodable> (_ data:Data, to type: T.Type , defaultMessage: String) -> String {
-        let decodedError = try? JSONDecoder().decode(type, from:  data)
-        return (decodedError as? AuthResponse)?.errorMessage ?? defaultMessage
+  /// Decode a ServiceResponse error body, falling back to a default message.
+    private func decodeError(_ data: Data, defaultMessage: String) -> (message: String, errorCode: String?) {
+        // Try ServiceResponse format first: {success, message, errorCode, data, timestamp}
+        guard let serviceResponse = try? JSONDecoder().decode(ServiceResponse<String>.self, from: data),
+           let message = serviceResponse.message else {
+            return (defaultMessage, nil)
+        }
+        return (message, serviceResponse.errorCode)
+
     }
 
-    private func handleHttpResponse<T:Decodable>(_ result:URLSession.DataTaskPublisher.Output, decodingType: T.Type) throws -> T{
-        guard let httpResponse  = result.response as? HTTPURLResponse else {
+    /// Unified HTTP response handler — maps status codes to BackendError cases
+    /// Used by all API methods to ensure consistent error handling
+    private func handleHttpResponse<T: Decodable>(_ result: URLSession.DataTaskPublisher.Output, decodingType: T.Type) throws -> T {
+        guard let httpResponse = result.response as? HTTPURLResponse else {
             throw BackendError.unknownError
         }
         switch httpResponse.statusCode {
             case 200...299:
                 return try JSONDecoder().decode(decodingType, from: result.data)
+            case 400:
+                let error = decodeError(result.data, defaultMessage: NSLocalizedString("Validation failed.", comment: ""))
+                throw BackendError.badRequest(message: error.message, errorCode: error.errorCode)
             case 401:
-                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Unauthorized access.", comment: ""))
-                throw BackendError.unauthorized(message: errorMessage)
+                let error = decodeError(result.data, defaultMessage: NSLocalizedString("Unauthorized access.", comment: ""))
+                throw BackendError.unauthorized(message: error.message, errorCode: error.errorCode)
             case 404:
-                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Resource not found.", comment: ""))
-                throw BackendError.notFound(message: errorMessage)
+                let error = decodeError(result.data, defaultMessage: NSLocalizedString("Resource not found.", comment: ""))
+                throw BackendError.notFound(message: error.message, errorCode: error.errorCode)
             case 409:
-                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Resource conflict.", comment: ""))
-                throw BackendError.conflict(message: errorMessage)
+                let error = decodeError(result.data, defaultMessage: NSLocalizedString("Resource conflict.", comment: ""))
+                throw BackendError.conflict(message: error.message, errorCode: error.errorCode)
             case 500:
-                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Internal server error.", comment: ""))
-                throw BackendError.internalServerError(message: errorMessage)
+                let error = decodeError(result.data, defaultMessage: NSLocalizedString("Internal server error.", comment: ""))
+                throw BackendError.internalServerError(message: error.message, errorCode: error.errorCode)
             case 502, 503, 504:
-                if let serviceResponse = try? JSONDecoder().decode(ServiceResponse<String>.self, from: result.data),
-                   let message = serviceResponse.message {
-                    throw BackendError.serverError(message: message)
-                }
-                let rawBody = String(data: result.data, encoding: .utf8) ?? "Service unavailable"
-                throw BackendError.serverError(message: "Service temporarily unavailable (\(httpResponse.statusCode)): \(rawBody)")
+                let error = decodeError(result.data, defaultMessage: "Service temporarily unavailable (\(httpResponse.statusCode))")
+                throw BackendError.serverError(message: error.message, errorCode: error.errorCode)
             default:
-                let errorMessage = decodeError( result.data, to: AuthResponse.self, defaultMessage: NSLocalizedString("Unknown error.", comment: ""))
-                throw BackendError.serverError(message: errorMessage)
-            }
+                let error = decodeError(result.data, defaultMessage: NSLocalizedString("Unknown error.", comment: ""))
+                throw BackendError.serverError(message: error.message, errorCode: error.errorCode)
+        }
     }
 
     // MARK: - Token Refresh Interceptor
 
     /// Wraps an authenticated request with automatic token refresh on 401.
+    ///
+    /// Flow:
     /// 1. Executes the request with the current access token
     /// 2. If 401 → calls refreshToken() → updates LoginManager → retries once
-    /// 3. If refresh fails → forces sign out → login screen
+    /// 3. If refresh also fails → forces sign out → returns to login screen
+    ///
+    /// Note: This is used for in-session API calls (publishStory, deleteStory, etc.).
+    /// The initial app launch uses refreshToken() directly from restorePreviousSignIn.
     private func withTokenRefresh<T>(
         _ makeRequest: @escaping (String) -> AnyPublisher<T, Error>
     ) -> AnyPublisher<T, Error> {
@@ -119,7 +145,6 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
 
         return makeRequest(accessToken)
             .catch { [weak self] error -> AnyPublisher<T, Error> in
-                // Only attempt refresh for unauthorized errors
                 guard let self = self,
                       let backendError = error as? BackendError,
                       case .unauthorized = backendError else {
@@ -130,14 +155,14 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
 
                 let userData = LoginManager.shared.userData
                 return self.refreshToken(adventureUser: userData)
-                    .flatMap { authResponse -> AnyPublisher<T, Error> in
-                        guard let newAccessToken = authResponse.accessToken,
-                              let newRefreshToken = authResponse.refreshToken else {
+                    .flatMap { response -> AnyPublisher<T, Error> in
+                        guard let tokenData = response.data,
+                              let newAccessToken = tokenData.accessToken,
+                              let newRefreshToken = tokenData.refreshToken else {
                             return Fail(error: BackendError.unauthorized(message: "Token refresh returned no tokens"))
                                 .eraseToAnyPublisher()
                         }
 
-                        // Update stored tokens
                         DispatchQueue.main.async {
                             var updatedUser = LoginManager.shared.userData
                             updatedUser.adventuretubeAcessJWTToken = newAccessToken
@@ -146,12 +171,9 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
                         }
 
                         print("Token refreshed — retrying original request")
-
-                        // Retry with new token
                         return makeRequest(newAccessToken)
                     }
                     .catch { refreshError -> AnyPublisher<T, Error> in
-                        // Refresh failed — force sign out
                         print("Token refresh failed — signing out")
                         DispatchQueue.main.async {
                             LoginManager.shared.updateLoginState(.signedOut)
@@ -163,9 +185,11 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    // MARK: - Authentication (Create/Read tokens)
+    // MARK: - Authentication
 
-    func registerUser(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+    /// Register a new user with Google ID token
+    /// Endpoint: POST /auth/users
+    func registerUser(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/users") else {
             fatalError("Invalid URL")
         }
@@ -173,23 +197,23 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        // Safely unwrap optional properties
+
         guard let idToken = adventureUser.idToken,
               let email = adventureUser.emailAddress
         else {
             fatalError("Missing user information")
         }
         let body: [String: Any] = [
-            "googleIdToken": idToken,"email":email
+            "googleIdToken": idToken, "email": email
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
         print("Request URL: \(url.absoluteString)")
-        print("googleIdToken : \(idToken)")
-        print("googleIdToken : \(email)")
+        print("googleIdToken: \(idToken)")
+        print("email: \(email)")
 
         return self.session.dataTaskPublisher(for: request)
             .tryMap {
-                try self.handleHttpResponse($0, decodingType: AuthResponse.self)
+                try self.handleHttpResponse($0, decodingType: ServiceResponse<AuthTokenData>.self)
             }
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
@@ -204,7 +228,9 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    func loginWithPassword(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+    /// Login with Google ID token to obtain access + refresh tokens
+    /// Endpoint: POST /auth/token
+    func loginWithPassword(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/token") else {
             fatalError("Invalid URL")
         }
@@ -212,28 +238,26 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        // Safely unwrap optional properties
-        guard let idToken = adventureUser.idToken
-        else {
+
+        guard let idToken = adventureUser.idToken else {
             fatalError("Missing user information")
         }
         let body: [String: Any] = [
             "googleIdToken": idToken,
         ]
         request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: [])
-        print("googleIdToken : \(idToken)")
+        print("googleIdToken: \(idToken)")
         print("Request URL: \(url.absoluteString)")
 
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { result -> AuthResponse in
-                // Add detailed logging
+            .tryMap { result -> ServiceResponse<AuthTokenData> in
                 if let httpResponse = result.response as? HTTPURLResponse {
                     print("Response Status Code: \(httpResponse.statusCode)")
                 }
                 if let responseString = String(data: result.data, encoding: .utf8) {
                     print("Response Body: \(responseString)")
                 }
-                return try self.handleHttpResponse(result, decodingType: AuthResponse.self)
+                return try self.handleHttpResponse(result, decodingType: ServiceResponse<AuthTokenData>.self)
             }
             .mapError { error -> BackendError in
                 print("Error Details: \(error)")
@@ -253,7 +277,15 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    func refreshToken(adventureUser: UserModel) -> AnyPublisher<AuthResponse, Error> {
+    /// Refresh the access token using the stored refresh token.
+    /// Used in two scenarios:
+    /// 1. App launch — called directly from restorePreviousSignIn to restore session
+    /// 2. Token expired during usage — called by withTokenRefresh() interceptor
+    ///
+    /// The gateway validates the refresh token before forwarding to auth-service.
+    //authRes/ If expired/invalid, gateway returns 401 immediately (no downstream service calls).
+    /// Endpoint: POST /auth/token/refresh
+    func refreshToken(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/token/refresh") else {
             fatalError("Invalid URL")
         }
@@ -268,8 +300,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(refreshToken, forHTTPHeaderField: "Authorization")
-        guard let idToken = adventureUser.idToken
-        else {
+
+        guard let idToken = adventureUser.idToken else {
             fatalError("Missing user information")
         }
         let body: [String: Any] = [
@@ -279,8 +311,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
         print("Sending refreshToken request to \(url.absoluteString) with refreshToken: \(refreshToken)")
 
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { try self.handleHttpResponse($0, decodingType: AuthResponse.self)
-            }
+            .tryMap { try self.handleHttpResponse($0, decodingType: ServiceResponse<AuthTokenData>.self) }
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
                     return backendError
@@ -294,7 +325,12 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    func signOut() -> AnyPublisher<RestAPIResponse, Error> {
+    /// Revoke the refresh token (sign out from backend)
+    /// Endpoint: POST /auth/token/revoke
+    ///  SignOut using a refresh token instead access because
+    ///   1. This is delete process exposing of refresh token shouldn't be a issue because after deleting from DB, token become useless
+    ///   2. Lot less chance of rejecting from gateway becuase of long life span
+    func signOut() -> AnyPublisher<ServiceResponse<String>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/token/revoke") else {
             fatalError("Invalid URL")
         }
@@ -310,8 +346,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
         print("Sending signOut request to \(url.absoluteString) with refreshToken: \(refreshToken)")
 
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { try self.handleHttpResponse($0, decodingType: RestAPIResponse.self)
-            }
+            .tryMap { try self.handleHttpResponse($0, decodingType: ServiceResponse<String>.self) }
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
                     return backendError
@@ -323,15 +358,14 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
-
     }
 
-    // MARK: - Story CRUD (via /auth/geo/* — Kafka + SSE flow)
-
-    // MARK: Create
+    // MARK: - Geo Story CRUD (via /auth/geo/* — Kafka + SSE flow)
 
     /// Publish geo data asynchronously via Kafka.
     /// Returns 202 Accepted with a trackingId for SSE streaming.
+    /// Wrapped with withTokenRefresh for automatic 401 retry.
+    /// Endpoint: POST /auth/geo/save
     func publishStory(_ jsonData: Data) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/geo/save") else {
             return Fail(error: NetworkError.invalidURL)
@@ -369,10 +403,46 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
         }
     }
 
-    // MARK: Read
+    /// Delete published geo data by youtubeContentId.
+    /// Wrapped with withTokenRefresh for automatic 401 retry.
+    /// Endpoint: DELETE /auth/geo/{youtubeContentId}
+    func deleteStory(youtubeContentId: String) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> {
+        guard let url = URL(string: "\(targetServerAddress)/auth/geo/\(youtubeContentId)") else {
+            return Fail(error: NetworkError.invalidURL)
+                .eraseToAnyPublisher()
+        }
 
-    /// Fetch public geo data (adventure stories with locations) from backend
-    /// - Returns: Publisher with array of AdventureTubeData or Error
+        return withTokenRefresh { accessToken in
+            var request = URLRequest(url: url)
+            request.httpMethod = "DELETE"
+            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+
+            print("Deleting geo data at \(url.absoluteString)")
+
+            return self.session.dataTaskPublisher(for: request)
+                .tryMap { (data, response) -> ServiceResponse<JobStatusDTO> in
+                    guard let httpResponse = response as? HTTPURLResponse,
+                          (200...299).contains(httpResponse.statusCode) else {
+                        if let httpResponse = response as? HTTPURLResponse {
+                            if httpResponse.statusCode == 401 {
+                                let errorMessage = String(data: data, encoding: .utf8) ?? "Unauthorized"
+                                throw BackendError.unauthorized(message: errorMessage)
+                            }
+                            let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
+                            throw BackendError.serverError(message: "Deleting failed (\(httpResponse.statusCode)): \(errorMessage)")
+                        }
+                        throw BackendError.unknownError
+                    }
+                    return try JSONDecoder().decode(ServiceResponse<JobStatusDTO>.self, from: data)
+                }
+                .mapError { error -> Error in error }
+                .receive(on: DispatchQueue.main)
+                .eraseToAnyPublisher()
+        }
+    }
+
+    /// Fetch public geo data — no authentication required
+    /// Endpoint: GET /web/geo/data
     func fetchStory() -> AnyPublisher<[AdventureTubeData], Error> {
         guard let url = URL(string: "\(targetServerAddress)/web/geo/data") else {
             return Fail(error: NetworkError.invalidURL)
@@ -410,7 +480,10 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    /// Open an SSE stream for real-time job status updates.
+    // MARK: - Job Status (SSE + Polling)
+
+    /// Open an SSE stream for real-time job status updates
+    /// Endpoint: GET /auth/geo/status/stream/{trackingId}
     func streamJobStatus(trackingId: String) -> AnyPublisher<JobStatusDTO, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/geo/status/stream/\(trackingId)") else {
             return Fail(error: NetworkError.invalidURL)
@@ -422,7 +495,6 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
                 .eraseToAnyPublisher()
         }
 
-        // Disconnect previous SSE client if any
         activeSSEClient?.disconnect()
 
         let sseClient = SSEClient()
@@ -441,7 +513,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    /// REST fallback to poll job status.
+    /// REST fallback to poll job status
+    /// Endpoint: GET /auth/geo/status/{trackingId}
     func pollJobStatus(trackingId: String) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/geo/status/\(trackingId)") else {
             return Fail(error: NetworkError.invalidURL)
@@ -466,58 +539,16 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    // MARK: Delete
-
-    /// Delete published geo data by youtubeContentId
-    func deleteStory(youtubeContentId: String) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> {
-        guard let url = URL(string: "\(targetServerAddress)/auth/geo/\(youtubeContentId)") else {
-            return Fail(error: NetworkError.invalidURL)
-                .eraseToAnyPublisher()
-        }
-
-        
-        return withTokenRefresh { accessToken in
-            var request = URLRequest(url: url)
-            request.httpMethod = "DELETE"
-            request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-            
-            print("Deleting geo data at \(url.absoluteString)")
-
-            
-            return self.session.dataTaskPublisher(for: request)
-                .tryMap { (data, response) -> ServiceResponse<JobStatusDTO> in
-                    guard let httpResponse = response as? HTTPURLResponse,
-                          (200...299).contains(httpResponse.statusCode) else {
-                        if let httpResponse = response as? HTTPURLResponse {
-                            if httpResponse.statusCode == 401 {
-                                let errorMessage = String(data: data, encoding: .utf8) ?? "Unauthorized"
-                                throw BackendError.unauthorized(message: errorMessage)
-                            }
-                            let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown error"
-                            throw BackendError.serverError(message: "Deleting failed (\(httpResponse.statusCode)): \(errorMessage)")
-                        }
-                        throw BackendError.unknownError
-                    }
-                    return try JSONDecoder().decode(ServiceResponse<JobStatusDTO>.self, from: data)
-                }
-                .mapError { error -> Error in error }
-                .receive(on: DispatchQueue.main)
-                .eraseToAnyPublisher()
-            
-        }
-    }
-
     /// Cancel any active SSE connection
     func cancelSSEStream() {
         activeSSEClient?.disconnect()
         activeSSEClient = nil
     }
 
-    // MARK: - Story/Moments Sync (via /api/stories/* — DEAD CODE, not called anywhere in the app)
-
-    // MARK: Create
+    // MARK: - Story/Moments Sync (via /api/stories/* — currently unused)
 
     /// Sync a complete story with all chapters and moments to backend
+    /// Endpoint: POST /api/stories
     func syncStory(_ story: StoryEntity) -> AnyPublisher<StoryResponse, Error> {
         guard let url = URL(string: "\(targetServerAddress)/api/stories") else {
             return Fail(error: NetworkError.invalidURL)
@@ -529,7 +560,6 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
                 .eraseToAnyPublisher()
         }
 
-        // Convert CoreData entity to DTO
         let storyDTO = story.toDTO()
 
         var request = URLRequest(url: url)
@@ -562,6 +592,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
     }
 
     /// Sync individual moments (places) to a specific story
+    /// Endpoint: POST /api/stories/{storyId}/moments
     func syncMoments(_ moments: [PlaceEntity], toStory storyId: String) -> AnyPublisher<MomentSyncResponse, Error> {
         guard let url = URL(string: "\(targetServerAddress)/api/stories/\(storyId)/moments") else {
             return Fail(error: NetworkError.invalidURL)
@@ -603,9 +634,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    // MARK: Read
-
     /// Fetch all stories for the current user from backend
+    /// Endpoint: GET /api/stories
     func fetchUserStories() -> AnyPublisher<[StoryDTO], Error> {
         guard let url = URL(string: "\(targetServerAddress)/api/stories") else {
             return Fail(error: NetworkError.invalidURL)
@@ -638,9 +668,8 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    // MARK: Update
-
     /// Update an existing story on the backend
+    /// Endpoint: PUT /api/stories/{storyId}
     func updateStory(_ story: StoryEntity) -> AnyPublisher<StoryResponse, Error> {
         guard let url = URL(string: "\(targetServerAddress)/api/stories/\(story.id)") else {
             return Fail(error: NetworkError.invalidURL)
@@ -682,10 +711,9 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 
-    // MARK: Delete
-
     /// Delete a story from the backend
-    func deleteStory(_ storyId: String) -> AnyPublisher<RestAPIResponse, Error> {
+    /// Endpoint: DELETE /api/stories/{storyId}
+    func deleteStory(_ storyId: String) -> AnyPublisher<ServiceResponse<String>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/api/stories/\(storyId)") else {
             return Fail(error: NetworkError.invalidURL)
                 .eraseToAnyPublisher()
@@ -703,7 +731,7 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
         print("Deleting story \(storyId) from \(url.absoluteString)")
 
         return self.session.dataTaskPublisher(for: request)
-            .tryMap { try self.handleHttpResponse($0, decodingType: RestAPIResponse.self) }
+            .tryMap { try self.handleHttpResponse($0, decodingType: ServiceResponse<String>.self) }
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
                     return backendError
@@ -717,31 +745,50 @@ class AdventureTubeAPIService : NSObject , AdventureTubeAPIProtocol {
             .eraseToAnyPublisher()
     }
 }
+
+// MARK: - Error Types
+
 enum BackendError: LocalizedError {
-    case unauthorized(message: String)
-    case notFound(message: String)
-    case conflict(message: String)
-    case internalServerError(message: String)
-    case serverError(message: String)
+    case badRequest(message: String, errorCode: String? = nil)
+    case unauthorized(message: String, errorCode: String? = nil)
+    case notFound(message: String, errorCode: String? = nil)
+    case conflict(message: String, errorCode: String? = nil)
+    case internalServerError(message: String, errorCode: String? = nil)
+    case serverError(message: String, errorCode: String? = nil)
     case decodingError(message: String)
     case unknownError
 
     var errorDescription: String? {
         switch self {
-            case .unauthorized(let message),
-                    .notFound(let message),
-                    .conflict(let message),
-                    .internalServerError(let message),
-                    .serverError(let message),
+            case .badRequest(let message, _),
+                    .unauthorized(let message, _),
+                    .notFound(let message, _),
+                    .conflict(let message, _),
+                    .internalServerError(let message, _),
+                    .serverError(let message, _),
                     .decodingError(let message):
                 return message
             case .unknownError:
                 return NSLocalizedString("An unknown error occurred", comment: "")
         }
     }
+
+    var errorCode: String? {
+        switch self {
+            case .badRequest(_, let code),
+                    .unauthorized(_, let code),
+                    .notFound(_, let code),
+                    .conflict(_, let code),
+                    .internalServerError(_, let code),
+                    .serverError(_, let code):
+                return code
+            case .decodingError, .unknownError:
+                return nil
+        }
+    }
 }
 
-enum NetworkError : Error {
+enum NetworkError: Error {
     case invalidURL
     case responseError
     case unknown

@@ -165,6 +165,7 @@ class LoginManager: ObservableObject {
 
     func updateUserData(_ updateUserData: UserModel) {
         self.userData = updateUserData
+        saveUserStateToUserDefault()//any data updated for user need to store in userDefault as well .
     }
 
     func updateLoginState(_ updateState: State) {

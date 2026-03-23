@@ -17,7 +17,7 @@ import GoogleAPIClientForREST
 class YoutubeAPIService  {
     
     //This is API_KYE for 3 APIs which is Maps SDK , Place API , Youtube Data API v3
-    static let API_KEY = "REDACTED_GOOGLE_API_KEY"
+    static let API_KEY = "AIzaSyAH7YanpO16LRNnSwLtrHejWDjbP3xlFq8"
     
     //https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps
     static let youtubeContentReadScope = kGTLRAuthScopeYouTubeReadonly

@@ -143,10 +143,11 @@ final class GoogleLoginService: LoginServiceProtocol {
                                     completion(.failure(error))
                                     // TODO: Implement user-facing error handling for backend failures
                             }
-                        }, receiveValue: { authResponse in
+                        }, receiveValue: { response in
                             // Process the received authResponse
-                            guard let accessToken = authResponse.accessToken ,
-                                  let refreshToken = authResponse.refreshToken
+                            guard let tokenData = response.data,
+                                  let accessToken = tokenData.accessToken ,
+                                  let refreshToken = tokenData.refreshToken
                                     //let userDetail  = authResponse.userDetails
                             else{
                                 print("Failed to retreive token from backend")
@@ -190,9 +191,10 @@ final class GoogleLoginService: LoginServiceProtocol {
                                                         adventureUser.signed_in = false
                                                         completion(.failure(loginError))
                                                 }
-                                            }, receiveValue: { authResponse in
-                                                guard let accessToken = authResponse.accessToken,
-                                                      let refreshToken = authResponse.refreshToken
+                                            }, receiveValue: { response in
+                                                guard let tokenData = response.data,
+                                                      let accessToken = tokenData.accessToken,
+                                                      let refreshToken = tokenData.refreshToken
                                                 else {
                                                     print("Failed to retrieve token from fallback login")
                                                     adventureUser.signed_in = false
@@ -213,11 +215,12 @@ final class GoogleLoginService: LoginServiceProtocol {
                                         completion(.failure(error))
                                     }
                             }
-                        }, receiveValue: { authResponse in
+                        }, receiveValue: { response in
                             // Process the received authResponse
-                            guard let accessToken = authResponse.accessToken ,
-                                  let refreshToken = authResponse.refreshToken ,
-                                  let userId = authResponse.userId
+                            guard let tokenData = response.data,
+                                  let accessToken = tokenData.accessToken ,
+                                  let refreshToken = tokenData.refreshToken ,
+                                  let userId = tokenData.userId
                             else{
                                 print("Failed to retreive token from backend")
                                 adventureUser.signed_in = false;
@@ -275,10 +278,11 @@ final class GoogleLoginService: LoginServiceProtocol {
                                 }
                                 completion(.failure(error))
                         }
-                    }, receiveValue: { authResponse in
+                    }, receiveValue: { response in
                         // Process the received authResponse
-                        guard let accessToken = authResponse.accessToken ,
-                              let refreshToken = authResponse.refreshToken
+                        guard let tokenData = response.data,
+                              let accessToken = tokenData.accessToken ,
+                              let refreshToken = tokenData.refreshToken
                                 //let userDetail  = authResponse.userDetails
                         else{
                             print("Failed to retreive token from backend")
@@ -314,12 +318,12 @@ final class GoogleLoginService: LoginServiceProtocol {
     ///
     /// - Parameter completion: Result callback indicating success or error
     func signOut(completion: @escaping (_ result: Result<Void, Error>) -> Void) {
-        GIDSignIn.sharedInstance.signOut()
         //sign Out from backend server
         adventuretubeAPI.signOut()
             .sink(receiveCompletion: { completionSink in
                 switch completionSink {
                     case .finished:
+                        GIDSignIn.sharedInstance.signOut()
                         print("logout finished successfully")
                         completion(.success(()))
                     case .failure(let error):
@@ -327,14 +331,10 @@ final class GoogleLoginService: LoginServiceProtocol {
                         completion(.failure(error))
                 }
             }, receiveValue: { response in
-                // Process the received authResponse
-                guard response.message != nil && response.details != nil
-                else{
-                    print("Failed to logut from backend")
+                guard response.success else {
+                    print("Failed to logout from backend: \(response.message ?? "unknown")")
                     return
                 }
-                // TODO: Add response validation for logout confirmation
-                
             })
             .store(in: &cancellables)
     }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A1B2C3D4E5F67890A1B2C3D /* AddStoryView+Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1B2C3D4E5F67890A1B2C3E /* AddStoryView+Overlay.swift */; };
 		1A46AB783001F6281C02497E /* AddStoryViewVM+CoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1960B236F91B9650962ADB8F /* AddStoryViewVM+CoreData.swift */; };
 		25E50D8C8D1F37815D152871 /* AddStoryViewVM+Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851ACFA6CF61E97BE83D114C /* AddStoryViewVM+Validation.swift */; };
 		3389D3D2EE2DBC1BA378E072 /* Pods_AdventureTube.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B191390E1BD7EDC7DB326D /* Pods_AdventureTube.framework */; };
@@ -137,9 +138,7 @@
 		B46AF5552C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46AF5542C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift */; };
 		B46AF5582C60C47700261C71 /* ObservableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46AF5572C60C47700261C71 /* ObservableScrollView.swift */; };
 		B46E34062C3638580025DE65 /* AdventureTubeAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */; };
-		B46E34092C3638BF0025DE65 /* MemberDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E34082C3638BF0025DE65 /* MemberDTO.swift */; };
-		B46E340B2C3638DC0025DE65 /* RestAPIResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */; };
-		B46E340D2C3638F30025DE65 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46E340C2C3638F30025DE65 /* AuthResponse.swift */; };
+		B47BD5622F70A76D009E950C /* AuthTokenData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B47BD5612F70A76D009E950C /* AuthTokenData.swift */; };
 		B47EA4382C3E22F70069C955 /* JWTDecode in Frameworks */ = {isa = PBXBuildFile; productRef = B47EA4372C3E22F70069C955 /* JWTDecode */; };
 		B486DDD228BF0713003F59BC /* StoryEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */; };
 		B486DDD328BF0713003F59BC /* StoryEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */; };
@@ -182,6 +181,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A1B2C3D4E5F67890A1B2C3E /* AddStoryView+Overlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddStoryView+Overlay.swift"; sourceTree = "<group>"; };
 		1960B236F91B9650962ADB8F /* AddStoryViewVM+CoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddStoryViewVM+CoreData.swift"; sourceTree = "<group>"; };
 		3B217871D72F997FEF78CA5A /* Pods-AdventureTube.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AdventureTube.debug.xcconfig"; path = "Target Support Files/Pods-AdventureTube/Pods-AdventureTube.debug.xcconfig"; sourceTree = "<group>"; };
 		57301BE9F58E1B5E8074647B /* SSEClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSEClient.swift; sourceTree = "<group>"; };
@@ -315,9 +315,7 @@
 		B46AF5542C6080DA00261C71 /* ScrollViewOffsetPreferenceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollViewOffsetPreferenceKey.swift; sourceTree = "<group>"; };
 		B46AF5572C60C47700261C71 /* ObservableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableScrollView.swift; sourceTree = "<group>"; };
 		B46E34052C3638580025DE65 /* AdventureTubeAPIProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeAPIProtocol.swift; sourceTree = "<group>"; };
-		B46E34082C3638BF0025DE65 /* MemberDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDTO.swift; sourceTree = "<group>"; };
-		B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestAPIResponse.swift; sourceTree = "<group>"; };
-		B46E340C2C3638F30025DE65 /* AuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResponse.swift; sourceTree = "<group>"; };
+		B47BD5612F70A76D009E950C /* AuthTokenData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthTokenData.swift; sourceTree = "<group>"; };
 		B486DDCC28BF0713003F59BC /* StoryEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoryEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDCD28BF0713003F59BC /* StoryEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StoryEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		B486DDCE28BF0713003F59BC /* ChapterEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
@@ -579,6 +577,7 @@
 				1960B236F91B9650962ADB8F /* AddStoryViewVM+CoreData.swift */,
 				851ACFA6CF61E97BE83D114C /* AddStoryViewVM+Validation.swift */,
 				B4003B23288525E4002926F1 /* AddStoryView.swift */,
+				0A1B2C3D4E5F67890A1B2C3E /* AddStoryView+Overlay.swift */,
 			);
 			path = AddStoryView;
 			sourceTree = "<group>";
@@ -917,9 +916,7 @@
 		B46E34072C3638AA0025DE65 /* DTO */ = {
 			isa = PBXGroup;
 			children = (
-				B46E34082C3638BF0025DE65 /* MemberDTO.swift */,
-				B46E340A2C3638DC0025DE65 /* RestAPIResponse.swift */,
-				B46E340C2C3638F30025DE65 /* AuthResponse.swift */,
+				B47BD5612F70A76D009E950C /* AuthTokenData.swift */,
 			);
 			path = DTO;
 			sourceTree = "<group>";
@@ -1244,7 +1241,6 @@
 				B4003BA3288525E5002926F1 /* StoryView.swift in Sources */,
 				B4003BA6288525E5002926F1 /* CreateChapterViewVM.swift in Sources */,
 				B4003BA7288525E5002926F1 /* ConfirmChapterModalView.swift in Sources */,
-				B46E340B2C3638DC0025DE65 /* RestAPIResponse.swift in Sources */,
 				B4B7DE112B28BE0600582C23 /* StoryMapViewControllerBridge.swift in Sources */,
 				B4003BA2288525E5002926F1 /* DescriptionEditorView.swift in Sources */,
 				B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */,
@@ -1264,6 +1260,7 @@
 				B4003B9B288525E5002926F1 /* TabBarItemsPreferenceKey .swift in Sources */,
 				B4003B7D288525E5002926F1 /* Icon.swift in Sources */,
 				B4003BB3288525E5002926F1 /* MyStoryCommonDetailViewVM.swift in Sources */,
+				B47BD5622F70A76D009E950C /* AuthTokenData.swift in Sources */,
 				B4B7DE162B28BE1B00582C23 /* GoogleMapViewForCreateStoryController.swift in Sources */,
 				B4003BD3288525E5002926F1 /* LocalFileManager.swift in Sources */,
 				B4003BB4288525E5002926F1 /* BlankView.swift in Sources */,
@@ -1315,6 +1312,7 @@
 				36E83D049CCA131D4A287B14 /* SSEClient.swift in Sources */,
 				9EA3CC135B618D159C4BB80A /* JobStatusDTO.swift in Sources */,
 				B4B68E262F67E1F600BB0FB5 /* AddStoryViewVM+SSE.swift in Sources */,
+				0A1B2C3D4E5F67890A1B2C3D /* AddStoryView+Overlay.swift in Sources */,
 				B4003BAA288525E5002926F1 /* GoogleSearchMapView.swift in Sources */,
 				B4003B83288525E5002926F1 /* CheckBoxView.swift in Sources */,
 				B4003BD7288525E5002926F1 /* PreviewProvider.swift in Sources */,
@@ -1338,7 +1336,6 @@
 				B4003BB7288525E5002926F1 /* PagerViewWithDots.swift in Sources */,
 				B4003B77288525E5002926F1 /* ConerRadius.swift in Sources */,
 				B4003BAC288525E5002926F1 /* AddStoryView.swift in Sources */,
-				B46E34092C3638BF0025DE65 /* MemberDTO.swift in Sources */,
 				B4003BC9288525E5002926F1 /* CoreDataFetchResultsPublisher.swift in Sources */,
 				B4003BD8288525E5002926F1 /* Birthday.swift in Sources */,
 				B4367F212C63AC0E00236B31 /* NavigationSateManager.swift in Sources */,
@@ -1361,7 +1358,6 @@
 				B4003BBB288525E5002926F1 /* ExplainViewNo4.swift in Sources */,
 				B4003B88288525E5002926F1 /* AdventureTube.swift in Sources */,
 				B486DDD228BF0713003F59BC /* StoryEntity+CoreDataClass.swift in Sources */,
-				B46E340D2C3638F30025DE65 /* AuthResponse.swift in Sources */,
 				B486DDD628BF0713003F59BC /* PlaceEntity+CoreDataClass.swift in Sources */,
 				B4003B78288525E5002926F1 /* UIImage.swift in Sources */,
 				B4003BC6288525E5002926F1 /* CoreDataSaveModelPublisher.swift in Sources */,

@@ -69,6 +69,9 @@ extension AddStoryViewVM{
         case .COMPLETED:
             AdventureTubeAPIService.shared.cancelSSEStream()
             onCompleted(jobStatus)
+        case .DUPLICATED:
+            publishingStatus = .failed(message: jobStatus.errorMessage ?? "The story is laready publised")
+            AdventureTubeAPIService.shared.cancelSSEStream()
         case .FAILED:
             publishingStatus = .failed(message: jobStatus.errorMessage ?? "Job failed on server")
             AdventureTubeAPIService.shared.cancelSSEStream()
