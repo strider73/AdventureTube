@@ -10,12 +10,10 @@ import GoogleMaps
 import GooglePlaces
 import Combine
 import UIKit
-
-//Tonight I will bring the  data here
+import CoreLocation
 
 class MapViewVM : ObservableObject {
 
-    //here is the the very first place that initialize googleMap and Place API Service using a API_KEY !!!!
     private let googleMapAPIService  = GoogleMapAndPlaceAPIService()
 
     private var apiService = AdventureTubeAPIService.shared
@@ -23,37 +21,54 @@ class MapViewVM : ObservableObject {
 
     @Published var errorMessage: String?
     @Published var selectedVideoID: String? = nil
+    @Published var markers: [GMSMarker] = []
 
-    /*   Power of Published
-     1) Data for markers will be received from apiService and packed as an array of AdventureTubeData.
-     2) Marker data will be passed to StoryMapViewControllerBridge.
-     Not in makeUIViewController, but in updateUIViewController.
+    /// Track which stories are already on the map to avoid duplicates
+    private var loadedStoryIDs = Set<String>()
 
-     Since the response is not immediate, the markers won't be able to set when makeUIViewController is called!
-     However, it will be updated by updateUIViewController because
-     the markers here are @Published, which will notify markers in StoryMapViewControllerBridge,
-     and that will be the reason to call updateUIViewController.
-     */
-    @Published var markers :[GMSMarker] = []
-
-    /// Debounce subject for bounding box updates — prevents API spam during rapid pan/zoom
+    /// Debounce subject for bounding box updates — prevents API spam during scroll
     private let boundsSubject = PassthroughSubject<(sw: CLLocationCoordinate2D, ne: CLLocationCoordinate2D), Never>()
+
+    /// Track previous bounds center to detect large jumps
+    private var previousCenter: CLLocationCoordinate2D?
 
     init() {
         boundsSubject
-            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .sink { [weak self] bounds in
                 self?.fetchGeoDataInBounds(sw: bounds.sw, ne: bounds.ne)
             }
             .store(in: &cancellables)
     }
 
-    /// Called by the map delegate when camera stops moving
+    /// Called by the map delegate during scroll and on idle
     func onMapBoundsChanged(sw: CLLocationCoordinate2D, ne: CLLocationCoordinate2D) {
+        let newCenter = CLLocationCoordinate2D(
+            latitude: (sw.latitude + ne.latitude) / 2,
+            longitude: (sw.longitude + ne.longitude) / 2
+        )
+
+        // Detect large jump (e.g., user searched a new location) — clear and reload
+        if let prev = previousCenter {
+            let distance = CLLocation(latitude: prev.latitude, longitude: prev.longitude)
+                .distance(from: CLLocation(latitude: newCenter.latitude, longitude: newCenter.longitude))
+            // If moved more than 500km, treat as a jump — clear everything
+            if distance > 500_000 {
+                clearMarkers()
+            }
+        }
+        previousCenter = newCenter
+
         boundsSubject.send((sw: sw, ne: ne))
     }
 
-    /// Fetch geo data within visible map bounds
+    /// Clear all markers and reset tracking
+    func clearMarkers() {
+        markers.removeAll()
+        loadedStoryIDs.removeAll()
+    }
+
+    /// Fetch geo data within visible map bounds — appends new markers only
     private func fetchGeoDataInBounds(sw: CLLocationCoordinate2D, ne: CLLocationCoordinate2D) {
         apiService.fetchStoryInBounds(
             swLat: sw.latitude, swLng: sw.longitude,
@@ -67,9 +82,27 @@ class MapViewVM : ObservableObject {
             }
         }, receiveValue: { [weak self] adventureDataList in
             guard let self = self else { return }
-            print("Received \(adventureDataList.count) adventure stories in bounds")
-            self.markers = self.createMarkers(from: adventureDataList)
-            print("Created \(self.markers.count) markers")
+
+            // Filter out stories already on the map
+            let newStories = adventureDataList.filter { !self.loadedStoryIDs.contains($0.youtubeContentID) }
+
+            guard !newStories.isEmpty else { return }
+
+            print("Received \(adventureDataList.count) stories, \(newStories.count) new")
+
+            let newMarkers = self.createMarkers(from: newStories)
+
+            // Track new story IDs
+            for story in newStories {
+                self.loadedStoryIDs.insert(story.youtubeContentID)
+            }
+
+            // Append new markers with staggered pop-in animation
+            for (index, marker) in newMarkers.enumerated() {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(index) * 0.05) {
+                    self.markers.append(marker)
+                }
+            }
         })
         .store(in: &cancellables)
     }
@@ -77,7 +110,6 @@ class MapViewVM : ObservableObject {
     /// Create GMSMarker array from story data
     private func createMarkers(from adventureDataList: [AdventureTubeData]) -> [GMSMarker] {
         return adventureDataList.compactMap { story -> GMSMarker? in
-            // Find the first place with valid GeoJSON coordinates
             guard let firstPlace = story.places.first(where: { place in
                 guard let geoJson = place.location else { return false }
                 return geoJson.coordinates.count >= 2
@@ -93,18 +125,13 @@ class MapViewVM : ObservableObject {
             marker.snippet = firstPlace.name
             marker.appearAnimation = GMSMarkerAnimation.fadeIn
 
-            // Store youtubeContentID for marker tap handling
             marker.userData = story.youtubeContentID
 
-            // Set category-based border color
             let borderColor = MarkerIconGenerator.color(for: story.userContentCategory)
 
-            // Set placeholder icon immediately
             marker.icon = MarkerIconGenerator.placeholderMarkerIcon(borderColor: borderColor)
-            // Anchor at the bottom center of the pin pointer
             marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
 
-            // Asynchronously load YouTube thumbnail and update marker icon
             let thumbnailURLString = "https://img.youtube.com/vi/\(story.youtubeContentID)/default.jpg"
             if let thumbnailURL = URL(string: thumbnailURLString) {
                 MarkerIconGenerator.generateMarkerIcon(
