@@ -95,12 +95,12 @@ final class MarkerIconGenerator {
         }
     }
 
-    // MARK: - Private Compositing
+    // MARK: - Compositing
 
-    private static func compositeMarkerIcon(
+    static func compositeMarkerIcon(
         thumbnail: UIImage,
         borderColor: UIColor,
-        size: CGFloat
+        size: CGFloat = 50
     ) -> UIImage {
         let borderWidth: CGFloat = 3
         let pointerHeight: CGFloat = 10

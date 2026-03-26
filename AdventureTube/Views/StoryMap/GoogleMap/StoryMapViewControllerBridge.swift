@@ -27,8 +27,9 @@ import GoogleMapsUtils
 struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
     
     @Binding  var markers:[GMSMarker]
+    @Binding  var polylines:[GMSPolyline]
     var getBoxPointOnMap : (CLLocationCoordinate2D,CLLocationCoordinate2D) -> Void
-    var onMarkerTap: (String) -> Void
+    var onMarkerTap: (ChapterMarkerData) -> Void
     var markerCountLimitforClsuter = 200
     var markkerZoomLimitForCluster : Float = 14.0
     
@@ -54,6 +55,11 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
             uiViewController.clusterManager.clearItems()
             uiViewController.clusterManager.add(markers)
             uiViewController.clusterManager.cluster()
+        }
+
+        // Render new polylines
+        for polyline in polylines where polyline.map == nil {
+            polyline.map = mapView
         }
     }
     
@@ -120,10 +126,10 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
                 return true
             }
 
-            // Extract youtubeContentID from marker and notify SwiftUI
-            if let videoID = marker.userData as? String {
-                NSLog("Did tap marker with videoID: \(videoID)")
-                storyMapViewControllerBridge.onMarkerTap(videoID)
+            // Extract chapter data from marker and notify SwiftUI
+            if let chapterData = marker.userData as? ChapterMarkerData {
+                NSLog("Did tap chapter marker: videoID=\(chapterData.videoID), startTime=\(chapterData.startTime)")
+                storyMapViewControllerBridge.onMarkerTap(chapterData)
                 return true
             }
 

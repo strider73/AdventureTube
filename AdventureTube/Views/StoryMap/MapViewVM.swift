@@ -12,6 +12,16 @@ import Combine
 import UIKit
 import CoreLocation
 
+/// Data carried by each chapter marker via GMSMarker.userData
+struct ChapterMarkerData {
+    let videoID: String
+    let videoTitle: String
+    let startTime: Int
+    let chapterIndex: Int
+    let storyID: String
+    let categories: [Category]
+}
+
 class MapViewVM : ObservableObject {
 
     private let googleMapAPIService  = GoogleMapAndPlaceAPIService()
@@ -20,11 +30,15 @@ class MapViewVM : ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     @Published var errorMessage: String?
-    @Published var selectedVideoID: String? = nil
+    @Published var selectedChapter: ChapterMarkerData? = nil
     @Published var markers: [GMSMarker] = []
+    @Published var polylines: [GMSPolyline] = []
 
     /// Track which stories are already on the map to avoid duplicates
     private var loadedStoryIDs = Set<String>()
+
+    /// Cache downloaded thumbnail images by videoID to avoid duplicate downloads
+    private var thumbnailCache = NSCache<NSString, UIImage>()
 
     /// Debounce subject for bounding box updates — prevents API spam during scroll
     private let boundsSubject = PassthroughSubject<(sw: CLLocationCoordinate2D, ne: CLLocationCoordinate2D), Never>()
@@ -62,8 +76,10 @@ class MapViewVM : ObservableObject {
         boundsSubject.send((sw: sw, ne: ne))
     }
 
-    /// Clear all markers and reset tracking
+    /// Clear all markers, polylines, and reset tracking
     func clearMarkers() {
+        for polyline in polylines { polyline.map = nil }
+        polylines.removeAll()
         markers.removeAll()
         loadedStoryIDs.removeAll()
     }
@@ -91,11 +107,15 @@ class MapViewVM : ObservableObject {
             print("Received \(adventureDataList.count) stories, \(newStories.count) new")
 
             let newMarkers = self.createMarkers(from: newStories)
+            let newPolylines = self.createPolylines(from: newStories)
 
             // Track new story IDs
             for story in newStories {
                 self.loadedStoryIDs.insert(story.youtubeContentID)
             }
+
+            // Append polylines immediately
+            self.polylines.append(contentsOf: newPolylines)
 
             // Append new markers with staggered pop-in animation
             for (index, marker) in newMarkers.enumerated() {
@@ -107,44 +127,105 @@ class MapViewVM : ObservableObject {
         .store(in: &cancellables)
     }
 
-    /// Create GMSMarker array from story data
+    /// Create one GMSMarker per chapter, each at its own place's coordinates
     private func createMarkers(from adventureDataList: [AdventureTubeData]) -> [GMSMarker] {
-        return adventureDataList.compactMap { story -> GMSMarker? in
-            guard let firstPlace = story.places.first(where: { place in
-                guard let geoJson = place.location else { return false }
-                return geoJson.coordinates.count >= 2
-            }), let geoJson = firstPlace.location else {
-                return nil
-            }
+        var allMarkers: [GMSMarker] = []
 
-            let marker = GMSMarker(position: CLLocationCoordinate2D(
-                latitude: geoJson.coordinates[1],
-                longitude: geoJson.coordinates[0]
-            ))
-            marker.title = story.youtubeTitle
-            marker.snippet = firstPlace.name
-            marker.appearAnimation = GMSMarkerAnimation.fadeIn
+        for story in adventureDataList {
+            let chapters = story.chapters
+            guard !chapters.isEmpty else { continue }
 
-            marker.userData = story.youtubeContentID
+            for (index, chapter) in chapters.enumerated() {
+                guard let geoJson = chapter.place.location,
+                      geoJson.coordinates.count >= 2 else { continue }
 
-            let borderColor = MarkerIconGenerator.color(for: story.userContentCategory)
+                let marker = GMSMarker(position: CLLocationCoordinate2D(
+                    latitude: geoJson.coordinates[1],
+                    longitude: geoJson.coordinates[0]
+                ))
+                marker.title = story.youtubeTitle
+                marker.snippet = chapter.place.name
+                marker.appearAnimation = GMSMarkerAnimation.fadeIn
 
-            marker.icon = MarkerIconGenerator.placeholderMarkerIcon(borderColor: borderColor)
-            marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
+                marker.userData = ChapterMarkerData(
+                    videoID: story.youtubeContentID,
+                    videoTitle: story.youtubeTitle,
+                    startTime: chapter.youtubeTime,
+                    chapterIndex: index,
+                    storyID: story.youtubeContentID,
+                    categories: chapter.categories
+                )
 
-            let thumbnailURLString = "https://img.youtube.com/vi/\(story.youtubeContentID)/default.jpg"
-            if let thumbnailURL = URL(string: thumbnailURLString) {
-                MarkerIconGenerator.generateMarkerIcon(
-                    thumbnailURL: thumbnailURL,
-                    borderColor: borderColor
-                ) { icon in
-                    guard let icon = icon else { return }
-                    marker.icon = icon
+                let borderColor = MarkerIconGenerator.color(for: chapter.categories)
+                marker.icon = MarkerIconGenerator.placeholderMarkerIcon(borderColor: borderColor)
+                marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
+
+                // Load thumbnail with cache to avoid duplicate downloads for same video
+                let cacheKey = story.youtubeContentID as NSString
+                if let cachedImage = thumbnailCache.object(forKey: cacheKey) {
+                    marker.icon = MarkerIconGenerator.compositeMarkerIcon(
+                        thumbnail: cachedImage, borderColor: borderColor)
                     marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
+                } else {
+                    let thumbnailURLString = "https://img.youtube.com/vi/\(story.youtubeContentID)/default.jpg"
+                    if let thumbnailURL = URL(string: thumbnailURLString) {
+                        MarkerIconGenerator.generateMarkerIcon(
+                            thumbnailURL: thumbnailURL,
+                            borderColor: borderColor
+                        ) { [weak self] icon in
+                            guard let icon = icon else { return }
+                            marker.icon = icon
+                            marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
+                            // Cache the raw thumbnail for other chapters of same story
+                            if let self = self {
+                                self.cacheThumbnail(videoID: story.youtubeContentID, url: thumbnailURL)
+                            }
+                        }
+                    }
                 }
+
+                allMarkers.append(marker)
+            }
+        }
+
+        return allMarkers
+    }
+
+    /// Cache a downloaded thumbnail image by videoID
+    private func cacheThumbnail(videoID: String, url: URL) {
+        let cacheKey = videoID as NSString
+        guard thumbnailCache.object(forKey: cacheKey) == nil else { return }
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
+            guard let data = data, let image = UIImage(data: data) else { return }
+            self?.thumbnailCache.setObject(image, forKey: cacheKey)
+        }.resume()
+    }
+
+    /// Create polylines connecting chapter markers of the same story in order
+    private func createPolylines(from adventureDataList: [AdventureTubeData]) -> [GMSPolyline] {
+        return adventureDataList.compactMap { story -> GMSPolyline? in
+            let validChapters = story.chapters.filter { chapter in
+                guard let geo = chapter.place.location else { return false }
+                return geo.coordinates.count >= 2
+            }
+            guard validChapters.count >= 2 else { return nil }
+
+            let path = GMSMutablePath()
+            for chapter in validChapters {
+                let geo = chapter.place.location!
+                path.add(CLLocationCoordinate2D(
+                    latitude: geo.coordinates[1],
+                    longitude: geo.coordinates[0]
+                ))
             }
 
-            return marker
+            let polyline = GMSPolyline(path: path)
+            polyline.strokeWidth = 3.0
+            polyline.strokeColor = MarkerIconGenerator.color(for: story.userContentCategory)
+                .withAlphaComponent(0.7)
+            polyline.geodesic = true
+
+            return polyline
         }
     }
 }
