@@ -67,7 +67,10 @@ extension AdventureTubeAPIService {
             request.httpMethod = "DELETE"
             request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
 
+            //TODO: need to check the screenshot job status first before delete process
+            
             print("Deleting geo data at \(url.absoluteString)")
+            
 
             return self.session.dataTaskPublisher(for: request)
                 .tryMap { (data, response) -> ServiceResponse<JobStatusDTO> in
@@ -97,13 +100,11 @@ extension AdventureTubeAPIService {
     /// Endpoint: GET /auth/geo/status/stream/{trackingId}
     func streamJobStatus(trackingId: String) -> AnyPublisher<JobStatusDTO, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/geo/status/stream/\(trackingId)") else {
-            return Fail(error: NetworkError.invalidURL)
-                .eraseToAnyPublisher()
+            return Fail(error: NetworkError.invalidURL).eraseToAnyPublisher()
         }
 
         guard let accessToken = LoginManager.shared.userData.adventuretubeAcessJWTToken else {
-            return Fail(error: BackendError.unauthorized(message: "No access token available"))
-                .eraseToAnyPublisher()
+            return Fail(error: BackendError.unauthorized(message: "No access token available")).eraseToAnyPublisher()
         }
 
         activeSSEClient?.disconnect()
@@ -128,13 +129,11 @@ extension AdventureTubeAPIService {
     /// Endpoint: GET /auth/geo/status/{trackingId}
     func pollJobStatus(trackingId: String) -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/geo/status/\(trackingId)") else {
-            return Fail(error: NetworkError.invalidURL)
-                .eraseToAnyPublisher()
+            return Fail(error: NetworkError.invalidURL).eraseToAnyPublisher()
         }
 
         guard let accessToken = LoginManager.shared.userData.adventuretubeAcessJWTToken else {
-            return Fail(error: BackendError.unauthorized(message: "No access token available"))
-                .eraseToAnyPublisher()
+            return Fail(error: BackendError.unauthorized(message: "No access token available")).eraseToAnyPublisher()
         }
 
         var request = URLRequest(url: url)
