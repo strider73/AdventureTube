@@ -47,11 +47,12 @@ final class MarkerIconGenerator {
 
     // MARK: - Marker Icon Generation
 
-    /// Downloads a YouTube thumbnail and composites it into a rounded-square marker icon with a pin pointer.
+    /// Downloads a YouTube thumbnail and composites it into a rounded-square marker icon with a pin pointer and optional chapter number.
     static func generateMarkerIcon(
         thumbnailURL: URL,
         borderColor: UIColor,
         size: CGFloat = 50,
+        chapterNumber: Int? = nil,
         completion: @escaping (UIImage?) -> Void
     ) {
         URLSession.shared.dataTask(with: thumbnailURL) { data, _, error in
@@ -60,7 +61,7 @@ final class MarkerIconGenerator {
                 return
             }
 
-            let icon = compositeMarkerIcon(thumbnail: thumbnail, borderColor: borderColor, size: size)
+            let icon = compositeMarkerIcon(thumbnail: thumbnail, borderColor: borderColor, size: size, chapterNumber: chapterNumber)
             DispatchQueue.main.async { completion(icon) }
         }.resume()
     }
@@ -100,7 +101,8 @@ final class MarkerIconGenerator {
     static func compositeMarkerIcon(
         thumbnail: UIImage,
         borderColor: UIColor,
-        size: CGFloat = 50
+        size: CGFloat = 50,
+        chapterNumber: Int? = nil
     ) -> UIImage {
         let borderWidth: CGFloat = 3
         let pointerHeight: CGFloat = 10
@@ -126,10 +128,39 @@ final class MarkerIconGenerator {
             ctx.addPath(path.cgPath)
             ctx.strokePath()
 
+            // Chapter number badge (top-left corner)
+            if let number = chapterNumber {
+                drawChapterBadge(in: ctx, number: number, borderColor: borderColor,
+                                 origin: CGPoint(x: borderWidth, y: borderWidth))
+            }
+
             // Pin pointer triangle
             drawPointer(in: ctx, totalWidth: totalWidth, totalHeight: totalHeight,
                         topY: size + borderWidth * 2, color: borderColor)
         }
+    }
+
+    private static func drawChapterBadge(in ctx: CGContext, number: Int, borderColor: UIColor,
+                                          origin: CGPoint) {
+        let badgeSize: CGFloat = 18
+        let badgeRect = CGRect(x: origin.x, y: origin.y, width: badgeSize, height: badgeSize)
+
+        // Circle background
+        ctx.setFillColor(borderColor.cgColor)
+        ctx.fillEllipse(in: badgeRect)
+
+        // Number text
+        let text = "\(number)" as NSString
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 11),
+            .foregroundColor: UIColor.white
+        ]
+        let textSize = text.size(withAttributes: attributes)
+        let textPoint = CGPoint(
+            x: badgeRect.midX - textSize.width / 2,
+            y: badgeRect.midY - textSize.height / 2
+        )
+        text.draw(at: textPoint, withAttributes: attributes)
     }
 
     private static func drawPointer(in ctx: CGContext, totalWidth: CGFloat, totalHeight: CGFloat,

@@ -160,23 +160,25 @@ class MapViewVM : ObservableObject {
                 marker.icon = MarkerIconGenerator.placeholderMarkerIcon(borderColor: borderColor)
                 marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
 
-                // Load thumbnail with cache to avoid duplicate downloads for same video
+                // Load YouTube video thumbnail with chapter number overlay
+                let chapterNumber = index + 1
                 let cacheKey = story.youtubeContentID as NSString
                 if let cachedImage = thumbnailCache.object(forKey: cacheKey) {
                     marker.icon = MarkerIconGenerator.compositeMarkerIcon(
-                        thumbnail: cachedImage, borderColor: borderColor)
+                        thumbnail: cachedImage, borderColor: borderColor,
+                        chapterNumber: chapterNumber)
                     marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
                 } else {
                     let thumbnailURLString = "https://img.youtube.com/vi/\(story.youtubeContentID)/default.jpg"
                     if let thumbnailURL = URL(string: thumbnailURLString) {
                         MarkerIconGenerator.generateMarkerIcon(
                             thumbnailURL: thumbnailURL,
-                            borderColor: borderColor
+                            borderColor: borderColor,
+                            chapterNumber: chapterNumber
                         ) { [weak self] icon in
                             guard let icon = icon else { return }
                             marker.icon = icon
                             marker.groundAnchor = CGPoint(x: 0.5, y: 1.0)
-                            // Cache the raw thumbnail for other chapters of same story
                             if let self = self {
                                 self.cacheThumbnail(videoID: story.youtubeContentID, url: thumbnailURL)
                             }
