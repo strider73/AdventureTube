@@ -15,7 +15,7 @@ protocol AdventureTubeAPIProtocol: AnyObject {
 
     // MARK: - Authentication (+Auth)
     func registerUser(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error>
-    func loginWithPassword(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error>
+    func loginWithGoogleIdToken(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error>
     func refreshToken(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error>
     func signOut() -> AnyPublisher<ServiceResponse<String>, Error>
 

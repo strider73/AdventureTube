@@ -10,7 +10,9 @@ import Combine
 
 extension AddStoryViewVM{
     
-    func startSSETracking(trackingId: String, onCompleted: @escaping (JobStatusDTO) -> Void) {
+    func startSSETracking(trackingId: String,
+                          onCompleted: @escaping (JobStatusDTO) -> Void,
+                          onFailed:@escaping(JobStatusDTO) -> Void) {
         publishingStatus = .streaming
 
         AdventureTubeAPIService.shared.streamJobStatus(trackingId: trackingId)
@@ -19,15 +21,17 @@ extension AddStoryViewVM{
                 guard let self = self else { return }
                 if case .failure(let error) = completion {
                     print("SSE error, falling back to polling: \(error.localizedDescription)")
-                    self.startPollingFallback(trackingId: trackingId, onCompleted: onCompleted)
+                    self.startPollingFallback(trackingId: trackingId, onCompleted: onCompleted , onFailed: onFailed)
                 }
             }, receiveValue: { [weak self] jobStatus in
-                self?.handleJobStatus(jobStatus, onCompleted: onCompleted)
+                self?.handleJobStatus(jobStatus, onCompleted: onCompleted, onFailed: onFailed)
             })
             .store(in: &cancellables)
     }
 
-    func startPollingFallback(trackingId: String, onCompleted: @escaping (JobStatusDTO) -> Void) {
+    func startPollingFallback(trackingId: String,
+                              onCompleted: @escaping (JobStatusDTO) -> Void,
+                              onFailed:@escaping (JobStatusDTO) -> Void) {
         publishingStatus = .pollingFallback
         var pollCount = 0
         let maxPolls = 20
@@ -36,7 +40,7 @@ extension AddStoryViewVM{
             .autoconnect()
             .prefix(maxPolls)
             .flatMap { [weak self] _ -> AnyPublisher<ServiceResponse<JobStatusDTO>, Error> in
-                pollCount += 1
+                pollCount += 1  
                 print("Polling attempt \(pollCount)/\(maxPolls)")
                 guard self != nil else {
                     return Fail(error: BackendError.unknownError).eraseToAnyPublisher()
@@ -57,14 +61,16 @@ extension AddStoryViewVM{
             }, receiveValue: { [weak self] response in
                 guard let self = self, let jobStatus = response.data else { return }
                 if jobStatus.status.isTerminal {
-                    self.handleJobStatus(jobStatus, onCompleted: onCompleted)
+                    self.handleJobStatus(jobStatus, onCompleted: onCompleted , onFailed: onFailed)
                 }
             })
             .store(in: &cancellables)
     }
 
 
-    func handleJobStatus(_ jobStatus: JobStatusDTO, onCompleted: @escaping (JobStatusDTO) -> Void) {
+    func handleJobStatus(_ jobStatus: JobStatusDTO,
+                         onCompleted: @escaping (JobStatusDTO) -> Void,
+                         onFailed:@escaping(JobStatusDTO) -> Void) {
         switch jobStatus.status {
         case .COMPLETED:
             AdventureTubeAPIService.shared.cancelSSEStream()
@@ -73,8 +79,8 @@ extension AddStoryViewVM{
             publishingStatus = .failed(message: jobStatus.errorMessage ?? "The story is laready publised")
             AdventureTubeAPIService.shared.cancelSSEStream()
         case .FAILED:
-            publishingStatus = .failed(message: jobStatus.errorMessage ?? "Job failed on server")
             AdventureTubeAPIService.shared.cancelSSEStream()
+                onFailed(jobStatus)
         case .PENDING:
             publishingStatus = .streaming
         }

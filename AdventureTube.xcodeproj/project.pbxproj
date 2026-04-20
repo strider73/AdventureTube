@@ -13,7 +13,9 @@
 		3389D3D2EE2DBC1BA378E072 /* Pods_AdventureTube.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B191390E1BD7EDC7DB326D /* Pods_AdventureTube.framework */; };
 		36E83D049CCA131D4A287B14 /* SSEClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57301BE9F58E1B5E8074647B /* SSEClient.swift */; };
 		75D33525F3D52871B5EB35C4 /* AddStoryViewVM+Publishing.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08C96CDF820D5216D839C22 /* AddStoryViewVM+Publishing.swift */; };
+		89BC14C5EB9DF804 /* AdventureTubeAPIService+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66E0BAC14458560 /* AdventureTubeAPIService+Auth.swift */; };
 		9EA3CC135B618D159C4BB80A /* JobStatusDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9506C71760D3FFAF1DB52ACC /* JobStatusDTO.swift */; };
+		A8884EBDB77E0ED2 /* AdventureTubeAPIService+Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = A549469C04729400 /* AdventureTubeAPIService+Map.swift */; };
 		B4003AC2288523CB002926F1 /* adventuretube-categories.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4003ABE288523CB002926F1 /* adventuretube-categories.ttf */; };
 		B4003AC3288523CB002926F1 /* YoutubeContentResource.json in Resources */ = {isa = PBXBuildFile; fileRef = B4003ABF288523CB002926F1 /* YoutubeContentResource.json */; };
 		B4003AC4288523CB002926F1 /* client_657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com.plist in Resources */ = {isa = PBXBuildFile; fileRef = B4003AC0288523CB002926F1 /* client_657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com.plist */; };
@@ -120,14 +122,12 @@
 		B4003BDD288525E5002926F1 /* CustonTextFieldDropDownList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B6E288525E5002926F1 /* CustonTextFieldDropDownList.swift */; };
 		B4003BDE288525E5002926F1 /* Overlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B6F288525E5002926F1 /* Overlay.swift */; };
 		B4003BDF288525E5002926F1 /* ExampleViewForNavigartionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4003B70288525E5002926F1 /* ExampleViewForNavigartionBar.swift */; };
-		89BC14C5EB9DF804 /* AdventureTubeAPIService+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66E0BAC14458560 /* AdventureTubeAPIService+Auth.swift */; };
-		A8884EBDB77E0ED2 /* AdventureTubeAPIService+Map.swift in Sources */ = {isa = PBXBuildFile; fileRef = A549469C04729400 /* AdventureTubeAPIService+Map.swift */; };
-		C8DC2EA848FF29F6 /* AdventureTubeAPIService+Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF83AD10ED1DAAB1 /* AdventureTubeAPIService+Story.swift */; };
 		B40118072B17601000AA9286 /* AdventureTubeAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */; };
 		B401180A2B182BBF00AA9286 /* Restaurant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B40118092B182BBF00AA9286 /* Restaurant.swift */; };
 		B419E1B12885847500F669CA /* AdventureTube.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B419E1AF2885847500F669CA /* AdventureTube.xcdatamodeld */; };
 		B42D490028864A4B00329029 /* AdventureTubeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */; };
 		B4367F212C63AC0E00236B31 /* NavigationSateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4367F202C63AC0E00236B31 /* NavigationSateManager.swift */; };
+		B4471FCC2F9360B800AE3D33 /* ServiceResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4471FCB2F9360B800AE3D33 /* ServiceResponseDTO.swift */; };
 		B45733FA2C4DDBD30055E53C /* APIComponentsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45733F92C4DDBD30055E53C /* APIComponentsBuilder.swift */; };
 		B45EBE0C2AE0DCA50097498C /* CoreDataViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */; };
 		B46829C22B749F7700DCE22B /* LoginSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46829C12B749F7700DCE22B /* LoginSource.swift */; };
@@ -163,6 +163,7 @@
 		B4FB96D92A2997F100AAED3A /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FB96D82A2997F100AAED3A /* ProfileView.swift */; };
 		C4A1F20130260302002926F1 /* MarkerIconGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A1F20030260302002926F1 /* MarkerIconGenerator.swift */; };
 		C54FAB7C1CD012F35C7318CF /* AddStoryViewVM+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC82C6D31E2404946A59E15F /* AddStoryViewVM+JSON.swift */; };
+		C8DC2EA848FF29F6 /* AdventureTubeAPIService+Story.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF83AD10ED1DAAB1 /* AdventureTubeAPIService+Story.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,7 +193,9 @@
 		851ACFA6CF61E97BE83D114C /* AddStoryViewVM+Validation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddStoryViewVM+Validation.swift"; sourceTree = "<group>"; };
 		9506C71760D3FFAF1DB52ACC /* JobStatusDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobStatusDTO.swift; sourceTree = "<group>"; };
 		A08C96CDF820D5216D839C22 /* AddStoryViewVM+Publishing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddStoryViewVM+Publishing.swift"; sourceTree = "<group>"; };
+		A549469C04729400 /* AdventureTubeAPIService+Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdventureTubeAPIService+Map.swift"; sourceTree = "<group>"; };
 		AC82C6D31E2404946A59E15F /* AddStoryViewVM+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddStoryViewVM+JSON.swift"; sourceTree = "<group>"; };
+		AF83AD10ED1DAAB1 /* AdventureTubeAPIService+Story.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdventureTubeAPIService+Story.swift"; sourceTree = "<group>"; };
 		B4003ABE288523CB002926F1 /* adventuretube-categories.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adventuretube-categories.ttf"; sourceTree = "<group>"; };
 		B4003ABF288523CB002926F1 /* YoutubeContentResource.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = YoutubeContentResource.json; sourceTree = "<group>"; };
 		B4003AC0288523CB002926F1 /* client_657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "client_657433323337-c4p5785b3e7dirj8l19egvcuaug45eei.apps.googleusercontent.com.plist"; sourceTree = "<group>"; };
@@ -299,14 +302,12 @@
 		B4003B6F288525E5002926F1 /* Overlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Overlay.swift; sourceTree = "<group>"; };
 		B4003B70288525E5002926F1 /* ExampleViewForNavigartionBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewForNavigartionBar.swift; sourceTree = "<group>"; };
 		B40118062B17601000AA9286 /* AdventureTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventureTubeAPIService.swift; sourceTree = "<group>"; };
-		C66E0BAC14458560 /* AdventureTubeAPIService+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdventureTubeAPIService+Auth.swift"; sourceTree = "<group>"; };
-		A549469C04729400 /* AdventureTubeAPIService+Map.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdventureTubeAPIService+Map.swift"; sourceTree = "<group>"; };
-		AF83AD10ED1DAAB1 /* AdventureTubeAPIService+Story.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdventureTubeAPIService+Story.swift"; sourceTree = "<group>"; };
 		B40118092B182BBF00AA9286 /* Restaurant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Restaurant.swift; sourceTree = "<group>"; };
 		B40F2F942EFCB3880092ED54 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		B419E1B02885847500F669CA /* AdventureTube.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AdventureTube.xcdatamodel; sourceTree = "<group>"; };
 		B42D48FF28864A4B00329029 /* AdventureTubeApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdventureTubeApp.swift; sourceTree = "<group>"; };
 		B4367F202C63AC0E00236B31 /* NavigationSateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationSateManager.swift; sourceTree = "<group>"; };
+		B4471FCB2F9360B800AE3D33 /* ServiceResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceResponseDTO.swift; sourceTree = "<group>"; };
 		B45733F92C4DDBD30055E53C /* APIComponentsBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIComponentsBuilder.swift; sourceTree = "<group>"; };
 		B45EBE0B2AE0DCA40097498C /* CoreDataViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataViewModel.swift; sourceTree = "<group>"; };
 		B46829C12B749F7700DCE22B /* LoginSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSource.swift; sourceTree = "<group>"; };
@@ -343,6 +344,7 @@
 		B4BC1D242F1E0B24005CA725 /* StoryDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryDTO.swift; sourceTree = "<group>"; };
 		B4FB96D82A2997F100AAED3A /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C4A1F20030260302002926F1 /* MarkerIconGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerIconGenerator.swift; sourceTree = "<group>"; };
+		C66E0BAC14458560 /* AdventureTubeAPIService+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdventureTubeAPIService+Auth.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -913,8 +915,6 @@
 				C66E0BAC14458560 /* AdventureTubeAPIService+Auth.swift */,
 				A549469C04729400 /* AdventureTubeAPIService+Map.swift */,
 				AF83AD10ED1DAAB1 /* AdventureTubeAPIService+Story.swift */,
-				9506C71760D3FFAF1DB52ACC /* JobStatusDTO.swift */,
-				B4BC1D242F1E0B24005CA725 /* StoryDTO.swift */,
 			);
 			path = Adventuretube;
 			sourceTree = "<group>";
@@ -922,7 +922,10 @@
 		B46E34072C3638AA0025DE65 /* DTO */ = {
 			isa = PBXGroup;
 			children = (
+				B4BC1D242F1E0B24005CA725 /* StoryDTO.swift */,
 				B47BD5612F70A76D009E950C /* AuthTokenData.swift */,
+				9506C71760D3FFAF1DB52ACC /* JobStatusDTO.swift */,
+				B4471FCB2F9360B800AE3D33 /* ServiceResponseDTO.swift */,
 			);
 			path = DTO;
 			sourceTree = "<group>";
@@ -1284,6 +1287,7 @@
 				B4003BCB288525E5002926F1 /* GoogleMapAndPlaceAPIService.swift in Sources */,
 				B4003BA4288525E5002926F1 /* MainStoryView.swift in Sources */,
 				B4003B9F288525E5002926F1 /* UserProfileImageLoader.swift in Sources */,
+				B4471FCC2F9360B800AE3D33 /* ServiceResponseDTO.swift in Sources */,
 				B486DDD428BF0713003F59BC /* ChapterEntity+CoreDataClass.swift in Sources */,
 				B4003BD2288525E5002926F1 /* FacebookLoginService.swift in Sources */,
 				B4003BD9288525E5002926F1 /* GoogleSignInButtonWrapper.swift in Sources */,

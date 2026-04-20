@@ -18,7 +18,7 @@ extension ChapterEntity {
 
     @NSManaged public var category: [String]
     @NSManaged public var id: String
-    @NSManaged public var thumbnail: Data?
+    @NSManaged public var thumbnail: String?
     @NSManaged public var youtubeId: String
     @NSManaged public var youtubeTime: Int16
     @NSManaged public var place: PlaceEntity

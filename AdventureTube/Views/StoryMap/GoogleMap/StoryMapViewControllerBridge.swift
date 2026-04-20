@@ -27,8 +27,9 @@ import GoogleMapsUtils
 struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
     
     @Binding  var markers:[GMSMarker]
+    @Binding  var polylines:[GMSPolyline]
     var getBoxPointOnMap : (CLLocationCoordinate2D,CLLocationCoordinate2D) -> Void
-    var onMarkerTap: (String) -> Void
+    var onMarkerTap: (ChapterMarkerData) -> Void
     var markerCountLimitforClsuter = 200
     var markkerZoomLimitForCluster : Float = 14.0
     
@@ -42,25 +43,24 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
     
     
     func updateUIViewController(_ uiViewController: StoryMapViewController, context: Context) {
-        //in here need to delete the mark outside screeb
-        uiViewController.mapView.clear()
-        uiViewController.clusterManager.clearItems()
-        
-        print("Zoom is \(uiViewController.mapView.camera.zoom)")
-        
-        if  markers.count  < markerCountLimitforClsuter  {
-            print("No Cluster markers.count  \(markers.count)")
-            markers.forEach { marker in
-                marker.map = uiViewController.mapView
-            }
-        }else{
-            print("With Cluster markers.count  \(markers.count)")
+        // Only assign map to markers that don't have one yet (new markers)
+        let mapView = uiViewController.mapView
 
+        if markers.count < markerCountLimitforClsuter {
+            for marker in markers where marker.map == nil {
+                marker.map = mapView
+            }
+        } else {
+            // For large counts, use clustering
+            uiViewController.clusterManager.clearItems()
             uiViewController.clusterManager.add(markers)
             uiViewController.clusterManager.cluster()
         }
-        
-        
+
+        // Render new polylines
+        for polyline in polylines where polyline.map == nil {
+            polyline.map = mapView
+        }
     }
     
     
@@ -96,16 +96,20 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
         //https://developers.google.com/maps/documentation/ios-sdk/reference/protocol_g_m_s_map_view_delegate-p
         //GMSMapViewDelegate
         func mapView(_ mapView: GMSMapView, willMove gesture: Bool) {
-            //clear the mapView
-            //mapView.clear()
         }
-        
+
+        /// Fires continuously during camera movement — enables reactive loading while scrolling
+        func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
+            let sw = mapView.projection.coordinate(for: CGPoint(x: 0, y: mapView.bounds.maxY))
+            let ne = mapView.projection.coordinate(for: CGPoint(x: mapView.bounds.maxX, y: 0))
+            storyMapViewControllerBridge.getBoxPointOnMap(sw, ne)
+        }
+
+        /// Fires when camera stops — final fetch for settled area
         func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
-            let centerCoordinate = mapView.projection.coordinate(for: mapView.center)
-            let southWestCoordinate =  mapView.projection.coordinate(for:  CGPoint(x:0, y: mapView.bounds.maxY))
-            let northEastCoordinate =  mapView.projection.coordinate(for: CGPoint(x: mapView.bounds.maxX, y: 0))
-            
-            storyMapViewControllerBridge.getBoxPointOnMap(southWestCoordinate,northEastCoordinate)
+            let sw = mapView.projection.coordinate(for: CGPoint(x: 0, y: mapView.bounds.maxY))
+            let ne = mapView.projection.coordinate(for: CGPoint(x: mapView.bounds.maxX, y: 0))
+            storyMapViewControllerBridge.getBoxPointOnMap(sw, ne)
         }
         
         
@@ -122,10 +126,10 @@ struct StoryMapViewControllerBridge : UIViewControllerRepresentable{
                 return true
             }
 
-            // Extract youtubeContentID from marker and notify SwiftUI
-            if let videoID = marker.userData as? String {
-                NSLog("Did tap marker with videoID: \(videoID)")
-                storyMapViewControllerBridge.onMarkerTap(videoID)
+            // Extract chapter data from marker and notify SwiftUI
+            if let chapterData = marker.userData as? ChapterMarkerData {
+                NSLog("Did tap chapter marker: videoID=\(chapterData.videoID), startTime=\(chapterData.startTime)")
+                storyMapViewControllerBridge.onMarkerTap(chapterData)
                 return true
             }
 

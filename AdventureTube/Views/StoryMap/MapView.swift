@@ -26,12 +26,12 @@ struct MapView: View {
             // Initial fetch happens when map reports first bounds via idleAt delegate
         }
         .sheet(isPresented: Binding<Bool>(
-            get: { mapViewVM.selectedVideoID != nil },
-            set: { if !$0 { mapViewVM.selectedVideoID = nil } }
+            get: { mapViewVM.selectedChapter != nil },
+            set: { if !$0 { mapViewVM.selectedChapter = nil } }
         )) {
-            if let videoID = mapViewVM.selectedVideoID {
-                YoutubePopupView(videoID: videoID) {
-                    mapViewVM.selectedVideoID = nil
+            if let chapter = mapViewVM.selectedChapter {
+                YoutubePopupView(videoID: chapter.videoID, startTime: chapter.startTime) {
+                    mapViewVM.selectedChapter = nil
                 }
             }
         }
@@ -40,11 +40,12 @@ struct MapView: View {
     var storyMap: some View {
         StoryMapViewControllerBridge(
             markers: $mapViewVM.markers,
+            polylines: $mapViewVM.polylines,
             getBoxPointOnMap: { sw, ne in
                 mapViewVM.onMapBoundsChanged(sw: sw, ne: ne)
             },
-            onMarkerTap: { videoID in
-                mapViewVM.selectedVideoID = videoID
+            onMarkerTap: { chapterData in
+                mapViewVM.selectedChapter = chapterData
             }
         )
         .edgesIgnoringSafeArea(.all)
@@ -54,13 +55,14 @@ struct MapView: View {
 // MARK: - YouTube Popup View
 private struct YoutubePopupView: View {
     let videoID: String
+    let startTime: Int
     let onClose: () -> Void
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Color.black.edgesIgnoringSafeArea(.all)
 
-            YoutubeView(youtubeViewVM: YoutubeViewVM(videoId: videoID))
+            YoutubeView(youtubeViewVM: YoutubeViewVM(videoId: videoID, startTime: startTime))
                 .padding(.top, 60)
                 .padding(.bottom, 40)
 
