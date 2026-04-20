@@ -80,7 +80,8 @@ struct LoginView: View {
                             }
                         }
                         
-                    }) {
+                    })
+                    {
                         Image("GoogleLogin_type1")
                             .loginButton()
                     }

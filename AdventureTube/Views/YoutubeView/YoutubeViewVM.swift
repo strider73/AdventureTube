@@ -130,15 +130,15 @@ class YoutubeViewVM : ObservableObject{
     }
     
     func  advenceSecondToYoutubeTime( _ seconds: Int) -> String {
-        
+
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute, .second]
         formatter.unitsStyle = .abbreviated
-        
+
         return  formatter.string(from: TimeInterval(seconds))!
-        
+
     }
-    
+
 }
 
 /// The filter of self.playbackStatePublisher was main reason that

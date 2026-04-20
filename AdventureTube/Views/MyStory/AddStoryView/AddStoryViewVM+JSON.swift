@@ -55,11 +55,11 @@ extension AddStoryViewVM {
 
         }
 
-        //remove duplicate
+        //4) remove duplicate
         let uniqueCategories =  categroies.removingDuplicates()
         let uniquePlaces = places.removingDuplicates()
 
-        //5 set a adventureTubData
+        //5) set a adventureTubData
         let newAdventureTubeData =  AdventureTubeData(coreDataID: storyEntity.id,
                                                       youtubeContentID: storyEntity.youtubeId,
                                                       youtubeTitle: storyEntity.youtubeTitle,

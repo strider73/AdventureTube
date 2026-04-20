@@ -53,6 +53,8 @@ class SSEClient: NSObject, URLSessionDataDelegate {
         buffer.append(chunk)
 
         // SSE events are separated by double newlines
+        //Search for \n\n — the SSE event delimiter. while because the buffer might contain multiple complete events at once.
+        //Loop until no more \n\n found.
         while let range = buffer.range(of: "\n\n") {
             let eventBlock = String(buffer[buffer.startIndex..<range.lowerBound])
             buffer = String(buffer[range.upperBound...])

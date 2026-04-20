@@ -174,7 +174,7 @@ class AdventureTubeAPIService: NSObject, AdventureTubeAPIProtocol {
                             LoginManager.shared.updateUserData(updatedUser)
                         }
 
-                        print("Token refreshed — retrying original request")
+                        print("Token  refreshed — retrying original request")
                         return makeRequest(newAccessToken)
                     }
                     .catch { refreshError -> AnyPublisher<T, Error> in

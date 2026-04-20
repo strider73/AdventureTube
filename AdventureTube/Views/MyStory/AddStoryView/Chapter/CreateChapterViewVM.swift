@@ -401,7 +401,6 @@ class CreateChapterViewVM : ObservableObject {
             chapterEntity.category = newChapter.categories.map{$0.rawValue}
             chapterEntity.youtubeTime = Int16(newChapter.youtubeTime)
             chapterEntity.youtubeId = newChapter.youtubeId ?? ""
-            //manager.save()
             
             //create place for chapter
             let placeEnity = PlaceEntity(context: manager.context)

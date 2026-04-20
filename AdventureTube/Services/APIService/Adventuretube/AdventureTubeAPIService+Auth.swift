@@ -36,10 +36,19 @@ extension AdventureTubeAPIService {
         print("googleIdToken: \(idToken)")
         print("email: \(email)")
 
+        
+        
+        
+        /*
+           output here is: (data: Data, response: URLResponse)
+           - data:     raw JSON bytes sent from the server (e.g. ServiceResponse body)
+           - response: HTTP response containing status code, headers, and URL
+           Both are needed: status code routes the error handling, data carries the payload to decode
+           */    
         return self.session.dataTaskPublisher(for: request)
-            .tryMap {
-                try self.handleHttpResponse($0, decodingType: ServiceResponse<AuthTokenData>.self)
-            }
+            .tryMap { output in
+                 try self.handleHttpResponse(output, decodingType: ServiceResponse<AuthTokenData>.self)
+             }   
             .mapError { error -> BackendError in
                 if let backendError = error as? BackendError {
                     return backendError
