@@ -7,13 +7,6 @@
 
 import Foundation
 
-struct ServiceResponse<T: Decodable>: Decodable {
-    let success: Bool
-    let message: String?
-    let errorCode: String?
-    let data: T?
-    let timestamp: String?
-}
 
 struct JobStatusDTO: Decodable {
     let trackingId: String
@@ -28,3 +21,5 @@ enum JobStatusType: String, Decodable {
     case PENDING, COMPLETED,DUPLICATED, FAILED
     var isTerminal: Bool { self != .PENDING }
 }
+
+

@@ -64,7 +64,7 @@ extension AdventureTubeAPIService {
 
     /// Login with Google ID token to obtain access + refresh tokens
     /// Endpoint: POST /auth/token
-    func loginWithPassword(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error> {
+    func loginWithGoogleIdToken(adventureUser: UserModel) -> AnyPublisher<ServiceResponse<AuthTokenData>, Error> {
         guard let url = URL(string: "\(targetServerAddress)/auth/token") else {
             fatalError("Invalid URL")
         }
